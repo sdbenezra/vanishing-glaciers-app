@@ -385,6 +385,110 @@
             transform: translateY(1px);
         }
 
+        .ai-toggle {
+            background: #3d5a80;
+            color: #4dd0e1;
+            border: 2px solid #4dd0e1;
+            padding: 8px 15px;
+            font-weight: bold;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .ai-toggle:hover {
+            background: #4dd0e1;
+            color: #1a2332;
+        }
+
+        .ai-toggle.active {
+            background: #81c784;
+            border-color: #81c784;
+            color: #1a2332;
+        }
+
+        .ai-toggle.loading {
+            background: #ffab40;
+            border-color: #ffab40;
+            color: #1a2332;
+            cursor: wait;
+        }
+
+        .ai-indicator {
+            font-size: 10px;
+        }
+
+        .loading-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(26, 35, 50, 0.95);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+
+        .loading-overlay.active {
+            display: flex;
+        }
+
+        .loading-content {
+            text-align: center;
+            color: #e0f4ff;
+        }
+
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid #3d5a80;
+            border-top: 5px solid #4dd0e1;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .loading-text {
+            font-size: 18px;
+            font-weight: bold;
+            color: #4dd0e1;
+            margin-bottom: 10px;
+        }
+
+        .loading-subtext {
+            font-size: 12px;
+            color: #a8c5da;
+            margin-top: 10px;
+        }
+
+        .loading-progress {
+            width: 300px;
+            height: 20px;
+            background: #3d5a80;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 15px auto;
+        }
+
+        .loading-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #4dd0e1, #81c784);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
         @media (max-width: 1024px) {
             .main-content {
                 flex-direction: column;
@@ -400,6 +504,85 @@
             .evidence-panel.collapsed {
                 width: 100%;
                 max-height: 40px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .title {
+                font-size: 18px;
+            }
+
+            .subtitle {
+                font-size: 10px;
+            }
+
+            .input-area {
+                padding: 10px;
+                gap: 5px;
+            }
+
+            .input-label {
+                display: none; /* Hide arrow on mobile to save space */
+            }
+
+            .input-field {
+                font-size: 14px;
+                padding: 10px;
+            }
+
+            .ai-toggle, .help-button, .send-button {
+                padding: 10px 12px;
+                font-size: 11px;
+            }
+
+            .ai-indicator {
+                font-size: 14px;
+            }
+
+            #aiToggleText {
+                display: none; /* Show only icon on mobile */
+            }
+
+            .help-button {
+                padding: 10px 15px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .game-container {
+                height: 100vh;
+                border-radius: 0;
+            }
+
+            .input-area {
+                flex-wrap: wrap;
+                padding: 8px;
+            }
+
+            .input-field {
+                width: 100%;
+                order: 1;
+                margin-bottom: 5px;
+            }
+
+            .ai-toggle {
+                order: 2;
+                flex: 1;
+            }
+
+            .help-button {
+                order: 3;
+                flex: 1;
+            }
+
+            .send-button {
+                order: 4;
+                flex: 1;
+            }
+
+            .chat-display {
+                font-size: 13px;
+                padding: 15px;
             }
         }
     </style>
@@ -436,8 +619,24 @@
         <div class="input-area">
             <div class="input-label">▶</div>
             <input type="text" id="commandInput" class="input-field" placeholder="Type your command here..." autocomplete="off">
+            <button class="ai-toggle" id="aiToggle" onclick="toggleAIMode()" title="Toggle AI-powered natural language understanding">
+                <span class="ai-indicator">🤖</span>
+                <span id="aiToggleText">AI OFF</span>
+            </button>
             <button class="help-button" onclick="toggleHelp()">HELP</button>
             <button class="send-button" onclick="submitCommand()">SEND</button>
+        </div>
+    </div>
+
+    <!-- Loading Overlay for AI Model -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-content">
+            <div class="loading-text">🤖 Loading AI Model...</div>
+            <div class="loading-spinner"></div>
+            <div class="loading-progress">
+                <div class="loading-bar" id="loadingBar"></div>
+            </div>
+            <div class="loading-subtext" id="loadingSubtext">Downloading model (first time only)...</div>
         </div>
     </div>
 
@@ -486,6 +685,16 @@
                 <li>Ask Dr. Patel questions about the research</li>
                 <li>There's no way to fail - explore freely!</li>
             </ul>
+
+            <h3>🤖 AI Mode (Optional)</h3>
+            <p>Click the "🤖 AI OFF" button to enable AI-powered natural language understanding!</p>
+            <ul>
+                <li><strong>Better understanding</strong> - Type naturally, the AI figures out what you mean</li>
+                <li><strong>Privacy-first</strong> - Runs locally in your browser, nothing sent to servers</li>
+                <li><strong>First load</strong> - Downloads AI model (~2-3 GB, cached after first time)</li>
+                <li><strong>Works offline</strong> - After loading, works without internet!</li>
+                <li><strong>Fallback</strong> - Regular keyword mode works if AI isn't available</li>
+            </ul>
             
             <button class="help-close" onclick="toggleHelp()">CLOSE</button>
         </div>
@@ -502,7 +711,10 @@
             topicsDiscussed: new Set(),
             interactionPoints: {},
             evidence: {},
-            evidencePanelOpen: false
+            evidencePanelOpen: false,
+            aiMode: false,
+            aiEngine: null,
+            aiLoading: false
         };
 
         // Toggle evidence panel
@@ -536,6 +748,200 @@
                 toggleHelp();
             }
         });
+
+        // ============================================
+        // AI MODE - WEB-LLM INTEGRATION
+        // ============================================
+
+        // Check if WebGPU is supported
+        function supportsWebGPU() {
+            return 'gpu' in navigator;
+        }
+
+        // Toggle AI Mode
+        async function toggleAIMode() {
+            if (gameState.aiLoading) {
+                return; // Already loading
+            }
+
+            const button = document.getElementById('aiToggle');
+            const buttonText = document.getElementById('aiToggleText');
+
+            if (gameState.aiMode) {
+                // Turn off AI mode
+                gameState.aiMode = false;
+                button.classList.remove('active');
+                buttonText.textContent = 'AI OFF';
+                addMessage('🤖 AI Mode disabled. Using keyword-based parsing.', 'system-message');
+            } else {
+                // Try to turn on AI mode
+                if (!supportsWebGPU()) {
+                    addMessage('❌ AI Mode requires WebGPU support. Your browser may not support it yet. Using keyword mode instead.', 'warning-message');
+                    return;
+                }
+
+                // Load AI model
+                await loadAIModel();
+            }
+        }
+
+        // Load the Web-LLM model
+        async function loadAIModel() {
+            const button = document.getElementById('aiToggle');
+            const buttonText = document.getElementById('aiToggleText');
+            const overlay = document.getElementById('loadingOverlay');
+            const loadingBar = document.getElementById('loadingBar');
+            const loadingSubtext = document.getElementById('loadingSubtext');
+
+            try {
+                gameState.aiLoading = true;
+                button.classList.add('loading');
+                buttonText.textContent = 'LOADING...';
+                overlay.classList.add('active');
+
+                // Dynamically import Web-LLM
+                const webllm = await import('https://esm.run/@mlc-ai/web-llm');
+
+                // Progress callback
+                const initProgressCallback = (progress) => {
+                    const percent = Math.round(progress.progress * 100);
+                    loadingBar.style.width = percent + '%';
+                    loadingSubtext.textContent = progress.text || 'Loading...';
+                };
+
+                // Create engine with Phi-3-mini (small, fast model)
+                loadingSubtext.textContent = 'Initializing AI engine...';
+                gameState.aiEngine = await webllm.CreateMLCEngine(
+                    "Phi-3-mini-4k-instruct-q4f16_1-MLC",
+                    { 
+                        initProgressCallback: initProgressCallback,
+                        logLevel: "ERROR" // Reduce console spam
+                    }
+                );
+
+                // Success!
+                gameState.aiMode = true;
+                gameState.aiLoading = false;
+                button.classList.remove('loading');
+                button.classList.add('active');
+                buttonText.textContent = 'AI ON';
+                overlay.classList.remove('active');
+
+                addMessage('✅ AI Mode enabled! You can now use natural language. The AI understands context and can parse complex questions.', 'success-message');
+
+            } catch (error) {
+                console.error('AI Model loading failed:', error);
+                gameState.aiLoading = false;
+                button.classList.remove('loading');
+                buttonText.textContent = 'AI OFF';
+                overlay.classList.remove('active');
+
+                addMessage('❌ Failed to load AI model: ' + error.message + '\nUsing keyword mode instead.', 'warning-message');
+            }
+        }
+
+        // Parse command using AI
+        async function parseWithAI(userInput) {
+            if (!gameState.aiEngine) {
+                return null;
+            }
+
+            try {
+                // Create a prompt that helps the AI understand game commands
+                const systemPrompt = `You are a command parser for a text adventure game. The player investigates Dr. Sarah Chen's disappearance at an Arctic research station.
+
+Available actions:
+- LOOK: Describe surroundings
+- EXAMINE [object]: Inspect something (objects: monitoring_station, workstation, equipment_rack, window, temperature_data, calibration_log, sarah_note)
+- TALK [topic]: Discuss with Dr. Maya Patel (topics: glaciers, research, monitoring, data, sarah, disappearance, importance)
+- INVENTORY: Show collected evidence
+- PROGRESS: Show investigation status
+- HELP: Show help
+
+Parse the user's input into ONE of these commands. Return ONLY a JSON object with this format:
+{"action": "examine", "target": "monitoring_station"}
+or
+{"action": "talk", "topic": "glaciers"}
+or
+{"action": "look"}
+
+Be flexible with natural language. Examples:
+"tell me about the glacier work" → {"action": "talk", "topic": "glaciers"}
+"check the computer" → {"action": "examine", "target": "workstation"}
+"what happened to dr chen" → {"action": "talk", "topic": "sarah"}`;
+
+                const messages = [
+                    { role: "system", content: systemPrompt },
+                    { role: "user", content: userInput }
+                ];
+
+                const response = await gameState.aiEngine.chat.completions.create({
+                    messages: messages,
+                    temperature: 0.3, // Lower temperature for more consistent parsing
+                    max_tokens: 100
+                });
+
+                const aiResponse = response.choices[0].message.content.trim();
+                
+                // Try to extract JSON from response
+                const jsonMatch = aiResponse.match(/\{[^}]+\}/);
+                if (jsonMatch) {
+                    const parsed = JSON.parse(jsonMatch[0]);
+                    return parsed;
+                }
+
+                return null;
+            } catch (error) {
+                console.error('AI parsing error:', error);
+                return null;
+            }
+        }
+
+        // Execute AI-parsed command
+        function executeAICommand(parsedCommand) {
+            if (!parsedCommand || !parsedCommand.action) {
+                return false;
+            }
+
+            const action = parsedCommand.action.toLowerCase();
+
+            switch (action) {
+                case 'look':
+                    showLocation();
+                    return true;
+
+                case 'examine':
+                    if (parsedCommand.target) {
+                        handleExamine('examine ' + parsedCommand.target);
+                        return true;
+                    }
+                    return false;
+
+                case 'talk':
+                    if (parsedCommand.topic) {
+                        handleTalk(parsedCommand.topic);
+                        return true;
+                    }
+                    // Default talk to Maya
+                    handleTalk('maya');
+                    return true;
+
+                case 'inventory':
+                    showInventory();
+                    return true;
+
+                case 'progress':
+                    showProgress();
+                    return true;
+
+                case 'help':
+                    showHelp();
+                    return true;
+
+                default:
+                    return false;
+            }
+        }
 
         // Initialize game data
         function initializeGame() {
@@ -879,7 +1285,29 @@ Thank you for playing Chapter 1 of The Vanishing Glaciers!
             processCommand(command.toLowerCase());
         }
 
-        function processCommand(command) {
+        async function processCommand(command) {
+            // Try AI parsing first if enabled
+            if (gameState.aiMode && gameState.aiEngine) {
+                try {
+                    addMessage('🤖 AI processing...', 'system-message');
+                    const parsed = await parseWithAI(command);
+                    
+                    if (parsed && executeAICommand(parsed)) {
+                        return; // AI successfully handled it
+                    }
+                    // If AI couldn't parse, fall through to keyword matching
+                    addMessage('🤖 AI couldn\'t parse that, trying keyword matching...', 'system-message');
+                } catch (error) {
+                    console.error('AI error:', error);
+                    addMessage('🤖 AI error, using keyword matching...', 'warning-message');
+                }
+            }
+
+            // Keyword-based parsing (fallback or default)
+            processCommandKeywords(command);
+        }
+
+        function processCommandKeywords(command) {
             // System commands
             if (['help', 'h', '?'].includes(command)) {
                 showHelp();
