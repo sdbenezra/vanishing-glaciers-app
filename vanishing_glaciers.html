@@ -1,0 +1,1234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Vanishing Glaciers - Chapter 1</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a2332 0%, #2a3f5f 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .game-container {
+            width: 100%;
+            max-width: 1400px;
+            height: 95vh;
+            background: #1a2332;
+            border-radius: 10px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .header {
+            background: #2a3f5f;
+            padding: 15px;
+            text-align: center;
+            border-bottom: 3px solid #4dd0e1;
+        }
+
+        .title {
+            color: #4dd0e1;
+            font-size: 22px;
+            font-weight: bold;
+            margin-bottom: 3px;
+        }
+
+        .subtitle {
+            color: #a8c5da;
+            font-size: 11px;
+            margin-bottom: 5px;
+        }
+
+        .status {
+            color: #ffab40;
+            font-size: 10px;
+            font-weight: bold;
+        }
+
+        .main-content {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+        }
+
+        .chat-panel {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            padding: 15px;
+            overflow: hidden;
+        }
+
+        .chat-header {
+            background: #2a3f5f;
+            color: #e0f4ff;
+            padding: 10px 15px;
+            border-radius: 5px 5px 0 0;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .chat-display {
+            flex: 1;
+            background: #3d5a80;
+            color: #e0f4ff;
+            padding: 20px;
+            overflow-y: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            line-height: 1.6;
+            border-radius: 0 0 5px 5px;
+            white-space: pre-wrap;
+        }
+
+        .chat-display::-webkit-scrollbar {
+            width: 10px;
+        }
+
+        .chat-display::-webkit-scrollbar-track {
+            background: #2a3f5f;
+        }
+
+        .chat-display::-webkit-scrollbar-thumb {
+            background: #4dd0e1;
+            border-radius: 5px;
+        }
+
+        .message {
+            margin-bottom: 15px;
+        }
+
+        .player-message {
+            color: #4dd0e1;
+            font-weight: bold;
+        }
+
+        .system-message {
+            color: #e0f4ff;
+        }
+
+        .success-message {
+            color: #81c784;
+        }
+
+        .warning-message {
+            color: #ffab40;
+        }
+
+        .separator {
+            color: #a8c5da;
+            margin: 10px 0;
+        }
+
+        .evidence-panel {
+            width: 350px;
+            background: #1a2332;
+            border-left: 2px solid #2a3f5f;
+            display: flex;
+            flex-direction: column;
+            transition: width 0.3s ease;
+        }
+
+        .evidence-panel.collapsed {
+            width: 50px;
+        }
+
+        .evidence-header {
+            background: #2a3f5f;
+            color: #e0f4ff;
+            padding: 10px 15px;
+            font-weight: bold;
+            font-size: 14px;
+            cursor: pointer;
+            user-select: none;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            overflow: hidden;
+            white-space: nowrap;
+        }
+
+        .evidence-header:hover {
+            background: #3d5a80;
+        }
+
+        .evidence-title {
+            transition: opacity 0.2s ease;
+        }
+
+        .evidence-panel.collapsed .evidence-title {
+            opacity: 0;
+            width: 0;
+            overflow: hidden;
+        }
+
+        .evidence-toggle {
+            font-size: 18px;
+            transition: transform 0.3s ease;
+            flex-shrink: 0;
+        }
+
+        .evidence-panel.collapsed .evidence-toggle {
+            transform: rotate(180deg);
+        }
+
+        .evidence-content {
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+            overflow: hidden;
+        }
+
+        .evidence-panel.collapsed .evidence-content {
+            display: none;
+        }
+
+        .evidence-list {
+            flex: 1;
+            overflow-y: auto;
+            padding: 10px;
+        }
+
+        .evidence-item {
+            margin: 8px 0;
+            padding: 12px;
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .evidence-undiscovered {
+            background: #546e7a;
+        }
+
+        .evidence-found {
+            background: #64b5f6;
+        }
+
+        .evidence-examined {
+            background: #81c784;
+        }
+
+        .evidence-status {
+            font-size: 18px;
+            font-weight: bold;
+            color: #1a2332;
+        }
+
+        .evidence-name {
+            flex: 1;
+            color: #1a2332;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .evidence-badge {
+            font-size: 9px;
+            color: #1a2332;
+            font-weight: bold;
+        }
+
+        .progress-summary {
+            background: #2a3f5f;
+            padding: 15px;
+            color: #a8c5da;
+            font-size: 12px;
+            border-top: 1px solid #3d5a80;
+        }
+
+        .input-area {
+            background: #2a3f5f;
+            padding: 12px 20px;
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .input-label {
+            color: #4dd0e1;
+            font-weight: bold;
+            font-size: 18px;
+        }
+
+        .help-button {
+            background: #3d5a80;
+            color: #4dd0e1;
+            border: 2px solid #4dd0e1;
+            padding: 8px 15px;
+            font-weight: bold;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.2s ease;
+        }
+
+        .help-button:hover {
+            background: #4dd0e1;
+            color: #1a2332;
+        }
+
+        .help-popup {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .help-popup.active {
+            display: flex;
+        }
+
+        .help-content {
+            background: #2a3f5f;
+            color: #e0f4ff;
+            padding: 30px;
+            border-radius: 10px;
+            max-width: 600px;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+            border: 3px solid #4dd0e1;
+        }
+
+        .help-content h2 {
+            color: #4dd0e1;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .help-content h3 {
+            color: #81c784;
+            margin-top: 15px;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        .help-content p, .help-content ul {
+            margin-bottom: 10px;
+            line-height: 1.6;
+            font-size: 13px;
+        }
+
+        .help-content ul {
+            margin-left: 20px;
+        }
+
+        .help-close {
+            background: #4dd0e1;
+            color: #1a2332;
+            border: none;
+            padding: 10px 25px;
+            font-weight: bold;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 12px;
+            display: block;
+            margin: 20px auto 0;
+        }
+
+        .help-close:hover {
+            background: #7fb3d5;
+        }
+
+        .input-field {
+            flex: 1;
+            background: #3d5a80;
+            border: none;
+            color: #e0f4ff;
+            padding: 12px 15px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            border-radius: 5px;
+        }
+
+        .input-field:focus {
+            outline: 2px solid #4dd0e1;
+        }
+
+        .send-button {
+            background: #4dd0e1;
+            color: #1a2332;
+            border: none;
+            padding: 12px 25px;
+            font-weight: bold;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        .send-button:hover {
+            background: #7fb3d5;
+        }
+
+        .send-button:active {
+            transform: translateY(1px);
+        }
+
+        @media (max-width: 1024px) {
+            .main-content {
+                flex-direction: column;
+            }
+
+            .evidence-panel {
+                width: 100%;
+                max-height: 250px;
+                border-left: none;
+                border-top: 2px solid #2a3f5f;
+            }
+
+            .evidence-panel.collapsed {
+                width: 100%;
+                max-height: 40px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <div class="header">
+            <div class="title">🏔️ THE VANISHING GLACIERS 🏔️</div>
+            <div class="subtitle">POLARIS BASE RESEARCH STATION - SVALBARD, NORWAY</div>
+            <div class="status" id="status">STATUS: INVESTIGATION IN PROGRESS</div>
+        </div>
+
+        <div class="main-content">
+            <div class="chat-panel">
+                <div class="chat-header">📡 INVESTIGATION LOG</div>
+                <div class="chat-display" id="chatDisplay"></div>
+            </div>
+
+            <div class="evidence-panel collapsed" id="evidencePanel">
+                <div class="evidence-header" onclick="toggleEvidence()">
+                    <span class="evidence-title">📋 EVIDENCE LOG</span>
+                    <span class="evidence-toggle">◀</span>
+                </div>
+                <div class="evidence-content">
+                    <div class="evidence-list" id="evidenceList"></div>
+                    <div class="progress-summary" id="progressSummary">
+                        Evidence: 0/3 Found<br>
+                        Examined: 0/3
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="input-area">
+            <div class="input-label">▶</div>
+            <input type="text" id="commandInput" class="input-field" placeholder="Type your command here..." autocomplete="off">
+            <button class="help-button" onclick="toggleHelp()">HELP</button>
+            <button class="send-button" onclick="submitCommand()">SEND</button>
+        </div>
+    </div>
+
+    <!-- Help Popup -->
+    <div class="help-popup" id="helpPopup">
+        <div class="help-content">
+            <h2>🏔️ HOW TO PLAY 🏔️</h2>
+            
+            <h3>📍 Your Mission</h3>
+            <p>Investigate Dr. Sarah Chen's laboratory to discover what happened to her. Examine evidence, talk to Dr. Patel, and learn about glacier science.</p>
+            
+            <h3>💬 Commands</h3>
+            <ul>
+                <li><strong>look</strong> - Describe your surroundings</li>
+                <li><strong>examine [object]</strong> - Investigate something closely
+                    <br>Examples: "examine monitoring station", "examine workstation"</li>
+                <li><strong>talk to maya</strong> - Speak with Dr. Patel</li>
+                <li><strong>inventory</strong> - View evidence you've found</li>
+                <li><strong>progress</strong> - Check investigation status</li>
+            </ul>
+            
+            <h3>❓ Natural Questions</h3>
+            <p>You can also ask questions naturally! Try:</p>
+            <ul>
+                <li>"Why does this matter?"</li>
+                <li>"Tell me about glaciers"</li>
+                <li>"What happened to Dr. Chen?"</li>
+                <li>"How do you measure temperature?"</li>
+            </ul>
+            
+            <h3>📋 Evidence Panel</h3>
+            <p>Click the "📋 EVIDENCE LOG" header to show/hide the evidence tracker. It automatically opens when you discover new evidence!</p>
+            
+            <h3>🎯 Winning</h3>
+            <p>To solve the mystery:</p>
+            <ul>
+                <li>Find all 3 pieces of evidence</li>
+                <li>Examine each piece carefully</li>
+                <li>Talk to Dr. Patel about what you've found</li>
+            </ul>
+            
+            <h3>💡 Tips</h3>
+            <ul>
+                <li>Examine everything in the lab</li>
+                <li>Read the climate science lessons in each evidence</li>
+                <li>Ask Dr. Patel questions about the research</li>
+                <li>There's no way to fail - explore freely!</li>
+            </ul>
+            
+            <button class="help-close" onclick="toggleHelp()">CLOSE</button>
+        </div>
+    </div>
+
+    <script>
+        // Game State
+        const gameState = {
+            discoveredEvidence: new Set(),
+            examinedEvidence: new Set(),
+            talkedToMaya: false,
+            learnedConcepts: new Set(),
+            gameStarted: false,
+            topicsDiscussed: new Set(),
+            interactionPoints: {},
+            evidence: {},
+            evidencePanelOpen: false
+        };
+
+        // Toggle evidence panel
+        function toggleEvidence() {
+            const panel = document.getElementById('evidencePanel');
+            gameState.evidencePanelOpen = !gameState.evidencePanelOpen;
+            
+            if (gameState.evidencePanelOpen) {
+                panel.classList.remove('collapsed');
+            } else {
+                panel.classList.add('collapsed');
+            }
+        }
+
+        // Open evidence panel (when new evidence found)
+        function openEvidencePanel() {
+            const panel = document.getElementById('evidencePanel');
+            gameState.evidencePanelOpen = true;
+            panel.classList.remove('collapsed');
+        }
+
+        // Toggle help popup
+        function toggleHelp() {
+            const popup = document.getElementById('helpPopup');
+            popup.classList.toggle('active');
+        }
+
+        // Close help popup when clicking outside
+        document.getElementById('helpPopup').addEventListener('click', function(e) {
+            if (e.target === this) {
+                toggleHelp();
+            }
+        });
+
+        // Initialize game data
+        function initializeGame() {
+            // Interaction Points
+            gameState.interactionPoints = {
+                monitoring_station: {
+                    id: 'monitoring_station',
+                    name: 'Temperature Monitoring Station',
+                    description: 'A bank of screens displaying real-time temperature data from sensors embedded throughout the glacier. Color-coded displays show temperature gradients across different ice layers. Several areas glow red - indicating unusual warming patterns.',
+                    examined: false,
+                    evidenceId: 'temperature_data'
+                },
+                workstation: {
+                    id: 'workstation',
+                    name: "Dr. Chen's Workstation",
+                    description: "Dr. Chen's primary computer station with multiple monitors. Research papers are scattered around, and a logbook sits open next to the keyboard. The screen is locked but still glowing.",
+                    examined: false,
+                    evidenceId: 'calibration_log'
+                },
+                equipment_rack: {
+                    id: 'equipment_rack',
+                    name: 'Equipment Storage Rack',
+                    description: 'A metal rack holding various scientific instruments - ice core drills, thermal sensors, sample containers. There\'s a clipboard with equipment checkout logs. Some items appear to be missing from their usual spots.',
+                    examined: false,
+                    evidenceId: 'sarah_note'
+                },
+                window: {
+                    id: 'window',
+                    name: 'Observation Window',
+                    description: 'A large window overlooking the glacier research site. Through the glass, you can see the white expanse of ice stretching toward the mountains. Sensor arrays dot the landscape, their lights blinking in the Arctic twilight.',
+                    examined: false,
+                    evidenceId: null
+                }
+            };
+
+            // Evidence
+            gameState.evidence = {
+                temperature_data: {
+                    id: 'temperature_data',
+                    name: 'Temperature Monitoring Data',
+                    description: 'Active displays showing temperature readings from glacier sensors. The deep ice layers (800-1000 years old) show unusual red zones.',
+                    detailedInfo: `TEMPERATURE GRADIENT ANALYSIS - DEEP ICE LAYERS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Depth: 800-1000 year layers
+Current Reading: -12.3°C
+Historical Average: -14.6°C
+Deviation: +2.3°C (157% above normal variation)
+
+Status: CRITICAL - Temperature increase exceeds all historical records
+Last Updated: May 3, 23:47
+Updated By: S. Chen
+
+The warming is concentrated in specific layers, suggesting external heat sources affecting ancient ice that should remain stable.`,
+                    climateLesson: `
+📚 CLIMATE SCIENCE CONCEPT: Glacier Temperature Monitoring
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Scientists monitor glacier temperatures at different depths to understand:
+
+• Surface layers respond to seasonal changes
+• Deep layers (hundreds of years old) should remain stable
+• Unexpected warming in deep ice signals major environmental changes
+• Temperature sensors measure thermal gradients (heat flow patterns)
+
+When deep ice warms unexpectedly, it indicates:
+→ Climate change is affecting even the most stable ice
+→ The glacier's structural integrity may be compromised
+→ Accelerated melting may be underway`,
+                    discovered: false,
+                    examined: false
+                },
+                calibration_log: {
+                    id: 'calibration_log',
+                    name: 'Sensor Calibration Log',
+                    description: "A detailed logbook tracking sensor calibration and maintenance. Dr. Chen's handwriting fills the margins with notes and calculations.",
+                    detailedInfo: `SENSOR CALIBRATION LOG - WEEK OF APRIL 28
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+April 28: Routine calibration - all sensors nominal
+April 30: Deep layer sensors flagged for recalibration
+           [Note: Readings exceeded expected parameters]
+May 1:    Recalibrated deep sensors x2 - same results
+           [S.C.: NOT equipment error. Readings are accurate.]
+May 2:    Triple-checked calibration standards
+           [S.C.: Temperature increase is REAL. Must verify on-site.]
+May 3:    Cross-referenced with satellite thermal data
+           [S.C.: Satellite confirms. This is accelerating. URGENT.]
+
+The repeated calibrations show Dr. Chen was trying to rule out equipment malfunction. When that failed, she had to accept the readings were genuine.`,
+                    climateLesson: `
+📚 CLIMATE SCIENCE CONCEPT: Data Verification
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+When scientists observe unusual data, they must verify it's real:
+
+1. Calibrate instruments to ensure accuracy
+2. Cross-reference with other measurement methods
+3. Rule out equipment malfunction or human error
+4. Compare with independent data sources (like satellites)
+
+Only after thorough verification can scientists confirm that unexpected readings represent actual environmental changes.
+
+Dr. Chen's repeated calibrations show scientific rigor - she wouldn't accept alarming data without proof it was accurate.`,
+                    discovered: false,
+                    examined: false
+                },
+                sarah_note: {
+                    id: 'sarah_note',
+                    name: "Dr. Chen's Note",
+                    description: 'A handwritten note tucked into the equipment checkout clipboard. It appears to be written hastily.',
+                    detailedInfo: `HANDWRITTEN NOTE
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+K -
+
+If you're reading this, I haven't returned by 06:00.
+
+The data is worse than we thought. Deep ice temps rising 2.3°C - faster than any model predicted. I need to verify the thermal readings on-site before going public. The implications are too significant to risk being wrong.
+
+Taking core drill and thermal probe to sector 7-B.
+Backup data encrypted on secure drive (you know where).
+
+If confirmed: this represents critical destabilization. The glacier could lose structural integrity within months, not years. Regional sea level impact, ecosystem disruption.
+
+Use winter protocol if I don't return.
+
+- S
+
+[The note explains everything: Sarah discovered critical evidence of accelerated glacier melting and went to verify it in person before making any public announcement.]`,
+                    climateLesson: `
+📚 CLIMATE SCIENCE CONCEPT: Why Glacier Melting Matters
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+When glaciers melt rapidly, the consequences are severe:
+
+1. SEA LEVEL RISE
+   • Land-based glaciers add water to oceans
+   • Even regional glaciers contribute to global sea level
+   • Affects coastal communities worldwide
+
+2. ECOSYSTEM DISRUPTION
+   • Glaciers regulate freshwater flow to rivers
+   • Wildlife depends on glacier-fed water sources
+   • Rapid melting floods ecosystems with cold water
+
+3. STRUCTURAL COLLAPSE
+   • Internal warming weakens ice structure
+   • Can lead to sudden, catastrophic calving events
+   • Threatens downstream communities
+
+This is why Dr. Chen's discovery was so urgent - rapid warming means these impacts could happen much sooner than expected.`,
+                    discovered: false,
+                    examined: false
+                }
+            };
+
+            showIntro();
+            updateEvidenceDisplay();
+        }
+
+        // Display functions
+        function addMessage(text, className = 'system-message') {
+            const chatDisplay = document.getElementById('chatDisplay');
+            const message = document.createElement('div');
+            message.className = `message ${className}`;
+            message.textContent = text;
+            chatDisplay.appendChild(message);
+            
+            // Scroll to show the beginning of the new message
+            // Use a small timeout to ensure the element is rendered
+            setTimeout(() => {
+                message.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }, 10);
+        }
+
+        function addSeparator() {
+            addMessage('─'.repeat(70), 'separator');
+        }
+
+        function showIntro() {
+            const intro = `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+CHAPTER 1: INITIAL INVESTIGATION
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+You are a climate investigator called to Polaris Base Research Station in
+Svalbard, Norway. Dr. Sarah Chen, a brilliant glaciologist, has gone missing
+under mysterious circumstances.
+
+Your mission: Investigate her laboratory to discover what happened.
+
+Along the way, you'll learn about glacier science and why this research 
+matters for our planet's future.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+COMMANDS:
+• look - Describe your surroundings
+• examine [object] - Investigate something closely
+• talk to maya - Speak with Dr. Patel
+• You can also ask natural questions like "why does this matter?"
+• inventory - View evidence found
+• progress - Check investigation status
+• help - Show all commands
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+👉 Type 'look' to begin your investigation...`;
+            addMessage(intro);
+        }
+
+        function showLocation() {
+            addSeparator();
+            const location = `📍 MAIN RESEARCH LABORATORY - POLARIS BASE
+
+You step into Dr. Chen's primary research laboratory. The room hums with the
+soft whir of monitoring equipment. Banks of screens display complex data
+visualizations, their glow casting an eerie light in the Arctic twilight.
+
+The lab is meticulously organized - research papers neatly stacked, equipment
+properly stored - but there's an air of abandonment, as if someone left in a
+hurry.
+
+You can examine:
+  • monitoring station - Displays showing glacier temperature data
+  • workstation - Dr. Chen's computer and research materials
+  • equipment rack - Storage for field research equipment
+  • window - Overlooks the glacier research site
+
+Dr. Maya Patel, the station director, is here and willing to answer questions.`;
+            addMessage(location);
+        }
+
+        function showHelp() {
+            const help = `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+AVAILABLE COMMANDS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+NAVIGATION & OBSERVATION:
+  look                    - Describe your current location
+  examine [object]        - Examine something closely
+
+EVIDENCE:
+  inventory              - List evidence you've discovered
+  examine [evidence]     - Study evidence in detail
+
+INTERACTION:
+  talk to maya           - Speak with Dr. Patel
+  You can also just ask questions naturally!
+
+SYSTEM:
+  progress               - View investigation progress
+  help                   - Show this help message
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━`;
+            addMessage(help);
+        }
+
+        function showInventory() {
+            if (gameState.discoveredEvidence.size === 0) {
+                addMessage("📋 EVIDENCE LOG\n\nYou haven't discovered any evidence yet.");
+                return;
+            }
+
+            let inventory = "📋 EVIDENCE LOG\n\n";
+            for (const evidenceId of gameState.discoveredEvidence) {
+                const evidence = gameState.evidence[evidenceId];
+                const status = evidence.examined ? "✓ Examined" : "○ Not yet examined";
+                inventory += `  ${status} - ${evidence.name}\n`;
+            }
+            inventory += "\nUse 'examine [evidence name]' to study evidence in detail.";
+            addMessage(inventory);
+        }
+
+        function showProgress() {
+            const total = Object.keys(gameState.evidence).length;
+            const found = gameState.discoveredEvidence.size;
+            const examined = gameState.examinedEvidence.size;
+
+            let progress = `
+📋 INVESTIGATION PROGRESS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Evidence found: ${found}/${total}
+Evidence examined: ${examined}/${total}
+Climate concepts learned: ${gameState.learnedConcepts.size}
+Talked to Dr. Patel: ${gameState.talkedToMaya ? 'Yes' : 'No'}
+`;
+
+            if (checkWinCondition()) {
+                progress += "\n✓ Mystery solved! You understand what happened to Dr. Chen.";
+            } else if (found === total && examined === total) {
+                progress += "\n→ You've found all the evidence. Talk to Dr. Patel to piece it together.";
+            } else {
+                progress += "\n→ Continue investigating. There's more to discover.";
+            }
+
+            addMessage(progress);
+        }
+
+        function showVictory() {
+            const victory = `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+🎉 MYSTERY SOLVED! 🎉
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Congratulations! You've pieced together what happened to Dr. Sarah Chen.
+
+THE SOLUTION:
+
+Dr. Chen discovered critical evidence of accelerated glacier melting - 
+temperature increases in ancient ice layers that far exceeded predictions.
+
+She verified the data wasn't equipment error. When confirmed genuine, she 
+realized the implications were severe: the glacier could destabilize within 
+months, affecting sea levels and local ecosystems.
+
+She went to sector 7-B to collect direct physical evidence that would prove 
+her findings beyond doubt.
+
+This wasn't a mysterious disappearance - it was a dedicated scientist following
+the data, committed to getting the truth right before sharing it with the world.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Thank you for playing Chapter 1 of The Vanishing Glaciers!
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━`;
+            addMessage(victory, 'success-message');
+            document.getElementById('status').textContent = 'STATUS: ✓ INVESTIGATION COMPLETE';
+            document.getElementById('status').style.color = '#81c784';
+            document.getElementById('commandInput').disabled = true;
+        }
+
+        // Command processing
+        function submitCommand() {
+            const input = document.getElementById('commandInput');
+            const command = input.value.trim();
+            
+            if (!command) return;
+
+            addMessage(`> ${command}`, 'player-message');
+            input.value = '';
+
+            if (!gameState.gameStarted) {
+                gameState.gameStarted = true;
+            }
+
+            processCommand(command.toLowerCase());
+        }
+
+        function processCommand(command) {
+            // System commands
+            if (['help', 'h', '?'].includes(command)) {
+                showHelp();
+                return;
+            }
+
+            if (['look', 'look around', 'l'].includes(command)) {
+                showLocation();
+                return;
+            }
+
+            if (['inventory', 'inv', 'i'].includes(command)) {
+                showInventory();
+                return;
+            }
+
+            if (['progress', 'status', 'p'].includes(command)) {
+                showProgress();
+                return;
+            }
+
+            // Examine commands
+            if (command.startsWith('examine ') || command.startsWith('x ') || command.startsWith('look at ')) {
+                handleExamine(command);
+                return;
+            }
+
+            // Talk commands
+            if (command.startsWith('talk') || command.startsWith('ask') || command.startsWith('speak')) {
+                handleTalk(command);
+                return;
+            }
+
+            // Natural questions
+            const questionIndicators = [
+                'who', 'what', 'when', 'where', 'why', 'how',
+                'tell me', 'explain', 'describe', 'about',
+                'dr.', 'dr ', 'doctor', 'sarah', 'chen', 'maya', 'patel',
+                'glacier', 'ice', 'temperature', 'research', 'data',
+                'monitoring', 'sensor', 'missing', 'disappear',
+                'matter', 'important', 'concern'
+            ];
+
+            if (questionIndicators.some(indicator => command.includes(indicator))) {
+                handleTalk(command);
+                return;
+            }
+
+            addMessage(`❓ I don't understand '${command}'. Type 'help' for available commands.`, 'warning-message');
+        }
+
+        function handleExamine(command) {
+            const prefixes = ['examine ', 'x ', 'look at ', 'inspect '];
+            let target = command;
+            
+            for (const prefix of prefixes) {
+                if (command.startsWith(prefix)) {
+                    target = command.substring(prefix.length).trim();
+                    break;
+                }
+            }
+
+            const targetNormalized = target.replace(/\s+/g, ' ').toLowerCase();
+
+            // Check interaction points
+            for (const [pointId, point] of Object.entries(gameState.interactionPoints)) {
+                const pointIdNormalized = pointId.replace(/_/g, ' ');
+                const pointNameNormalized = point.name.toLowerCase();
+
+                if (targetNormalized.includes(pointIdNormalized) ||
+                    targetNormalized.includes(pointNameNormalized) ||
+                    pointIdNormalized.includes(targetNormalized) ||
+                    pointNameNormalized.includes(targetNormalized)) {
+                    examineInteractionPoint(point);
+                    return;
+                }
+            }
+
+            // Check discovered evidence
+            for (const [evidenceId, evidence] of Object.entries(gameState.evidence)) {
+                if (evidence.discovered) {
+                    const evidenceIdNormalized = evidenceId.replace(/_/g, ' ');
+                    const evidenceNameNormalized = evidence.name.toLowerCase();
+
+                    if (targetNormalized.includes(evidenceIdNormalized) ||
+                        targetNormalized.includes(evidenceNameNormalized) ||
+                        evidenceIdNormalized.includes(targetNormalized) ||
+                        evidenceNameNormalized.includes(targetNormalized)) {
+                        examineEvidenceDetailed(evidence);
+                        return;
+                    }
+                }
+            }
+
+            addMessage(`❓ You don't see '${target}' here. Try examining: monitoring station, workstation, equipment rack, or window.`, 'warning-message');
+        }
+
+        function examineInteractionPoint(point) {
+            let message = `🔍 ${point.name.toUpperCase()}\n\n${point.description}`;
+            point.examined = true;
+
+            if (point.evidenceId && !gameState.discoveredEvidence.has(point.evidenceId)) {
+                const evidence = gameState.evidence[point.evidenceId];
+                gameState.discoveredEvidence.add(point.evidenceId);
+                evidence.discovered = true;
+
+                message += `\n\n✓ EVIDENCE DISCOVERED: ${evidence.name}\n\n${evidence.description}`;
+                message += `\n\n💡 TIP: Use 'examine ${point.evidenceId.replace(/_/g, ' ')}' to study this evidence in detail.`;
+                
+                addMessage(message, 'success-message');
+                updateEvidenceDisplay();
+                openEvidencePanel(); // Auto-open when evidence found!
+            } else if (point.evidenceId && gameState.discoveredEvidence.has(point.evidenceId)) {
+                const evidence = gameState.evidence[point.evidenceId];
+                message += `\n\n[You've already found: ${evidence.name}]`;
+                message += `\nUse 'examine ${point.evidenceId.replace(/_/g, ' ')}' to review it in detail.`;
+                addMessage(message);
+            } else {
+                addMessage(message);
+            }
+        }
+
+        function examineEvidenceDetailed(evidence) {
+            let message = `🔬 DETAILED ANALYSIS: ${evidence.name.toUpperCase()}\n\n${evidence.detailedInfo}`;
+
+            if (!evidence.examined) {
+                gameState.examinedEvidence.add(evidence.id);
+                evidence.examined = true;
+                message += `\n${evidence.climateLesson}`;
+                message += `\n\n✓ Evidence examined and climate concept learned!`;
+                addMessage(message, 'success-message');
+                updateEvidenceDisplay();
+
+                if (checkWinCondition()) {
+                    showVictory();
+                }
+            } else {
+                message += '\n\n[You\'ve already studied this evidence in detail.]';
+                addMessage(message);
+            }
+        }
+
+        function handleTalk(command) {
+            let topic = '';
+
+            if (command.includes('about')) {
+                topic = command.split('about')[1].trim();
+            } else if (command.includes('to maya') || command.includes('maya')) {
+                if (gameState.topicsDiscussed.size === 0) {
+                    const greeting = getMayaGreeting();
+                    addMessage(greeting);
+                    gameState.talkedToMaya = true;
+                    if (checkWinCondition()) {
+                        showVictory();
+                    }
+                    return;
+                } else {
+                    topic = '';
+                }
+            } else {
+                topic = command;
+            }
+
+            const response = getMayaResponse(topic);
+            addMessage(response);
+
+            if (checkWinCondition()) {
+                showVictory();
+            }
+        }
+
+        function getMayaGreeting() {
+            return `🗣️  Dr. Maya Patel (Station Director):
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+"Thank goodness you're here. Dr. Sarah Chen has been missing since early this morning. She's one of our most dedicated researchers - this is completely unlike her.
+
+She was working late last night on some concerning data. I'm worried something may have happened. Please, look around the lab and see if you can find any clues about where she might have gone.
+
+If you find anything, or if you have questions about the research we do here, please ask me. I want to help however I can."`;
+        }
+
+        function getMayaResponse(topic) {
+            topic = topic.toLowerCase().trim();
+
+            // Glacier research
+            if (topic.includes('glacier') || topic.includes('ice') || topic.includes('research') || topic.includes('study')) {
+                gameState.topicsDiscussed.add('glacier_research');
+                gameState.learnedConcepts.add('glacier_monitoring');
+                return `🗣️  Dr. Patel:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+"We study glaciers because they're critical indicators of climate change. Think of them as Earth's thermometer - they respond to temperature changes over time, preserving a record of climate history in their ice layers.
+
+Here at Polaris Base, we focus on monitoring glacier stability and temperature patterns. We have sensors embedded at different depths, measuring how heat moves through the ice.
+
+This matters because glaciers aren't just beautiful landscapes - they regulate sea levels, provide freshwater to billions of people, and support entire ecosystems. When they change rapidly, it affects us all."`;
+            }
+
+            // Monitoring
+            if (topic.includes('monitoring') || topic.includes('sensor') || topic.includes('temperature') || topic.includes('measure')) {
+                gameState.topicsDiscussed.add('monitoring_system');
+                gameState.learnedConcepts.add('temperature_monitoring');
+                return `🗣️  Dr. Patel:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+"The monitoring station is the heart of our work. We use an array of high-precision temperature sensors placed at different depths in the glacier.
+
+Surface sensors track daily and seasonal changes, but the deep sensors - those measuring ice that's hundreds or thousands of years old - those should be very stable. They're monitoring ice that formed centuries ago.
+
+When we see unexpected temperature changes in those deep layers, it's significant. It means something fundamental is changing in the glacier's thermal structure.
+
+The displays use color coding - blue for normal ranges, yellow for elevated, red for critical. Dr. Chen had been watching those red zones with growing concern..."`;
+            }
+
+            // Data
+            if (topic.includes('data') || topic.includes('reading') || topic.includes('finding') || topic.includes('discover')) {
+                gameState.topicsDiscussed.add('concerning_data');
+                
+                if (gameState.examinedEvidence.has('temperature_data')) {
+                    return `🗣️  Dr. Patel:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+"Yes, I see you've found the temperature data. Those readings had Dr. Chen very worried. A 2.3 degree increase in ice that should be stable... that's not normal variation. That's a fundamental change.
+
+She spent days verifying the sensors weren't malfunctioning. When she confirmed the readings were accurate, she became very focused. She said she needed to verify something in person before... well, before she could be certain of what it meant."`;
+                } else {
+                    return `🗣️  Dr. Patel:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+"Dr. Chen was investigating some very concerning temperature readings from the deep ice layers. She was working late every night last week, cross-referencing data, running calibrations...
+
+If you examine the monitoring station, you might see what had her so worried."`;
+                }
+            }
+
+            // Sarah's disappearance
+            if (topic.includes('sarah') || topic.includes('chen') || topic.includes('missing') || topic.includes('disappear') || topic.includes('where')) {
+                gameState.topicsDiscussed.add('sarah_disappearance');
+                
+                if (gameState.examinedEvidence.has('sarah_note')) {
+                    gameState.talkedToMaya = true;
+                    return `🗣️  Dr. Patel:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+"Her note! So she went to sector 7-B to verify the thermal readings in person. That makes sense now.
+
+Sarah is meticulous - she wouldn't make alarming claims without absolute certainty. If the deep ice is warming that rapidly, the implications are severe. Structural destabilization, accelerated melting, ecosystem impacts...
+
+The 'winter protocol' she mentioned - that's our emergency data preservation procedure. It means she wanted to ensure her findings would be protected if something happened to her.
+
+I need to organize a search team to sector 7-B immediately. But thanks to your investigation, at least now we know where to look and why she went. She wasn't in danger - she was being a scientist, following the data wherever it led."`;
+                } else if (gameState.examinedEvidence.size >= 2) {
+                    return `🗣️  Dr. Patel:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+"The evidence you've found suggests she was investigating something urgent. The temperature anomalies, the repeated calibrations... she was building a case for something significant.
+
+But I still don't know where she went or why she left so suddenly. Keep investigating - there must be something that explains her departure."`;
+                } else {
+                    return `🗣️  Dr. Patel:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+"Sarah Chen is brilliant but also very methodical. She wouldn't just vanish without reason. If you can find evidence of what she was working on, it might tell us where she went and why.
+
+Please, examine the lab carefully. Her workstation, the monitoring equipment - anything might be a clue."`;
+                }
+            }
+
+            // Why it matters
+            if (topic.includes('why') || topic.includes('matter') || topic.includes('important') || topic.includes('concern')) {
+                gameState.learnedConcepts.add('glacier_importance');
+                return `🗣️  Dr. Patel:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+"Glaciers might seem remote, but they affect everyone on Earth:
+
+When glaciers melt, they add water to the oceans, raising sea levels. Coastal cities worldwide face flooding risks from this.
+
+They also regulate freshwater supplies. Billions of people depend on glacier-fed rivers for drinking water, agriculture, and hydroelectric power.
+
+Rapid glacier melting disrupts ecosystems - both the wildlife that depends on glacier environments and the communities downstream that depend on steady, predictable water flow.
+
+That's why Dr. Chen's work was so important. Understanding how fast glaciers are changing helps us prepare for and potentially slow these impacts."`;
+            }
+
+            // Default
+            return `🗣️  Dr. Patel:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+"I'm not sure I understand. You can ask me about:
+• Our glacier research
+• How we monitor temperatures
+• Why this work matters
+• Dr. Chen's disappearance
+
+Or you can show me any evidence you've found."`;
+        }
+
+        function checkWinCondition() {
+            const requiredEvidence = new Set(['temperature_data', 'calibration_log', 'sarah_note']);
+            const hasAllEvidence = [...requiredEvidence].every(id => gameState.examinedEvidence.has(id));
+            return hasAllEvidence && gameState.talkedToMaya;
+        }
+
+        function updateEvidenceDisplay() {
+            const evidenceList = document.getElementById('evidenceList');
+            evidenceList.innerHTML = '';
+
+            for (const [evidenceId, evidence] of Object.entries(gameState.evidence)) {
+                const item = document.createElement('div');
+                item.className = 'evidence-item';
+
+                if (evidence.examined) {
+                    item.classList.add('evidence-examined');
+                    item.innerHTML = `
+                        <div class="evidence-status">✓</div>
+                        <div class="evidence-name">${evidence.name}</div>
+                        <div class="evidence-badge">EXAMINED</div>
+                    `;
+                } else if (evidence.discovered) {
+                    item.classList.add('evidence-found');
+                    item.innerHTML = `
+                        <div class="evidence-status">○</div>
+                        <div class="evidence-name">${evidence.name}</div>
+                        <div class="evidence-badge">FOUND</div>
+                    `;
+                } else {
+                    item.classList.add('evidence-undiscovered');
+                    item.innerHTML = `
+                        <div class="evidence-status">·</div>
+                        <div class="evidence-name">???</div>
+                        <div class="evidence-badge">UNDISCOVERED</div>
+                    `;
+                }
+
+                evidenceList.appendChild(item);
+            }
+
+            // Update progress summary
+            const total = Object.keys(gameState.evidence).length;
+            const found = gameState.discoveredEvidence.size;
+            const examined = gameState.examinedEvidence.size;
+            
+            document.getElementById('progressSummary').innerHTML = `
+                Evidence: ${found}/${total} Found<br>
+                Examined: ${examined}/${total}
+            `;
+        }
+
+        // Enter key support
+        document.getElementById('commandInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                submitCommand();
+            }
+        });
+
+        // Initialize on load
+        window.onload = initializeGame;
+    </script>
+</body>
+</html>
