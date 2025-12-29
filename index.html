@@ -1492,6 +1492,23 @@ If you find anything, or if you have questions about the research we do here, pl
         function getMayaResponse(topic) {
             topic = topic.toLowerCase().trim();
 
+            // Why it matters / Importance - check this FIRST before other keywords
+            if (topic.includes('why') || topic.includes('matter') || topic.includes('important') || 
+                topic.includes('concern') || topic.includes('significant') || topic.includes('care')) {
+                gameState.learnedConcepts.add('glacier_importance');
+                return `🗣️  Dr. Patel:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+"Glaciers might seem remote, but they affect everyone on Earth:
+
+When glaciers melt, they add water to the oceans, raising sea levels. Coastal cities worldwide face flooding risks from this.
+
+They also regulate freshwater supplies. Billions of people depend on glacier-fed rivers for drinking water, agriculture, and hydroelectric power.
+
+Rapid glacier melting disrupts ecosystems - both the wildlife that depends on glacier environments and the communities downstream that depend on steady, predictable water flow.
+
+That's why Dr. Chen's work was so important. Understanding how fast glaciers are changing helps us prepare for and potentially slow these impacts."`;
+            }
+
             // Glacier research
             if (topic.includes('glacier') || topic.includes('ice') || topic.includes('research') || topic.includes('study')) {
                 gameState.topicsDiscussed.add('glacier_research');
@@ -1567,22 +1584,6 @@ But I still don't know where she went or why she left so suddenly. Keep investig
 
 Please, examine the lab carefully. Her workstation, the monitoring equipment - anything might be a clue."`;
                 }
-            }
-
-            // Why it matters
-            if (topic.includes('why') || topic.includes('matter') || topic.includes('important') || topic.includes('concern')) {
-                gameState.learnedConcepts.add('glacier_importance');
-                return `🗣️  Dr. Patel:
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-"Glaciers might seem remote, but they affect everyone on Earth:
-
-When glaciers melt, they add water to the oceans, raising sea levels. Coastal cities worldwide face flooding risks from this.
-
-They also regulate freshwater supplies. Billions of people depend on glacier-fed rivers for drinking water, agriculture, and hydroelectric power.
-
-Rapid glacier melting disrupts ecosystems - both the wildlife that depends on glacier environments and the communities downstream that depend on steady, predictable water flow.
-
-That's why Dr. Chen's work was so important. Understanding how fast glaciers are changing helps us prepare for and potentially slow these impacts."`;
             }
 
             // Default
