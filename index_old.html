@@ -38,7 +38,6 @@
             padding: 15px;
             text-align: center;
             border-bottom: 3px solid #4dd0e1;
-            position: relative;
         }
 
         .title {
@@ -58,160 +57,6 @@
             color: #ffab40;
             font-size: 10px;
             font-weight: bold;
-        }
-
-        .voice-controls {
-            position: absolute;
-            top: 15px;
-            right: 15px;
-            display: flex;
-            gap: 10px;
-            align-items: center;
-        }
-
-        .voice-button {
-            background: #3d5a80;
-            border: 2px solid #4dd0e1;
-            color: #4dd0e1;
-            padding: 8px 12px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 14px;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
-
-        .voice-button:hover {
-            background: #4dd0e1;
-            color: #1a2332;
-        }
-
-        .voice-button.active {
-            background: #4dd0e1;
-            color: #1a2332;
-        }
-
-        .voice-button.muted {
-            background: #d32f2f;
-            border-color: #d32f2f;
-            color: white;
-        }
-
-        .mic-button {
-            background: #3d5a80;
-            border: 2px solid #4dd0e1;
-            color: #4dd0e1;
-            padding: 8px 12px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 14px;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
-
-        .mic-button:hover {
-            background: #4dd0e1;
-            color: #1a2332;
-        }
-
-        .mic-button.listening {
-            background: #ff5252;
-            border-color: #ff5252;
-            color: white;
-            animation: pulse-mic 1.5s ease-in-out infinite;
-        }
-
-        @keyframes pulse-mic {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-        }
-
-        .mic-button.error {
-            background: #ffab40;
-            border-color: #ffab40;
-            color: #1a2332;
-        }
-
-        .listening-indicator {
-            display: none;
-            align-items: center;
-            gap: 5px;
-            color: #ff5252;
-            font-size: 12px;
-            font-weight: bold;
-        }
-
-        .listening-indicator.active {
-            display: flex;
-            animation: pulse 1s ease-in-out infinite;
-        }
-
-        .listening-wave {
-            width: 4px;
-            height: 16px;
-            background: #ff5252;
-            margin: 0 1px;
-            animation: listen-wave 0.8s ease-in-out infinite;
-        }
-
-        .listening-wave:nth-child(2) {
-            animation-delay: 0.1s;
-        }
-
-        .listening-wave:nth-child(3) {
-            animation-delay: 0.2s;
-        }
-
-        .listening-wave:nth-child(4) {
-            animation-delay: 0.3s;
-        }
-
-        @keyframes listen-wave {
-            0%, 100% { height: 16px; }
-            50% { height: 6px; }
-        }
-
-        .speaking-indicator {
-            display: none;
-            align-items: center;
-            gap: 5px;
-            color: #81c784;
-            font-size: 12px;
-            animation: pulse 1.5s ease-in-out infinite;
-        }
-
-        .speaking-indicator.active {
-            display: flex;
-        }
-
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
-        }
-
-        .sound-wave {
-            width: 3px;
-            height: 12px;
-            background: #81c784;
-            margin: 0 1px;
-            animation: wave 1s ease-in-out infinite;
-        }
-
-        .sound-wave:nth-child(2) {
-            animation-delay: 0.1s;
-        }
-
-        .sound-wave:nth-child(3) {
-            animation-delay: 0.2s;
-        }
-
-        @keyframes wave {
-            0%, 100% { height: 12px; }
-            50% { height: 4px; }
         }
 
         .main-content {
@@ -454,98 +299,6 @@
             display: flex;
         }
 
-        .ai-confirmation-popup {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.8);
-            z-index: 1000;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .ai-confirmation-popup.active {
-            display: flex;
-        }
-
-        .ai-confirmation-content {
-            background: #2a3f5f;
-            color: #e0f4ff;
-            padding: 30px;
-            border-radius: 10px;
-            max-width: 500px;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
-            border: 3px solid #4dd0e1;
-        }
-
-        .ai-confirmation-content h2 {
-            color: #4dd0e1;
-            margin-bottom: 15px;
-            text-align: center;
-        }
-
-        .ai-confirmation-content p {
-            margin-bottom: 15px;
-            line-height: 1.6;
-            font-size: 14px;
-        }
-
-        .ai-confirmation-content ul {
-            margin-bottom: 15px;
-            margin-left: 20px;
-            line-height: 1.6;
-            font-size: 14px;
-        }
-
-        .ai-confirmation-content .privacy-highlight {
-            background: #3d5a80;
-            padding: 15px;
-            border-radius: 5px;
-            border-left: 4px solid #81c784;
-            margin: 15px 0;
-        }
-
-        .ai-confirmation-buttons {
-            display: flex;
-            gap: 10px;
-            margin-top: 20px;
-        }
-
-        .ai-confirm-button {
-            flex: 1;
-            background: #4dd0e1;
-            color: #1a2332;
-            border: none;
-            padding: 12px 20px;
-            font-weight: bold;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 14px;
-        }
-
-        .ai-confirm-button:hover {
-            background: #7fb3d5;
-        }
-
-        .ai-cancel-button {
-            flex: 1;
-            background: #3d5a80;
-            color: #e0f4ff;
-            border: 2px solid #4dd0e1;
-            padding: 12px 20px;
-            font-weight: bold;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 14px;
-        }
-
-        .ai-cancel-button:hover {
-            background: #4a6a8f;
-        }
-
         .help-content {
             background: #2a3f5f;
             color: #e0f4ff;
@@ -777,7 +530,7 @@
                 padding: 10px;
             }
 
-            .ai-toggle, .help-button, .send-button, .mic-button {
+            .ai-toggle, .help-button, .send-button {
                 padding: 10px 12px;
                 font-size: 11px;
             }
@@ -792,24 +545,6 @@
 
             .help-button {
                 padding: 10px 15px;
-            }
-
-            .voice-controls {
-                top: 10px;
-                right: 10px;
-            }
-
-            .voice-button {
-                padding: 6px 10px;
-                font-size: 12px;
-            }
-
-            #muteText {
-                display: none; /* Hide text on mobile */
-            }
-
-            .listening-indicator {
-                font-size: 10px;
             }
         }
 
@@ -830,28 +565,18 @@
                 margin-bottom: 5px;
             }
 
-            .send-button {
+            .ai-toggle {
                 order: 2;
                 flex: 1;
             }
 
-            .mic-button {
+            .help-button {
                 order: 3;
                 flex: 1;
             }
 
-            .listening-indicator {
+            .send-button {
                 order: 4;
-                flex: 1;
-            }
-
-            .help-button {
-                order: 5;
-                flex: 1;
-            }
-
-            .ai-toggle {
-                order: 6;
                 flex: 1;
             }
 
@@ -865,18 +590,6 @@
 <body>
     <div class="game-container">
         <div class="header">
-            <div class="voice-controls">
-                <div class="speaking-indicator" id="speakingIndicator">
-                    <span>🔊</span>
-                    <div class="sound-wave"></div>
-                    <div class="sound-wave"></div>
-                    <div class="sound-wave"></div>
-                </div>
-                <button class="voice-button" id="muteButton" onclick="toggleMute()" title="Toggle voice narration">
-                    <span id="muteIcon">🔊</span>
-                    <span id="muteText">Voice On</span>
-                </button>
-            </div>
             <div class="title">🏔️ THE VANISHING GLACIERS 🏔️</div>
             <div class="subtitle">POLARIS BASE RESEARCH STATION - SVALBARD, NORWAY</div>
             <div class="status" id="status">STATUS: INVESTIGATION IN PROGRESS</div>
@@ -905,23 +618,13 @@
 
         <div class="input-area">
             <div class="input-label">▶</div>
-            <button class="mic-button" id="micButton" onclick="toggleVoiceInput()" title="Voice input (click to speak)">
-                <span id="micIcon">🎤</span>
-            </button>
-            <div class="listening-indicator" id="listeningIndicator">
-                <span>Listening...</span>
-                <div class="listening-wave"></div>
-                <div class="listening-wave"></div>
-                <div class="listening-wave"></div>
-                <div class="listening-wave"></div>
-            </div>
             <input type="text" id="commandInput" class="input-field" placeholder="Type your command here..." autocomplete="off">
-            <button class="send-button" onclick="submitCommand()">SEND</button>
-            <button class="help-button" onclick="toggleHelp()">HELP</button>
-            <button class="ai-toggle" id="aiToggle" onclick="showAIConfirmation()" title="Toggle AI-powered natural language understanding">
+            <button class="ai-toggle" id="aiToggle" onclick="toggleAIMode()" title="Toggle AI-powered natural language understanding">
                 <span class="ai-indicator">🤖</span>
                 <span id="aiToggleText">AI OFF</span>
             </button>
+            <button class="help-button" onclick="toggleHelp()">HELP</button>
+            <button class="send-button" onclick="submitCommand()">SEND</button>
         </div>
     </div>
 
@@ -970,7 +673,7 @@
             <h3>🎯 Winning</h3>
             <p>To solve the mystery:</p>
             <ul>
-                <li>Find all 4 pieces of evidence</li>
+                <li>Find all 3 pieces of evidence</li>
                 <li>Examine each piece carefully</li>
                 <li>Talk to Dr. Patel about what you've found</li>
             </ul>
@@ -981,26 +684,6 @@
                 <li>Read the climate science lessons in each evidence</li>
                 <li>Ask Dr. Patel questions about the research</li>
                 <li>There's no way to fail - explore freely!</li>
-            </ul>
-
-            <h3>🔊 Voice Features</h3>
-            <p>Use voice input and output for a hands-free experience!</p>
-            <p><strong>Voice Input (🎤 button):</strong></p>
-            <ul>
-                <li><strong>Click to speak</strong> - Speak your command instead of typing</li>
-                <li><strong>On-device recognition</strong> - Speech runs locally on your device</li>
-                <li><strong>Privacy-first</strong> - No data sent to external servers</li>
-                <li><strong>Visual feedback</strong> - Animated waves show when listening</li>
-                <li><strong>Auto-submit</strong> - Stops after 1.5 seconds of silence</li>
-                <li><strong>Fallback</strong> - Recognized text appears in input field for editing</li>
-            </ul>
-            <p><strong>Voice Output (🔊 button in top-right):</strong></p>
-            <ul>
-                <li><strong>Dr. Patel's dialogue</strong> - Automatically spoken with character voice</li>
-                <li><strong>Narrator voice</strong> - System messages, locations, and evidence descriptions</li>
-                <li><strong>Mute/Unmute</strong> - Toggle all voice output on/off</li>
-                <li><strong>Skip speech</strong> - New dialogue interrupts current speech</li>
-                <li><strong>Speaking indicator</strong> - Visual feedback when voice is active</li>
             </ul>
 
             <h3>🤖 AI Mode (Optional)</h3>
@@ -1014,49 +697,6 @@
             </ul>
             
             <button class="help-close" onclick="toggleHelp()">CLOSE</button>
-        </div>
-    </div>
-
-    <!-- AI Confirmation Popup -->
-    <div class="ai-confirmation-popup" id="aiConfirmationPopup">
-        <div class="ai-confirmation-content">
-            <h2>🤖 Enable AI Mode?</h2>
-            
-            <p>AI Mode downloads a small language model (~2-3 GB) to help understand your commands more naturally.</p>
-            
-            <div class="privacy-highlight">
-                <strong>🔒 Your Privacy:</strong>
-                <ul>
-                    <li>✓ Runs 100% locally in your browser</li>
-                    <li>✓ Nothing is sent to external servers</li>
-                    <li>✓ Your commands stay on your device</li>
-                    <li>✓ Works offline after initial download</li>
-                </ul>
-            </div>
-            
-            <p><strong>First Time Setup:</strong></p>
-            <ul>
-                <li>Downloads ~2-3 GB AI model (first time only)</li>
-                <li>Takes 2-5 minutes depending on connection</li>
-                <li>Cached for future sessions</li>
-                <li>Requires WebGPU-compatible browser</li>
-            </ul>
-            
-            <p><strong>Benefits:</strong></p>
-            <ul>
-                <li>Better natural language understanding</li>
-                <li>More flexible command parsing</li>
-                <li>Understands context and complex queries</li>
-            </ul>
-            
-            <p style="font-size: 12px; color: #a8c5da; margin-top: 15px;">
-                Note: The game works perfectly without AI mode using keyword matching. AI is completely optional!
-            </p>
-            
-            <div class="ai-confirmation-buttons">
-                <button class="ai-cancel-button" onclick="closeAIConfirmation()">No Thanks</button>
-                <button class="ai-confirm-button" onclick="confirmAIMode()">Enable AI Mode</button>
-            </div>
         </div>
     </div>
 
@@ -1076,452 +716,6 @@
             aiEngine: null,
             aiLoading: false
         };
-
-        // Text-to-Speech State
-        let speechEnabled = true;
-        let currentSpeech = null;
-        const speechSynthesis = window.speechSynthesis;
-
-        // Speech Recognition State
-        let recognition = null;
-        let isListening = false;
-        let recognitionSupported = false;
-        let recognitionTimeout = null;
-        let hasProcessedResult = false; // Prevent duplicate processing
-
-        // Voice settings for different speakers
-        // Using OFFLINE voices to avoid Google server dependency
-        const voices = {
-            patel: { rate: 0.95, pitch: 1.1, volume: 1.0 },  // Dr. Patel: Lekha (hi-IN) - Hindi voice, offline
-            narrator: { rate: 1.0, pitch: 1.0, volume: 0.9 }  // Narrator: Martha (en-GB) - UK English, offline
-            // TO ADD NEW CHARACTER VOICES:
-            // 1. Add voice settings here, e.g.:
-            //    kristin: { rate: 0.9, pitch: 0.95, volume: 1.0 }
-            // 
-            // 2. In addMessage(), add detection pattern:
-            //    else if (text.startsWith('🗣️  Kristin:')) {
-            //        speak(text, 'kristin');
-            //    }
-            //
-            // 3. In speak() function, add voice selection:
-            //    else if (voiceType === 'kristin') {
-            //        // Select appropriate voice for Kristin
-            //        const kristinVoice = availableVoices.find(voice => 
-            //            voice.name.includes('Moira') && voice.lang === 'en-IE'  // Example: Irish accent
-            //        );
-            //    }
-            //
-            // 4. In character dialogue functions, use format:
-            //    return `🗣️  Kristin:
-            //    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-            //    "Character dialogue here..."`
-            //
-            // Available offline voices from your system (no Google dependency):
-            // - Lekha (hi-IN) - Hindi
-            // - Martha (en-GB) - UK English female
-            // - Moira (en-IE) - Irish English female
-            // - Karen (en-AU) - Australian English female
-            // - Catherine (en-AU) - Australian English female
-            // - Samantha (en-US) - US English female (default)
-            // - And many more - see console log on page load
-        };
-
-        // Initialize Speech Recognition
-        function initSpeechRecognition() {
-            // Check for speech recognition support
-            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-            
-            if (!SpeechRecognition) {
-                recognitionSupported = false;
-                console.log('Speech recognition not supported in this browser');
-                return;
-            }
-
-            recognitionSupported = true;
-            recognition = new SpeechRecognition();
-            
-            // Configure recognition for full phrase capture
-            recognition.continuous = true; // Keep listening
-            recognition.interimResults = true; // Get interim results to show progress
-            recognition.maxAlternatives = 1;
-            recognition.lang = 'en-US';
-
-            let finalTranscript = '';
-            let silenceTimer = null;
-
-            // Handle results
-            recognition.onresult = (event) => {
-                let interimTranscript = '';
-                
-                // Process all results
-                for (let i = event.resultIndex; i < event.results.length; i++) {
-                    const transcript = event.results[i][0].transcript;
-                    
-                    if (event.results[i].isFinal) {
-                        finalTranscript += transcript + ' ';
-                        console.log('Final result:', transcript);
-                    } else {
-                        interimTranscript += transcript;
-                        console.log('Interim result:', transcript);
-                    }
-                }
-                
-                // Update input field with current recognition (interim or final)
-                const input = document.getElementById('commandInput');
-                const currentText = (finalTranscript + interimTranscript).trim();
-                input.value = currentText;
-                
-                // Clear existing silence timer
-                if (silenceTimer) {
-                    clearTimeout(silenceTimer);
-                }
-                
-                // Set new silence timer - stop after 1.5 seconds of silence
-                silenceTimer = setTimeout(() => {
-                    if (isListening && finalTranscript.trim()) {
-                        console.log('Silence detected, finalizing...');
-                        processRecognitionResult(finalTranscript.trim());
-                    }
-                }, 1500);
-            };
-
-            // Process final recognition result
-            function processRecognitionResult(transcript) {
-                if (hasProcessedResult) {
-                    console.log('Already processed, ignoring');
-                    return;
-                }
-                
-                hasProcessedResult = true;
-                
-                console.log(`Final transcript: "${transcript}"`);
-                
-                // Put the recognized text in the input field
-                const input = document.getElementById('commandInput');
-                input.value = transcript;
-                
-                // Show in log
-                addMessage(`🎤 Voice input: "${transcript}"`, 'player-message');
-                
-                // Stop listening
-                stopListening();
-                
-                // Auto-submit
-                setTimeout(() => submitCommand(), 500);
-                
-                // Reset for next use
-                finalTranscript = '';
-            }
-
-            // Handle errors
-            recognition.onerror = (event) => {
-                console.error('Speech recognition error:', event.error);
-                
-                // Ignore "no-speech" and "aborted" errors as they're normal when stopping
-                if (event.error === 'aborted') {
-                    stopListening();
-                    return;
-                }
-                
-                if (event.error === 'no-speech') {
-                    stopListening();
-                    addMessage('🎤 No speech detected. Please try again.', 'warning-message');
-                    return;
-                }
-                
-                const micButton = document.getElementById('micButton');
-                const micIcon = document.getElementById('micIcon');
-                
-                micButton.classList.remove('listening');
-                micButton.classList.add('error');
-                micIcon.textContent = '⚠️';
-                
-                hideListeningIndicator();
-                isListening = false;
-                hasProcessedResult = false;
-                finalTranscript = '';
-                
-                let errorMessage = 'Voice input error. ';
-                switch(event.error) {
-                    case 'audio-capture':
-                        errorMessage += 'No microphone found. Please check your device settings.';
-                        break;
-                    case 'not-allowed':
-                        errorMessage += 'Microphone access denied. Please enable microphone permissions.';
-                        break;
-                    case 'network':
-                        errorMessage += 'Network error. Speech recognition works offline in most browsers.';
-                        break;
-                    default:
-                        errorMessage += 'Please try again or type your command.';
-                }
-                
-                addMessage(errorMessage, 'warning-message');
-                
-                // Reset button after 2 seconds
-                setTimeout(() => {
-                    micButton.classList.remove('error');
-                    micIcon.textContent = '🎤';
-                }, 2000);
-            };
-
-            // Handle end of recognition
-            recognition.onend = () => {
-                console.log('Speech recognition ended');
-                
-                // If we have a final transcript and haven't processed it yet, process it now
-                if (finalTranscript.trim() && !hasProcessedResult) {
-                    processRecognitionResult(finalTranscript.trim());
-                } else {
-                    stopListening();
-                    finalTranscript = '';
-                }
-            };
-
-            // Handle start of recognition
-            recognition.onstart = () => {
-                console.log('Speech recognition started');
-                hasProcessedResult = false;
-                finalTranscript = '';
-            };
-        }
-
-        // Stop listening helper function
-        function stopListening() {
-            if (recognition && isListening) {
-                try {
-                    recognition.stop();
-                } catch (e) {
-                    console.log('Recognition already stopped');
-                }
-            }
-            
-            const micButton = document.getElementById('micButton');
-            const micIcon = document.getElementById('micIcon');
-            
-            micButton.classList.remove('listening');
-            micIcon.textContent = '🎤';
-            hideListeningIndicator();
-            isListening = false;
-            
-            // Clear any pending timeout
-            if (recognitionTimeout) {
-                clearTimeout(recognitionTimeout);
-                recognitionTimeout = null;
-            }
-        }
-
-        // Toggle voice input
-        function toggleVoiceInput() {
-            if (!recognitionSupported) {
-                addMessage('❌ Voice input is not supported in this browser. Please use Chrome, Edge, or Safari, or type your command.', 'warning-message');
-                return;
-            }
-
-            if (isListening) {
-                // Stop listening
-                stopListening();
-            } else {
-                // Start listening
-                try {
-                    const micButton = document.getElementById('micButton');
-                    const micIcon = document.getElementById('micIcon');
-                    
-                    micButton.classList.add('listening');
-                    micIcon.textContent = '🎤';
-                    showListeningIndicator();
-                    
-                    hasProcessedResult = false; // Reset before starting
-                    recognition.start();
-                    isListening = true;
-                    
-                    addMessage('🎤 Listening... Speak your command now.', 'system-message');
-                    
-                    // Auto-stop after 10 seconds as safety
-                    recognitionTimeout = setTimeout(() => {
-                        if (isListening) {
-                            stopListening();
-                            addMessage('🎤 Listening timed out. Please try again.', 'warning-message');
-                        }
-                    }, 10000);
-                } catch (error) {
-                    console.error('Failed to start recognition:', error);
-                    addMessage('❌ Failed to start voice input. Please try again or type your command.', 'warning-message');
-                    isListening = false;
-                    hasProcessedResult = false;
-                }
-            }
-        }
-
-        // Show listening indicator
-        function showListeningIndicator() {
-            document.getElementById('listeningIndicator').classList.add('active');
-        }
-
-        // Hide listening indicator
-        function hideListeningIndicator() {
-            document.getElementById('listeningIndicator').classList.remove('active');
-        }
-
-        // Toggle mute function
-        function toggleMute() {
-            speechEnabled = !speechEnabled;
-            const muteButton = document.getElementById('muteButton');
-            const muteIcon = document.getElementById('muteIcon');
-            const muteText = document.getElementById('muteText');
-            
-            if (speechEnabled) {
-                muteButton.classList.remove('muted');
-                muteIcon.textContent = '🔊';
-                muteText.textContent = 'Voice On';
-                console.log('🔊 Voice enabled');
-                // Use skipSpeech=true to prevent speaking this message
-                addMessage('🔊 Voice narration enabled', 'system-message', true);
-            } else {
-                muteButton.classList.add('muted');
-                muteIcon.textContent = '🔇';
-                muteText.textContent = 'Voice Off';
-                stopSpeech();
-                console.log('🔇 Voice disabled');
-                // Use skipSpeech=true to prevent speaking this message
-                addMessage('🔇 Voice narration disabled', 'system-message', true);
-            }
-        }
-
-        // Stop current speech
-        function stopSpeech() {
-            // Always cancel any ongoing speech, not just if we have a reference
-            speechSynthesis.cancel();
-            currentSpeech = null;
-            hideSpeakingIndicator();
-        }
-
-        // Show speaking indicator
-        function showSpeakingIndicator() {
-            document.getElementById('speakingIndicator').classList.add('active');
-        }
-
-        // Hide speaking indicator
-        function hideSpeakingIndicator() {
-            document.getElementById('speakingIndicator').classList.remove('active');
-        }
-
-        // Speak text with specified voice settings
-        function speak(text, voiceType = 'narrator') {
-            // Check if speech is enabled FIRST
-            if (!speechEnabled) {
-                console.log('Speech disabled, not speaking');
-                return;
-            }
-            
-            // Stop any current speech (interrupt mode)
-            stopSpeech();
-            
-            // Clean text for TTS (remove emojis and special formatting)
-            const cleanText = text
-                .replace(/[\u{1F300}-\u{1F9FF}]/gu, '') // Remove emojis
-                .replace(/[\u{2700}-\u{27BF}]/gu, '') // Remove dingbats
-                .replace(/[\u{1F600}-\u{1F64F}]/gu, '') // Remove emoticons
-                .replace(/[─━]+/g, '') // Remove separator lines
-                .replace(/Dr\. /g, 'Doctor ') // Expand abbreviations
-                .replace(/\n{3,}/g, '\n\n') // Reduce excessive newlines
-                .trim();
-            
-            if (!cleanText) return;
-            
-            const utterance = new SpeechSynthesisUtterance(cleanText);
-            
-            // Apply voice settings
-            const voiceSettings = voices[voiceType] || voices.narrator;
-            utterance.rate = voiceSettings.rate;
-            utterance.pitch = voiceSettings.pitch;
-            utterance.volume = voiceSettings.volume;
-            
-            // Ensure voices are loaded
-            let availableVoices = speechSynthesis.getVoices();
-            
-            // If voices aren't loaded yet, try again after a short delay
-            if (availableVoices.length === 0) {
-                speechSynthesis.addEventListener('voiceschanged', () => {
-                    availableVoices = speechSynthesis.getVoices();
-                });
-            }
-            
-            // Select voice based on speaker type
-            if (voiceType === 'patel') {
-                // Dr. Patel: Use Lekha (Hindi, offline) - no Google dependency
-                const patelVoice = availableVoices.find(voice => 
-                    voice.name.includes('Lekha') && voice.lang === 'hi-IN'
-                );
-                
-                if (patelVoice) {
-                    utterance.voice = patelVoice;
-                    console.log('Using voice for Dr. Patel:', patelVoice.name);
-                } else {
-                    // Fallback: Any Hindi voice, then female voices
-                    const fallbackVoice = availableVoices.find(voice => 
-                        voice.lang === 'hi-IN' ||
-                        voice.name.includes('Female') || 
-                        voice.name.includes('female') ||
-                        voice.name.includes('Victoria') ||
-                        voice.name.includes('Karen') ||
-                        voice.name.includes('Moira')
-                    );
-                    
-                    if (fallbackVoice) {
-                        utterance.voice = fallbackVoice;
-                        console.log('Using fallback voice for Dr. Patel:', fallbackVoice.name);
-                    } else {
-                        console.log('No preferred voice found for Dr. Patel, using default');
-                    }
-                }
-            } else if (voiceType === 'narrator') {
-                // Narrator: Use Martha (UK English, offline) - no Google dependency
-                const narratorVoice = availableVoices.find(voice => 
-                    voice.name.includes('Martha') && voice.lang === 'en-GB'
-                );
-                
-                if (narratorVoice) {
-                    utterance.voice = narratorVoice;
-                    console.log('Using voice for narrator:', narratorVoice.name);
-                } else {
-                    // Fallback: Other UK English voices, then any English
-                    const fallbackVoice = availableVoices.find(voice => 
-                        voice.lang === 'en-GB' ||
-                        voice.name.includes('Daniel') ||
-                        voice.name.includes('Arthur') ||
-                        voice.name.includes('Moira') ||
-                        voice.lang.startsWith('en-')
-                    );
-                    
-                    if (fallbackVoice) {
-                        utterance.voice = fallbackVoice;
-                        console.log('Using fallback voice for narrator:', fallbackVoice.name);
-                    } else {
-                        console.log('No preferred voice found for narrator, using default');
-                    }
-                }
-            }
-            
-            // Event handlers
-            utterance.onstart = () => {
-                showSpeakingIndicator();
-            };
-            
-            utterance.onend = () => {
-                hideSpeakingIndicator();
-                currentSpeech = null;
-            };
-            
-            utterance.onerror = (event) => {
-                console.error('Speech synthesis error:', event);
-                hideSpeakingIndicator();
-                currentSpeech = null;
-            };
-            
-            currentSpeech = utterance;
-            speechSynthesis.speak(utterance);
-        }
 
         // Toggle evidence panel
         function toggleEvidence() {
@@ -1552,43 +746,6 @@
         document.getElementById('helpPopup').addEventListener('click', function(e) {
             if (e.target === this) {
                 toggleHelp();
-            }
-        });
-
-        // Show AI confirmation popup
-        function showAIConfirmation() {
-            // If AI is already on, turn it off
-            if (gameState.aiMode) {
-                toggleAIMode();
-                return;
-            }
-            
-            // Show confirmation popup
-            const popup = document.getElementById('aiConfirmationPopup');
-            popup.classList.add('active');
-        }
-
-        // Close AI confirmation popup
-        function closeAIConfirmation() {
-            const popup = document.getElementById('aiConfirmationPopup');
-            popup.classList.remove('active');
-        }
-
-        // Confirm and enable AI mode
-        function confirmAIMode() {
-            closeAIConfirmation();
-            toggleAIMode();
-        }
-
-        // Close AI confirmation when clicking outside
-        document.addEventListener('DOMContentLoaded', function() {
-            const aiPopup = document.getElementById('aiConfirmationPopup');
-            if (aiPopup) {
-                aiPopup.addEventListener('click', function(e) {
-                    if (e.target === this) {
-                        closeAIConfirmation();
-                    }
-                });
             }
         });
 
@@ -1695,8 +852,8 @@
 
 Available actions:
 - LOOK: Describe surroundings
-- EXAMINE [object]: Inspect something (objects: monitoring_station, workstation, equipment_rack, storage_freezer, window, temperature_data, calibration_log, sarah_note, ice_core_sample)
-- TALK [topic]: Discuss with Dr. Maya Patel (topics: glaciers, research, monitoring, data, sarah, disappearance, importance, ice cores)
+- EXAMINE [object]: Inspect something (objects: monitoring_station, workstation, equipment_rack, window, temperature_data, calibration_log, sarah_note)
+- TALK [topic]: Discuss with Dr. Maya Patel (topics: glaciers, research, monitoring, data, sarah, disappearance, importance)
 - INVENTORY: Show collected evidence
 - PROGRESS: Show investigation status
 - HELP: Show help
@@ -1711,14 +868,7 @@ or
 Be flexible with natural language. Examples:
 "tell me about the glacier work" → {"action": "talk", "topic": "glaciers"}
 "check the computer" → {"action": "examine", "target": "workstation"}
-"what happened to dr chen" → {"action": "talk", "topic": "sarah"}
-"why does this matter" → {"action": "talk", "topic": "importance"}
-"why is this important" → {"action": "talk", "topic": "importance"}
-"why does this work matter" → {"action": "talk", "topic": "importance"}
-"tell me about the research" → {"action": "talk", "topic": "research"}
-"look at the ice samples" → {"action": "examine", "target": "storage_freezer"}
-"examine the freezer" → {"action": "examine", "target": "storage_freezer"}
-"what about ice cores" → {"action": "talk", "topic": "ice cores"}`;
+"what happened to dr chen" → {"action": "talk", "topic": "sarah"}`;
 
                 const messages = [
                     { role: "system", content: systemPrompt },
@@ -1749,15 +899,11 @@ Be flexible with natural language. Examples:
 
         // Execute AI-parsed command
         function executeAICommand(parsedCommand) {
-            console.log('executeAICommand called with:', parsedCommand);
-            
             if (!parsedCommand || !parsedCommand.action) {
-                console.log('No action found in parsed command');
                 return false;
             }
 
             const action = parsedCommand.action.toLowerCase();
-            console.log('Action:', action, 'Topic/Target:', parsedCommand.topic || parsedCommand.target);
 
             switch (action) {
                 case 'look':
@@ -1765,12 +911,8 @@ Be flexible with natural language. Examples:
                     return true;
 
                 case 'examine':
-                case 'look_at':
-                case 'inspect':
                     if (parsedCommand.target) {
-                        // Normalize the target to match game objects
-                        const target = parsedCommand.target.replace(/_/g, ' ').toLowerCase();
-                        handleExamine('examine ' + target);
+                        handleExamine('examine ' + parsedCommand.target);
                         return true;
                     }
                     return false;
@@ -1825,13 +967,6 @@ Be flexible with natural language. Examples:
                     description: 'A metal rack holding various scientific instruments - ice core drills, thermal sensors, sample containers. There\'s a clipboard with equipment checkout logs. Some items appear to be missing from their usual spots.',
                     examined: false,
                     evidenceId: 'sarah_note'
-                },
-                storage_freezer: {
-                    id: 'storage_freezer',
-                    name: 'Sample Storage Freezer',
-                    description: 'A large ultra-cold freezer (-80°C) housing ice core samples. Through the frosted glass door, you can see rows of cylindrical cores in protective sleeves. A recent sample sits in the quick-access compartment, its layers clearly visible through the clear plastic tube.',
-                    examined: false,
-                    evidenceId: 'ice_core_sample'
                 },
                 window: {
                     id: 'window',
@@ -1955,59 +1090,6 @@ When glaciers melt rapidly, the consequences are severe:
 This is why Dr. Chen's discovery was so urgent - rapid warming means these impacts could happen much sooner than expected.`,
                     discovered: false,
                     examined: false
-                },
-                ice_core_sample: {
-                    id: 'ice_core_sample',
-                    name: 'Ice Core Sample',
-                    description: 'A cylindrical ice core about 1 meter long, extracted from deep within the glacier. Through the clear plastic sleeve, you can see distinct annual layers - dark bands alternating with lighter ice.',
-                    detailedInfo: `ICE CORE SAMPLE #GS-2024-047
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-Collection Date: April 15, 2024
-Depth: 850-950 meters
-Estimated Age Range: 800-900 years before present
-Core Diameter: 10 cm
-Status: Preliminary analysis complete
-
-VISIBLE FEATURES:
-• 143 distinct annual layers (summer/winter cycles)
-• Ash layer at ~820 years (volcanic eruption marker)
-• Bubble concentration varies by season
-• Recent layers show unusual clarity (less debris)
-
-ANALYSIS NOTES (S. Chen):
-"Layer spacing in top 50 years shows acceleration. Annual bands getting thicker - more melt/refreeze cycles. This core confirms the temperature sensor readings. The ice itself is telling us the climate is changing.
-
-Compare to core GS-2019-031 from same depth: that core showed consistent layer spacing for entire 900-year period. Five years later, THIS core shows dramatic change in recent decades.
-
-The evidence is literally frozen in time."
-
-[A small photo is attached showing Dr. Chen holding the core, smiling, dated three weeks ago]`,
-                    climateLesson: `
-📚 CLIMATE SCIENCE CONCEPT: Ice Cores as Climate Archives
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-Ice cores are like time machines that preserve Earth's climate history:
-
-HOW ICE CORES WORK:
-• Annual layers form like tree rings (winter snow, summer melt)
-• Each layer traps air bubbles from that year's atmosphere
-• Scientists count layers to determine age (like counting rings)
-• Chemical analysis reveals temperature, CO2, pollution levels
-
-WHAT WE LEARN:
-• Climate patterns over thousands of years
-• Historical CO2 and methane levels
-• Volcanic eruptions (ash layers)
-• Industrial pollution markers
-
-WHY THIS MATTERS:
-Ice cores from Greenland and Antarctica show us:
-→ Natural climate cycles vs. human-caused changes
-→ How fast climate CAN change (and how fast it IS changing now)
-→ What "normal" looks like for comparison
-
-The layer spacing acceleration Dr. Chen noted shows climate change is happening faster than the historical record - these recent decades are unprecedented in 800 years of ice.`,
-                    discovered: false,
-                    examined: false
                 }
             };
 
@@ -2016,28 +1098,12 @@ The layer spacing acceleration Dr. Chen noted shows climate change is happening 
         }
 
         // Display functions
-        function addMessage(text, className = 'system-message', skipSpeech = false) {
+        function addMessage(text, className = 'system-message') {
             const chatDisplay = document.getElementById('chatDisplay');
             const message = document.createElement('div');
             message.className = `message ${className}`;
             message.textContent = text;
             chatDisplay.appendChild(message);
-            
-            // Trigger TTS based on message type and content (unless skipSpeech is true)
-            if (!skipSpeech) {
-                // Priority 1: Check if this is actual character dialogue (starts with speaker identifier)
-                if (text.startsWith('🗣️  Dr. Patel:') || text.startsWith('🗣️  Dr. Maya Patel')) {
-                    speak(text, 'patel');
-                }
-                // Priority 2: System messages and narration (even if they mention characters)
-                else if (className === 'system-message' || className === 'success-message') {
-                    // Speak system messages with narrator voice
-                    // This includes location descriptions, evidence discoveries, etc.
-                    speak(text, 'narrator');
-                }
-                // Priority 3: Don't speak player input, warnings, or separators
-                // (player-message, warning-message, separator classes are not spoken)
-            }
             
             // Scroll to show the beginning of the new message
             // Use a small timeout to ensure the element is rendered
@@ -2097,7 +1163,6 @@ You can examine:
   • monitoring station - Displays showing glacier temperature data
   • workstation - Dr. Chen's computer and research materials
   • equipment rack - Storage for field research equipment
-  • storage freezer - Ultra-cold freezer containing ice core samples
   • window - Overlooks the glacier research site
 
 Dr. Maya Patel, the station director, is here and willing to answer questions.`;
@@ -2295,7 +1360,7 @@ Thank you for playing Chapter 1 of The Vanishing Glaciers!
         }
 
         function handleExamine(command) {
-            const prefixes = ['examine ', 'x ', 'look at ', 'inspect ', 'check '];
+            const prefixes = ['examine ', 'x ', 'look at ', 'inspect '];
             let target = command;
             
             for (const prefix of prefixes) {
@@ -2305,27 +1370,17 @@ Thank you for playing Chapter 1 of The Vanishing Glaciers!
                 }
             }
 
-            // Normalize target - convert both underscores and multiple spaces to single space
-            const targetNormalized = target.replace(/[_\s]+/g, ' ').toLowerCase().trim();
-            
-            console.log('Examining target:', targetNormalized);
+            const targetNormalized = target.replace(/\s+/g, ' ').toLowerCase();
 
             // Check interaction points
             for (const [pointId, point] of Object.entries(gameState.interactionPoints)) {
-                // Normalize both the ID and name for comparison
-                const pointIdNormalized = pointId.replace(/[_\s]+/g, ' ').toLowerCase().trim();
-                const pointNameNormalized = point.name.replace(/[_\s]+/g, ' ').toLowerCase().trim();
+                const pointIdNormalized = pointId.replace(/_/g, ' ');
+                const pointNameNormalized = point.name.toLowerCase();
 
-                console.log('Checking against:', pointIdNormalized, 'and', pointNameNormalized);
-
-                // Check if target matches ID or name (partial match in either direction)
-                if (targetNormalized === pointIdNormalized ||
-                    targetNormalized === pointNameNormalized ||
-                    targetNormalized.includes(pointIdNormalized) ||
+                if (targetNormalized.includes(pointIdNormalized) ||
                     targetNormalized.includes(pointNameNormalized) ||
                     pointIdNormalized.includes(targetNormalized) ||
                     pointNameNormalized.includes(targetNormalized)) {
-                    console.log('Match found!');
                     examineInteractionPoint(point);
                     return;
                 }
@@ -2334,12 +1389,10 @@ Thank you for playing Chapter 1 of The Vanishing Glaciers!
             // Check discovered evidence
             for (const [evidenceId, evidence] of Object.entries(gameState.evidence)) {
                 if (evidence.discovered) {
-                    const evidenceIdNormalized = evidenceId.replace(/[_\s]+/g, ' ').toLowerCase().trim();
-                    const evidenceNameNormalized = evidence.name.replace(/[_\s]+/g, ' ').toLowerCase().trim();
+                    const evidenceIdNormalized = evidenceId.replace(/_/g, ' ');
+                    const evidenceNameNormalized = evidence.name.toLowerCase();
 
-                    if (targetNormalized === evidenceIdNormalized ||
-                        targetNormalized === evidenceNameNormalized ||
-                        targetNormalized.includes(evidenceIdNormalized) ||
+                    if (targetNormalized.includes(evidenceIdNormalized) ||
                         targetNormalized.includes(evidenceNameNormalized) ||
                         evidenceIdNormalized.includes(targetNormalized) ||
                         evidenceNameNormalized.includes(targetNormalized)) {
@@ -2349,8 +1402,7 @@ Thank you for playing Chapter 1 of The Vanishing Glaciers!
                 }
             }
 
-            console.log('No match found for:', targetNormalized);
-            addMessage(`❓ You don't see '${target}' here. Try examining: monitoring station, workstation, equipment rack, storage freezer, or window.`, 'warning-message');
+            addMessage(`❓ You don't see '${target}' here. Try examining: monitoring station, workstation, equipment rack, or window.`, 'warning-message');
         }
 
         function examineInteractionPoint(point) {
@@ -2416,7 +1468,6 @@ Thank you for playing Chapter 1 of The Vanishing Glaciers!
                     topic = '';
                 }
             } else {
-                // Extract topic from question - pass the whole command
                 topic = command;
             }
 
@@ -2429,10 +1480,6 @@ Thank you for playing Chapter 1 of The Vanishing Glaciers!
         }
 
         function getMayaGreeting() {
-            // IMPORTANT: Character dialogue MUST start with the speaker identifier format:
-            // "🗣️  [Character Name]:"
-            // This is how the TTS system knows which voice to use.
-            // Do NOT include this prefix in system messages that mention the character.
             return `🗣️  Dr. Maya Patel (Station Director):
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 "Thank goodness you're here. Dr. Sarah Chen has been missing since early this morning. She's one of our most dedicated researchers - this is completely unlike her.
@@ -2443,16 +1490,11 @@ If you find anything, or if you have questions about the research we do here, pl
         }
 
         function getMayaResponse(topic) {
-            // All Dr. Patel responses use the same speaker identifier prefix
             topic = topic.toLowerCase().trim();
-            console.log('getMayaResponse called with topic:', topic);
 
             // Why it matters / Importance - check this FIRST before other keywords
             if (topic.includes('why') || topic.includes('matter') || topic.includes('important') || 
-                topic.includes('importance') || topic.includes('concern') || 
-                topic.includes('significant') || topic.includes('care') || 
-                topic === 'importance') {
-                console.log('Matched: why/matter/important');
+                topic.includes('concern') || topic.includes('significant') || topic.includes('care')) {
                 gameState.learnedConcepts.add('glacier_importance');
                 return `🗣️  Dr. Patel:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -2478,28 +1520,6 @@ That's why Dr. Chen's work was so important. Understanding how fast glaciers are
 Here at Polaris Base, we focus on monitoring glacier stability and temperature patterns. We have sensors embedded at different depths, measuring how heat moves through the ice.
 
 This matters because glaciers aren't just beautiful landscapes - they regulate sea levels, provide freshwater to billions of people, and support entire ecosystems. When they change rapidly, it affects us all."`;
-            }
-
-            // Ice cores specifically
-            if (topic.includes('ice core') || topic.includes('sample') || topic.includes('freezer') || topic.includes('layer')) {
-                gameState.topicsDiscussed.add('ice_cores');
-                gameState.learnedConcepts.add('ice_core_analysis');
-                
-                if (gameState.examinedEvidence.has('ice_core_sample')) {
-                    return `🗣️  Dr. Patel:
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-"Yes, the ice core in the freezer! That's one of Sarah's most recent extractions. Ice cores are fascinating - they're like books written in frozen water. Each layer tells a story about the climate when that snow fell.
-
-The layer spacing Sarah noted in her analysis is particularly concerning. When layers get thicker and more irregular, it indicates more melt-refreeze cycles. That core shows 800 years of consistent patterns, then sudden changes in recent decades.
-
-It's physical proof of what the sensors are telling us - the climate is changing, and it's happening faster than the historical record shows."`;
-                } else {
-                    return `🗣️  Dr. Patel:
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-"We have an ice core in the storage freezer if you'd like to examine it. Ice cores are some of our most valuable climate archives - they preserve atmospheric conditions from when the snow fell, sometimes thousands of years ago.
-
-Sarah was particularly skilled at ice core analysis. She could read those layers like a historian reading ancient manuscripts."`;
-                }
             }
 
             // Monitoring
@@ -2579,7 +1599,7 @@ Or you can show me any evidence you've found."`;
         }
 
         function checkWinCondition() {
-            const requiredEvidence = new Set(['temperature_data', 'calibration_log', 'sarah_note', 'ice_core_sample']);
+            const requiredEvidence = new Set(['temperature_data', 'calibration_log', 'sarah_note']);
             const hasAllEvidence = [...requiredEvidence].every(id => gameState.examinedEvidence.has(id));
             return hasAllEvidence && gameState.talkedToMaya;
         }
@@ -2637,42 +1657,7 @@ Or you can show me any evidence you've found."`;
         });
 
         // Initialize on load
-        window.onload = function() {
-            initializeGame();
-            initSpeechRecognition();
-            
-            // Pre-load voices for speech synthesis
-            if ('speechSynthesis' in window) {
-                // Load voices
-                speechSynthesis.getVoices();
-                
-                // Some browsers need this event
-                speechSynthesis.addEventListener('voiceschanged', () => {
-                    const voices = speechSynthesis.getVoices();
-                    console.log('Voices loaded:', voices.length);
-                    
-                    // Check for Lekha (Dr. Patel's voice - offline Hindi)
-                    const lekhaVoice = voices.find(v => 
-                        v.name.includes('Lekha') && v.lang === 'hi-IN'
-                    );
-                    if (lekhaVoice) {
-                        console.log('✓ Lekha voice found (Dr. Patel):', lekhaVoice.name, '-', lekhaVoice.lang);
-                    } else {
-                        console.log('⚠ Lekha voice not found, will use fallback for Dr. Patel');
-                    }
-                    
-                    // Check for Martha (Narrator's voice - offline UK English)
-                    const marthaVoice = voices.find(v => 
-                        v.name.includes('Martha') && v.lang === 'en-GB'
-                    );
-                    if (marthaVoice) {
-                        console.log('✓ Martha voice found (Narrator):', marthaVoice.name, '-', marthaVoice.lang);
-                    } else {
-                        console.log('⚠ Martha voice not found, will use fallback for narrator');
-                    }
-                });
-            }
-        };
+        window.onload = initializeGame;
     </script>
 </body>
 </html>
