@@ -970,7 +970,7 @@
             <h3>🎯 Winning</h3>
             <p>To solve the mystery:</p>
             <ul>
-                <li>Find all 3 pieces of evidence</li>
+                <li>Find all 4 pieces of evidence</li>
                 <li>Examine each piece carefully</li>
                 <li>Talk to Dr. Patel about what you've found</li>
             </ul>
@@ -1695,8 +1695,8 @@
 
 Available actions:
 - LOOK: Describe surroundings
-- EXAMINE [object]: Inspect something (objects: monitoring_station, workstation, equipment_rack, window, temperature_data, calibration_log, sarah_note)
-- TALK [topic]: Discuss with Dr. Maya Patel (topics: glaciers, research, monitoring, data, sarah, disappearance, importance)
+- EXAMINE [object]: Inspect something (objects: monitoring_station, workstation, equipment_rack, storage_freezer, window, temperature_data, calibration_log, sarah_note, ice_core_sample)
+- TALK [topic]: Discuss with Dr. Maya Patel (topics: glaciers, research, monitoring, data, sarah, disappearance, importance, ice cores)
 - INVENTORY: Show collected evidence
 - PROGRESS: Show investigation status
 - HELP: Show help
@@ -1715,7 +1715,10 @@ Be flexible with natural language. Examples:
 "why does this matter" → {"action": "talk", "topic": "importance"}
 "why is this important" → {"action": "talk", "topic": "importance"}
 "why does this work matter" → {"action": "talk", "topic": "importance"}
-"tell me about the research" → {"action": "talk", "topic": "research"}`;
+"tell me about the research" → {"action": "talk", "topic": "research"}
+"look at the ice samples" → {"action": "examine", "target": "storage_freezer"}
+"examine the freezer" → {"action": "examine", "target": "storage_freezer"}
+"what about ice cores" → {"action": "talk", "topic": "ice cores"}`;
 
                 const messages = [
                     { role: "system", content: systemPrompt },
@@ -1822,6 +1825,13 @@ Be flexible with natural language. Examples:
                     description: 'A metal rack holding various scientific instruments - ice core drills, thermal sensors, sample containers. There\'s a clipboard with equipment checkout logs. Some items appear to be missing from their usual spots.',
                     examined: false,
                     evidenceId: 'sarah_note'
+                },
+                storage_freezer: {
+                    id: 'storage_freezer',
+                    name: 'Sample Storage Freezer',
+                    description: 'A large ultra-cold freezer (-80°C) housing ice core samples. Through the frosted glass door, you can see rows of cylindrical cores in protective sleeves. A recent sample sits in the quick-access compartment, its layers clearly visible through the clear plastic tube.',
+                    examined: false,
+                    evidenceId: 'ice_core_sample'
                 },
                 window: {
                     id: 'window',
@@ -1945,6 +1955,59 @@ When glaciers melt rapidly, the consequences are severe:
 This is why Dr. Chen's discovery was so urgent - rapid warming means these impacts could happen much sooner than expected.`,
                     discovered: false,
                     examined: false
+                },
+                ice_core_sample: {
+                    id: 'ice_core_sample',
+                    name: 'Ice Core Sample',
+                    description: 'A cylindrical ice core about 1 meter long, extracted from deep within the glacier. Through the clear plastic sleeve, you can see distinct annual layers - dark bands alternating with lighter ice.',
+                    detailedInfo: `ICE CORE SAMPLE #GS-2024-047
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Collection Date: April 15, 2024
+Depth: 850-950 meters
+Estimated Age Range: 800-900 years before present
+Core Diameter: 10 cm
+Status: Preliminary analysis complete
+
+VISIBLE FEATURES:
+• 143 distinct annual layers (summer/winter cycles)
+• Ash layer at ~820 years (volcanic eruption marker)
+• Bubble concentration varies by season
+• Recent layers show unusual clarity (less debris)
+
+ANALYSIS NOTES (S. Chen):
+"Layer spacing in top 50 years shows acceleration. Annual bands getting thicker - more melt/refreeze cycles. This core confirms the temperature sensor readings. The ice itself is telling us the climate is changing.
+
+Compare to core GS-2019-031 from same depth: that core showed consistent layer spacing for entire 900-year period. Five years later, THIS core shows dramatic change in recent decades.
+
+The evidence is literally frozen in time."
+
+[A small photo is attached showing Dr. Chen holding the core, smiling, dated three weeks ago]`,
+                    climateLesson: `
+📚 CLIMATE SCIENCE CONCEPT: Ice Cores as Climate Archives
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Ice cores are like time machines that preserve Earth's climate history:
+
+HOW ICE CORES WORK:
+• Annual layers form like tree rings (winter snow, summer melt)
+• Each layer traps air bubbles from that year's atmosphere
+• Scientists count layers to determine age (like counting rings)
+• Chemical analysis reveals temperature, CO2, pollution levels
+
+WHAT WE LEARN:
+• Climate patterns over thousands of years
+• Historical CO2 and methane levels
+• Volcanic eruptions (ash layers)
+• Industrial pollution markers
+
+WHY THIS MATTERS:
+Ice cores from Greenland and Antarctica show us:
+→ Natural climate cycles vs. human-caused changes
+→ How fast climate CAN change (and how fast it IS changing now)
+→ What "normal" looks like for comparison
+
+The layer spacing acceleration Dr. Chen noted shows climate change is happening faster than the historical record - these recent decades are unprecedented in 800 years of ice.`,
+                    discovered: false,
+                    examined: false
                 }
             };
 
@@ -2034,6 +2097,7 @@ You can examine:
   • monitoring station - Displays showing glacier temperature data
   • workstation - Dr. Chen's computer and research materials
   • equipment rack - Storage for field research equipment
+  • storage freezer - Ultra-cold freezer containing ice core samples
   • window - Overlooks the glacier research site
 
 Dr. Maya Patel, the station director, is here and willing to answer questions.`;
@@ -2286,7 +2350,7 @@ Thank you for playing Chapter 1 of The Vanishing Glaciers!
             }
 
             console.log('No match found for:', targetNormalized);
-            addMessage(`❓ You don't see '${target}' here. Try examining: monitoring station, workstation, equipment rack, or window.`, 'warning-message');
+            addMessage(`❓ You don't see '${target}' here. Try examining: monitoring station, workstation, equipment rack, storage freezer, or window.`, 'warning-message');
         }
 
         function examineInteractionPoint(point) {
@@ -2416,6 +2480,28 @@ Here at Polaris Base, we focus on monitoring glacier stability and temperature p
 This matters because glaciers aren't just beautiful landscapes - they regulate sea levels, provide freshwater to billions of people, and support entire ecosystems. When they change rapidly, it affects us all."`;
             }
 
+            // Ice cores specifically
+            if (topic.includes('ice core') || topic.includes('sample') || topic.includes('freezer') || topic.includes('layer')) {
+                gameState.topicsDiscussed.add('ice_cores');
+                gameState.learnedConcepts.add('ice_core_analysis');
+                
+                if (gameState.examinedEvidence.has('ice_core_sample')) {
+                    return `🗣️  Dr. Patel:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+"Yes, the ice core in the freezer! That's one of Sarah's most recent extractions. Ice cores are fascinating - they're like books written in frozen water. Each layer tells a story about the climate when that snow fell.
+
+The layer spacing Sarah noted in her analysis is particularly concerning. When layers get thicker and more irregular, it indicates more melt-refreeze cycles. That core shows 800 years of consistent patterns, then sudden changes in recent decades.
+
+It's physical proof of what the sensors are telling us - the climate is changing, and it's happening faster than the historical record shows."`;
+                } else {
+                    return `🗣️  Dr. Patel:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+"We have an ice core in the storage freezer if you'd like to examine it. Ice cores are some of our most valuable climate archives - they preserve atmospheric conditions from when the snow fell, sometimes thousands of years ago.
+
+Sarah was particularly skilled at ice core analysis. She could read those layers like a historian reading ancient manuscripts."`;
+                }
+            }
+
             // Monitoring
             if (topic.includes('monitoring') || topic.includes('sensor') || topic.includes('temperature') || topic.includes('measure')) {
                 gameState.topicsDiscussed.add('monitoring_system');
@@ -2493,7 +2579,7 @@ Or you can show me any evidence you've found."`;
         }
 
         function checkWinCondition() {
-            const requiredEvidence = new Set(['temperature_data', 'calibration_log', 'sarah_note']);
+            const requiredEvidence = new Set(['temperature_data', 'calibration_log', 'sarah_note', 'ice_core_sample']);
             const hasAllEvidence = [...requiredEvidence].every(id => gameState.examinedEvidence.has(id));
             return hasAllEvidence && gameState.talkedToMaya;
         }
