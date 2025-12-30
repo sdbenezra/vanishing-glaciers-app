@@ -2384,6 +2384,18 @@ Thank you for playing Chapter 1 of The Vanishing Glaciers!
             if (!evidence.examined) {
                 gameState.examinedEvidence.add(evidence.id);
                 evidence.examined = true;
+                
+                // Track climate concepts learned from each piece of evidence
+                if (evidence.id === 'temperature_data') {
+                    gameState.learnedConcepts.add('glacier_temperature_monitoring');
+                } else if (evidence.id === 'calibration_log') {
+                    gameState.learnedConcepts.add('data_verification');
+                } else if (evidence.id === 'sarah_note') {
+                    gameState.learnedConcepts.add('glacier_melting_impacts');
+                } else if (evidence.id === 'ice_core_sample') {
+                    gameState.learnedConcepts.add('ice_core_climate_archives');
+                }
+                
                 message += `\n${evidence.climateLesson}`;
                 message += `\n\n✓ Evidence examined and climate concept learned!`;
                 addMessage(message, 'success-message');
