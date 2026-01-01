@@ -1419,13 +1419,29 @@
             
             // Clean text for TTS (remove emojis and special formatting)
             const cleanText = text
-                .replace(/[\u{1F300}-\u{1F9FF}]/gu, '') // Remove emojis
-                .replace(/[\u{2700}-\u{27BF}]/gu, '') // Remove dingbats
-                .replace(/[\u{1F600}-\u{1F64F}]/gu, '') // Remove emoticons
-                .replace(/[─━]+/g, '') // Remove separator lines
-                .replace(/Dr\. /g, 'Doctor ') // Expand abbreviations
-                .replace(/\n{3,}/g, '\n\n') // Reduce excessive newlines
-                .trim();
+        .replace(/[\u{1F300}-\u{1F9FF}]/gu, '') // Remove emojis
+        .replace(/[\u{2700}-\u{27BF}]/gu, '') // Remove dingbats
+        .replace(/[\u{1F600}-\u{1F64F}]/gu, '') // Remove emoticons
+        .replace(/[─━]+/g, '') // Remove separator lines
+        .replace(/Dr\. /g, 'Doctor ') // Expand abbreviations
+        
+        // Improve line break handling for natural speech
+        .replace(/\n\s*━+\s*\n/g, '. ') // Remove separator line breaks
+        .replace(/\n(?=[A-Z][A-Z])/g, '. ') // Newline before all-caps (headers) = period
+        .replace(/:\n/g, ': ') // Colon + newline = just space
+        .replace(/\n\s*[•·]/g, ', ') // Bullet points = commas
+        .replace(/\n\s*-\s/g, ', ') // Dash lists = commas
+        .replace(/\n(?=[A-Z][a-z])/g, '. ') // Newline before sentence case = period
+        .replace(/\n(?=\d)/g, '. ') // Newline before number = period
+        .replace(/\n\n+/g, '. ') // Multiple newlines = period
+        .replace(/\n/g, ', ') // Remaining single newlines = commas
+        .replace(/[•·]/g, '') // Remove any remaining bullets
+        .replace(/,\s*,/g, ',') // Clean up double commas
+        .replace(/\.\s*,/g, '.') // Period before comma = just period
+        .replace(/,\s*\./g, '.') // Comma before period = just period
+        .replace(/\s+/g, ' ') // Normalize whitespace
+        
+        .trim();
             
             if (!cleanText) return;
             
@@ -1695,7 +1711,7 @@
 
 Available actions:
 - LOOK: Describe surroundings
-- EXAMINE [object]: Inspect something (objects: monitoring_station, workstation, equipment_rack, storage_freezer, window, temperature_data, calibration_log, sarah_note, ice_core_sample)
+- EXAMINE [object]: Inspect something (objects: monitoring_station, workstation, equipment_rack, storage_freezer, satellite_display, window, temperature_data, calibration_log, sarah_note, ice_core_sample, satellite_thermal_image)
 - TALK [topic]: Discuss with Dr. Maya Patel (topics: glaciers, research, monitoring, data, sarah, disappearance, importance, ice cores)
 - INVENTORY: Show collected evidence
 - PROGRESS: Show investigation status
@@ -1833,6 +1849,13 @@ Be flexible with natural language. Examples:
                     examined: false,
                     evidenceId: 'ice_core_sample'
                 },
+                satellite_display: {
+                    id: 'satellite_display',
+                    name: 'Satellite Data Display',
+                    description: 'A secondary monitor mounted on the wall displays real-time satellite imagery. The screen shows a false-color thermal map of the glacier - bright reds and oranges indicate warmer areas, while blues show colder regions. Surprisingly, there are red patches where the ice should be uniformly cold.',
+                    examined: false,
+                    evidenceId: 'satellite_thermal_image'
+                },
                 window: {
                     id: 'window',
                     name: 'Observation Window',
@@ -1847,10 +1870,10 @@ Be flexible with natural language. Examples:
                 temperature_data: {
                     id: 'temperature_data',
                     name: 'Temperature Monitoring Data',
-                    description: 'Active displays showing temperature readings from glacier sensors. The deep ice layers (800-1000 years old) show unusual red zones.',
+                    description: 'Active displays showing temperature readings from glacier sensors. The deep ice layers (800 to 1000 years old) show unusual red zones.',
                     detailedInfo: `TEMPERATURE GRADIENT ANALYSIS - DEEP ICE LAYERS
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-Depth: 800-1000 year layers
+Depth: 800 to 1000 year layers
 Current Reading: -12.3°C
 Historical Average: -14.6°C
 Deviation: +2.3°C (157% above normal variation)
@@ -1963,8 +1986,8 @@ This is why Dr. Chen's discovery was so urgent - rapid warming means these impac
                     detailedInfo: `ICE CORE SAMPLE #GS-2024-047
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 Collection Date: April 15, 2024
-Depth: 850-950 meters
-Estimated Age Range: 800-900 years before present
+Depth: 850 to 950 meters
+Estimated Age Range: 800 to 900 years before present
 Core Diameter: 10 cm
 Status: Preliminary analysis complete
 
@@ -2008,7 +2031,70 @@ Ice cores from Greenland and Antarctica show us:
 The layer spacing acceleration Dr. Chen noted shows climate change is happening faster than the historical record - these recent decades are unprecedented in 800 years of ice.`,
                     discovered: false,
                     examined: false
+                },
+                satellite_thermal_image: {
+                    id: 'satellite_thermal_image',
+                    name: 'Satellite Thermal Image',
+                    description: 'A false-color satellite image showing thermal readings of the glacier. The image uses color coding - deep blue for coldest areas, transitioning through green, yellow, orange to bright red for warmest. Alarming red hotspots appear in areas that should be uniformly cold.',
+                    detailedInfo: `SATELLITE THERMAL IMAGING DATA
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Satellite: MODIS Terra/Aqua
+Image Date: May 3, 2025 - 14:32 UTC
+Resolution: 30 meters per pixel
+Wavelength: Thermal Infrared (10.78-11.28 μm)
+Processing: False-color composite
+
+TEMPERATURE DISTRIBUTION:
+🔵 Blue zones (-18°C to -15°C): Normal glacier temp - 68% coverage
+🟢 Green zones (-15°C to -13°C): Slightly elevated - 18% coverage  
+🟡 Yellow zones (-13°C to -11°C): Concerning - 9% coverage
+🟠 Orange zones (-11°C to -9°C): Critical - 4% coverage
+🔴 Red zones (-9°C and above): Extreme alarm - 1% coverage
+
+ANOMALY REPORT:
+Red zones detected in deep ice layers (800 to 1000 year strata) match the locations of Dr. Chen's ground sensor readings. This independent confirmation from space validates the temperature anomalies.
+
+ANALYSIS NOTES:
+"Two completely independent measurement systems - ground sensors and satellite thermal imaging - showing identical warming patterns. This rules out instrument error. The thermal signature is REAL.
+
+Satellite data advantages:
+- No physical contact with ice (can't be faulty equipment)
+- Measures actual infrared radiation emitted by glacier
+- Covers entire glacier simultaneously
+- Updated every 12 hours
+
+The fact that space-based and ground-based measurements agree removes all doubt about data accuracy."
+
+Last viewed by: S. Chen (May 3, 23:52)`,
+                    climateLesson: `
+📚 CLIMATE SCIENCE CONCEPT: Remote Sensing & Thermal Imaging
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Satellites are crucial tools for monitoring Earth's climate, especially in remote areas like the Arctic.
+
+HOW THERMAL SATELLITE IMAGING WORKS:
+• All objects emit infrared radiation based on their temperature
+• Satellites detect this radiation from space using special sensors
+• Different wavelengths reveal different surface properties
+• False-color images convert invisible IR to visible colors for analysis
+• Red = warmer, Blue = colder (colors are assigned, not "real")
+
+WHY SATELLITES MATTER FOR CLIMATE RESEARCH:
+✓ Global Coverage: Monitor entire glaciers, ice sheets, oceans at once
+✓ Consistency: Same sensor, same method, every measurement
+✓ Accessibility: Reach dangerous or remote areas safely
+✓ Historical Record: Decades of continuous data for comparison
+✓ Independence: Confirms ground measurements from a different source
+
+SCIENTIFIC VERIFICATION PRINCIPLE:
+When multiple independent measurement methods (ground sensors + satellites) show the same result, confidence in the data increases dramatically. This is called "multi-source verification" - a cornerstone of climate science.
+
+Dr. Chen's ground sensors showed warming. The satellites confirmed it from space. Two different technologies, two different perspectives, same conclusion: the warming is real.
+
+This is how science builds certainty: not from one measurement, but from multiple independent lines of evidence all pointing to the same truth.`,
+                    discovered: false,
+                    examined: false
                 }
+
             };
 
             showIntro();
@@ -2098,6 +2184,7 @@ You can examine:
   • workstation - Dr. Chen's computer and research materials
   • equipment rack - Storage for field research equipment
   • storage freezer - Ultra-cold freezer containing ice core samples
+  • satellite display - Wall-mounted screen showing thermal satellite imagery
   • window - Overlooks the glacier research site
 
 Dr. Maya Patel, the station director, is here and willing to answer questions.`;
@@ -2153,10 +2240,10 @@ SYSTEM:
             let progress = `
 📋 INVESTIGATION PROGRESS
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-Evidence found: ${found}/${total}
-Evidence examined: ${examined}/${total}
-Climate concepts learned: ${gameState.learnedConcepts.size}
-Talked to Dr. Patel: ${gameState.talkedToMaya ? 'Yes' : 'No'}
+Evidence found: ${found} of ${total}.
+Evidence examined: ${examined} of ${total}.
+Climate concepts learned: ${gameState.learnedConcepts.size}.
+Talked to Dr. Patel: ${gameState.talkedToMaya ? 'Yes' : 'No'}.
 `;
 
             if (checkWinCondition()) {
@@ -2270,8 +2357,9 @@ Thank you for playing Chapter 1 of The Vanishing Glaciers!
                 return;
             }
 
-            // Talk commands
-            if (command.startsWith('talk') || command.startsWith('ask') || command.startsWith('speak')) {
+            // Talk commands (including showing evidence)
+            if (command.startsWith('talk') || command.startsWith('ask') || command.startsWith('speak') || 
+                command.startsWith('show') || command.startsWith('present') || command.startsWith('give')) {
                 handleTalk(command);
                 return;
             }
@@ -2350,7 +2438,7 @@ Thank you for playing Chapter 1 of The Vanishing Glaciers!
             }
 
             console.log('No match found for:', targetNormalized);
-            addMessage(`❓ You don't see '${target}' here. Try examining: monitoring station, workstation, equipment rack, storage freezer, or window.`, 'warning-message');
+            addMessage(`❓ You don't see '${target}' here. Try examining: monitoring station, workstation, equipment rack, storage freezer, satellite display, or window.`, 'warning-message');
         }
 
         function examineInteractionPoint(point) {
@@ -2394,6 +2482,8 @@ Thank you for playing Chapter 1 of The Vanishing Glaciers!
                     gameState.learnedConcepts.add('glacier_melting_impacts');
                 } else if (evidence.id === 'ice_core_sample') {
                     gameState.learnedConcepts.add('ice_core_climate_archives');
+                } else if (evidence.id === 'satellite_thermal_image') {
+                    gameState.learnedConcepts.add('remote_sensing_thermal_imaging');
                 }
                 
                 message += `\n${evidence.climateLesson}`;
@@ -2411,7 +2501,33 @@ Thank you for playing Chapter 1 of The Vanishing Glaciers!
         }
 
         function handleTalk(command) {
+            // Check if user is trying to show evidence
+            if (command.includes('show') || command.includes('present')) {
+                // Extract evidence name
+                for (const [evidenceId, evidence] of Object.entries(gameState.evidence)) {
+                    const evidenceName = evidence.name.toLowerCase();
+                    const evidenceIdNorm = evidenceId.replace(/_/g, ' ');
+                    
+                    if (command.includes(evidenceName) || command.includes(evidenceIdNorm)) {
+                        const response = showEvidenceToMaya(evidenceId);
+                        addMessage(response);
+                        
+                        if (checkWinCondition()) {
+                            showVictory();
+                        }
+                        return;
+                    }
+                }
+                
+                // If "show" was mentioned but no evidence matched
+                addMessage(`🗣️  Dr. Patel:
+
+"What would you like to show me? If you've found evidence, try 'show [evidence name] to maya'."`);
+                return;
+            }
+
             let topic = '';
+
 
             if (command.includes('about')) {
                 topic = command.split('about')[1].trim();
@@ -2453,6 +2569,73 @@ She was working late last night on some concerning data. I'm worried something m
 
 If you find anything, or if you have questions about the research we do here, please ask me. I want to help however I can."`;
         }
+
+        
+        function showEvidenceToMaya(evidenceId) {
+            const evidence = gameState.evidence[evidenceId];
+            
+            if (!evidence || !evidence.discovered) {
+                return `🗣️  Dr. Patel:
+
+"I don't see what you're referring to. Have you found that evidence yet?"`;
+            }
+            
+            // Maya's responses based on specific evidence
+            if (evidenceId === 'temperature_data') {
+                return `🗣️  Dr. Patel:
+
+"Yes, those temperature readings are what had Sarah so concerned. A 2.3 degree increase in ice that should be stable... that's unprecedented in our records.
+
+The deep ice layers - those 800 to 1000 year old layers - should have very stable temperatures. When we see that kind of change, it signals something fundamental is happening to the glacier's thermal structure."`;
+            }
+            
+            if (evidenceId === 'calibration_log') {
+                return `🗣️  Dr. Patel:
+
+"Ah, the calibration log. This shows how thorough Sarah was being. She verified those sensors multiple times because the readings were so alarming.
+
+See how she kept recalibrating? She wanted to be absolutely certain the equipment wasn't malfunctioning. When every test confirmed the same results, she had to accept that the temperature increase was real."`;
+            }
+            
+            if (evidenceId === 'sarah_note') {
+                gameState.talkedToMaya = true;
+                return `🗣️  Dr. Patel:
+
+"Her note! So she went to sector 7-B to verify the thermal readings in person. That makes sense now.
+
+Sarah is meticulous - she wouldn't make alarming claims without absolute certainty. If the deep ice is warming that rapidly, the implications are severe. Structural destabilization, accelerated melting, ecosystem impacts...
+
+The 'winter protocol' she mentioned - that's our emergency data preservation procedure. It means she wanted to ensure her findings would be protected if something happened to her.
+
+I need to organize a search team to sector 7-B immediately. But thanks to your investigation, at least now we know where to look and why she went."`;
+            }
+            
+            if (evidenceId === 'ice_core_sample') {
+                return `🗣️  Dr. Patel:
+
+"Yes, this ice core is particularly important. See those annual layers? They're like tree rings - each one represents a year of snowfall.
+
+Sarah noted that the spacing in the top 50 years shows acceleration. The bands are getting thicker, which indicates more melt-refreeze cycles. This core provides physical proof that matches what the temperature sensors are telling us.
+
+What's remarkable is comparing this to the core from five years ago. That earlier core showed consistent patterns for 900 years. This one shows dramatic changes in recent decades. The ice itself is recording the climate change."`;
+            }
+            
+            if (evidenceId === 'satellite_thermal_image') {
+                return `🗣️  Dr. Patel:
+
+"The satellite data! This is crucial because it's completely independent from our ground sensors. Two different measurement systems - one on the ground, one in space - both showing the same warming patterns.
+
+That red zone distribution matches exactly where Sarah's sensors detected the temperature anomalies. When you have multiple independent data sources all pointing to the same conclusion, that's when you know the finding is solid.
+
+This kind of verification is exactly what Sarah needed before going public with such significant results."`;
+            }
+            
+            // Default for any other evidence
+            return `🗣️  Dr. Patel:
+
+"Thank you for showing me this. Every piece of evidence helps us understand what Sarah was investigating and why she felt it was so urgent."`;
+        }
+
 
         function getMayaResponse(topic) {
             // All Dr. Patel responses use the same speaker identifier prefix
@@ -2580,7 +2763,7 @@ Please, examine the lab carefully. Her workstation, the monitoring equipment - a
 
             // Default
             return `🗣️  Dr. Patel:
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
 "I'm not sure I understand. You can ask me about:
 • Our glacier research
 • How we monitor temperatures
@@ -2636,8 +2819,8 @@ Or you can show me any evidence you've found."`;
             const examined = gameState.examinedEvidence.size;
             
             document.getElementById('progressSummary').innerHTML = `
-                Evidence: ${found}/${total} Found<br>
-                Examined: ${examined}/${total}
+                Evidence: ${found} of ${total} found.<br>
+                Examined: ${examined} of ${total}.
             `;
         }
 
@@ -2670,7 +2853,7 @@ Or you can show me any evidence you've found."`;
                     if (lekhaVoice) {
                         console.log('✓ Lekha voice found (Dr. Patel):', lekhaVoice.name, '-', lekhaVoice.lang);
                     } else {
-                        console.log('⚠ Lekha voice not found, will use fallback for Dr. Patel');
+                        console.log('⚠️ Lekha voice not found, will use fallback for Dr. Patel');
                     }
                     
                     // Check for Martha (Narrator's voice - offline UK English)
@@ -2680,7 +2863,7 @@ Or you can show me any evidence you've found."`;
                     if (marthaVoice) {
                         console.log('✓ Martha voice found (Narrator):', marthaVoice.name, '-', marthaVoice.lang);
                     } else {
-                        console.log('⚠ Martha voice not found, will use fallback for narrator');
+                        console.log('⚠️ Martha voice not found, will use fallback for narrator');
                     }
                 });
             }
