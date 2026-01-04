@@ -860,6 +860,172 @@
                 padding: 15px;
             }
         }
+
+        .auto-save-indicator {
+            position: absolute;
+            top: 50%;
+            left: 15px;
+            transform: translateY(-50%);
+            color: #4dd0e1;
+            font-size: 12px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .auto-save-indicator.saving {
+            opacity: 1;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: #1a2332;
+            border: 3px solid #4dd0e1;
+            border-radius: 10px;
+            padding: 30px;
+            max-width: 800px;
+            max-height: 80vh;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: #ef5350;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            cursor: pointer;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+
+        .close-modal:hover {
+            background: #d32f2f;
+        }
+
+        .save-slot {
+            background: #2a3f5f;
+            border: 2px solid #4dd0e1;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 5px;
+        }
+
+        .save-slot-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .save-slot-name {
+            color: #4dd0e1;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .save-slot-info {
+            color: #a8c5da;
+            font-size: 12px;
+            margin: 5px 0;
+        }
+
+        .save-slot-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .save-slot-button {
+            padding: 8px 16px;
+            background: #3d5a80;
+            border: 1px solid #4dd0e1;
+            color: #4dd0e1;
+            cursor: pointer;
+            border-radius: 5px;
+            font-size: 12px;
+        }
+
+        .save-slot-button:hover {
+            background: #4dd0e1;
+            color: #1a2332;
+        }
+
+        .save-slot-button.danger {
+            background: #d32f2f;
+            border-color: #d32f2f;
+            color: white;
+        }
+
+        .save-slot-button.danger:hover {
+            background: #b71c1c;
+        }
+
+        .empty-slot {
+            opacity: 0.6;
+        }
+
+        .chapter-complete {
+            text-align: center;
+            padding: 40px;
+        }
+
+        .chapter-complete h1 {
+            color: #4dd0e1;
+            font-size: 32px;
+            margin-bottom: 20px;
+        }
+
+        .chapter-complete h2 {
+            color: #ffab40;
+            font-size: 24px;
+            margin-bottom: 30px;
+        }
+
+        .chapter-button {
+            padding: 15px 30px;
+            margin: 10px;
+            background: #4dd0e1;
+            border: none;
+            color: #1a2332;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+        }
+
+        .chapter-button:hover {
+            background: #81d4fa;
+        }
+
+        .chapter-button.secondary {
+            background: #3d5a80;
+            color: #4dd0e1;
+            border: 2px solid #4dd0e1;
+        }
+
+        .chapter-button.secondary:hover {
+            background: #2a3f5f;
+        }
     </style>
 </head>
 <body>
@@ -880,6 +1046,8 @@
             <div class="title">🏔️ THE VANISHING GLACIERS 🏔️</div>
             <div class="subtitle">POLARIS BASE RESEARCH STATION - SVALBARD, NORWAY</div>
             <div class="status" id="status">STATUS: INVESTIGATION IN PROGRESS</div>
+            <!-- Auto-save indicator (add to header section) -->
+            <div class="auto-save-indicator" id="autoSaveIndicator">💾 Auto-saving...</div>
         </div>
 
         <div class="main-content">
@@ -953,6 +1121,7 @@
                 <li><strong>talk to maya</strong> - Speak with Dr. Patel</li>
                 <li><strong>inventory</strong> - View evidence you've found</li>
                 <li><strong>progress</strong> - Check investigation status</li>
+                <li><strong>save</strong> - Save your current progress</li>
             </ul>
             
             <h3>❓ Natural Questions</h3>
@@ -1060,6 +1229,25 @@
         </div>
     </div>
 
+    <!-- Save/Load Modal (add before closing </body> tag) -->
+    <div id="saveModal" class="modal">
+        <div class="modal-content">
+            <button class="close-modal" onclick="closeSaveModal()">✕</button>
+            <h2 id="saveModalTitle">💾 Save Game</h2>
+            <div id="saveModalContent"></div>
+        </div>
+    </div>
+
+    <!-- Chapter Complete Modal (add before closing </body> tag) -->
+    <div id="chapterCompleteModal" class="modal">
+        <div class="modal-content" style="max-width: 900px;">
+            <div id="chapterCompleteContent"></div>
+        </div>
+    </div>
+
+    <script src="save_system.js"></script>
+    <script src="chapter_ending.js"></script>
+    
     <script>
         // Game State
         const gameState = {
@@ -1074,7 +1262,13 @@
             evidencePanelOpen: false,
             aiMode: false,
             aiEngine: null,
-            aiLoading: false
+            aiLoading: false,
+            gameStartTime: null,
+            playTimeSeconds: 0,
+            commandsEntered: 0,
+            hintsUsed: 0,
+            endingTriggered: false,
+            chapterComplete: false
         };
 
         // Text-to-Speech State
@@ -2210,6 +2404,7 @@ INTERACTION:
 
 SYSTEM:
   progress               - View investigation progress
+  save                   - Save your progress
   help                   - Show this help message
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━`;
@@ -2292,6 +2487,16 @@ Thank you for playing Chapter 1 of The Vanishing Glaciers!
 
         // Command processing
         function submitCommand() {
+            if (waitingForEnter) {
+                waitingForEnter = false;
+                if (enterCallback) {
+                    const callback = enterCallback;
+                    enterCallback = null;
+                    callback();
+                }
+                input.value = '';
+                return; // Exit early
+            }
             const input = document.getElementById('commandInput');
             const command = input.value.trim();
             
@@ -2308,6 +2513,21 @@ Thank you for playing Chapter 1 of The Vanishing Glaciers!
         }
 
         async function processCommand(command) {
+            // Check if waiting for Enter key (for ending sequence)
+            if (checkEnterKey()) {
+                return;
+            }
+            
+            // Track commands
+            if (gameState.commandsEntered !== undefined) {
+                gameState.commandsEntered++;
+            }
+            
+            // Handle SAVE command
+            if (command.toLowerCase() === 'save') {
+                showSaveMenu();
+                return;
+            }
             // Try AI parsing first if enabled
             if (gameState.aiMode && gameState.aiEngine) {
                 try {
@@ -2490,6 +2710,10 @@ Thank you for playing Chapter 1 of The Vanishing Glaciers!
                 message += `\n\n✓ Evidence examined and climate concept learned!`;
                 addMessage(message, 'success-message');
                 updateEvidenceDisplay();
+
+                if (typeof checkChapterCompletion === 'function') {
+                    checkChapterCompletion();
+                }
 
                 if (checkWinCondition()) {
                     showVictory();
@@ -2835,6 +3059,11 @@ Or you can show me any evidence you've found."`;
         window.onload = function() {
             initializeGame();
             initSpeechRecognition();
+
+            // Load settings
+            if (typeof loadSettings === 'function') {
+                loadSettings();
+            }
             
             // Pre-load voices for speech synthesis
             if ('speechSynthesis' in window) {
@@ -2866,6 +3095,12 @@ Or you can show me any evidence you've found."`;
                         console.log('⚠️ Martha voice not found, will use fallback for narrator');
                     }
                 });
+            }
+
+            // Start auto-save after game starts
+            if (gameState.gameStarted && typeof startAutoSave === 'function') {
+                gameState.gameStartTime = new Date();
+                startAutoSave();
             }
         };
     </script>
