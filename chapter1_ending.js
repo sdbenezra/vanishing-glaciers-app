@@ -273,7 +273,7 @@ What else did Sarah discover?
     setTimeout(() => {
         addMessage('\n[Hit ENTER or press SEND to see Chapter 2 preview]', 'system-message');
         waitForEnter(() => showChapter2Teaser());
-    }, 55000);
+    }, 60000);
 }
 
 // ====================================
@@ -418,18 +418,88 @@ function submitEmail() {
 }
 
 function returnToMainMenuFromEnding() {
+    // Close chapter complete modal
     document.getElementById('chapterCompleteModal').classList.remove('active');
-    stopAutoSave();
-    clearGameOutput();
-    showMainMenu();
+    
+    // Clear game output - FIX THE ID HERE TOO
+    const chatDisplay = document.getElementById('chatDisplay');  // ⭐ CHANGE THIS
+    if (chatDisplay) {
+        chatDisplay.innerHTML = '';
+    }
+    
+    // Stop auto-save
+    if (typeof stopAutoSave === 'function') {
+        stopAutoSave();
+    }
+    
+    // Hide game container
+    const gameContainer = document.getElementById('gameContainer');
+    if (gameContainer) {
+        gameContainer.classList.add('hidden');
+    }
+    
+    // Show main menu
+    const mainMenu = document.getElementById('mainMenu');
+    if (mainMenu) {
+        mainMenu.classList.remove('hidden');
+        
+        // Update continue button state
+        if (typeof updateContinueButton === 'function') {
+            updateContinueButton();
+        }
+    }
 }
 
 function playAgain() {
+    // Close chapter complete modal
     document.getElementById('chapterCompleteModal').classList.remove('active');
-    clearGameOutput();
-    newGame();
+    
+    // Clear game output
+    const chatDisplay = document.getElementById('chatDisplay');  // ⭐ CHANGE THIS
+    if (chatDisplay) {
+        chatDisplay.innerHTML = '';
+    }
+    
+    // Reset game state
+    gameState.discoveredEvidence = new Set();
+    gameState.examinedEvidence = new Set();
+    gameState.learnedConcepts = new Set();
+    gameState.topicsDiscussed = new Set();
+    gameState.commandsEntered = 0;
+    gameState.hintsUsed = 0;
+    gameState.endingTriggered = false;
+    gameState.chapterComplete = false;
+    gameState.gameStarted = true;
+    gameState.gameStartTime = new Date();
+    gameState.playTimeSeconds = 0;
+    
+    // Keep game container visible
+    const gameContainer = document.getElementById('gameContainer');
+    if (gameContainer) {
+        gameContainer.classList.remove('hidden');
+    }
+    
+    // Hide main menu if visible
+    const mainMenu = document.getElementById('mainMenu');
+    if (mainMenu) {
+        mainMenu.classList.add('hidden');
+    }
+    
+    // Initialize and start fresh game
+    if (typeof initializeGame === 'function') {
+        initializeGame();
+    }
+    if (typeof showIntro === 'function') {
+        showIntro();
+    }
+    if (typeof updateEvidenceDisplay === 'function') {
+        updateEvidenceDisplay();
+    }
+    if (typeof startAutoSave === 'function') {
+        startAutoSave();
+    }
 }
 
 function clearGameOutput() {
-    document.getElementById('gameOutput').innerHTML = '';
+    document.getElementById('chatDisplay').innerHTML = '';
 }

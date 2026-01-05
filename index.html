@@ -1026,10 +1026,191 @@
         .chapter-button.secondary:hover {
             background: #2a3f5f;
         }
+
+        /* Main Menu Styles */
+        .main-menu {
+            width: 100%;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(135deg, #1a2332 0%, #2a3f5f 100%);
+            padding: 20px;
+        }
+
+        .menu-content {
+            max-width: 600px;
+            width: 100%;
+        }
+
+        .menu-title {
+            color: #4dd0e1;
+            text-align: center;
+            font-size: 36px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            text-shadow: 0 0 20px rgba(77, 208, 225, 0.5);
+        }
+
+        .menu-subtitle {
+            color: #a8c5da;
+            text-align: center;
+            font-size: 16px;
+            margin-bottom: 5px;
+        }
+
+        .menu-chapter {
+            color: #ffab40;
+            text-align: center;
+            font-size: 22px;
+            margin-bottom: 40px;
+            font-weight: bold;
+        }
+
+        .menu-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .menu-button {
+            width: 100%;
+            padding: 20px;
+            background: #2a3f5f;
+            border: 2px solid #4dd0e1;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            color: #4dd0e1;
+            font-size: 16px;
+            text-align: left;
+        }
+
+        .menu-button:hover {
+            background: #3d5a80;
+            border-color: #81d4fa;
+            transform: translateX(5px);
+            box-shadow: 0 5px 15px rgba(77, 208, 225, 0.3);
+        }
+
+        .menu-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .menu-button:disabled:hover {
+            background: #2a3f5f;
+            border-color: #4dd0e1;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .button-icon {
+            font-size: 32px;
+            flex-shrink: 0;
+        }
+
+        .button-content {
+            flex: 1;
+        }
+
+        .button-title {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #4dd0e1;
+        }
+
+        .button-desc {
+            font-size: 13px;
+            color: #a8c5da;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        /* Mobile responsive */
+        @media (max-width: 768px) {
+            .menu-title {
+                font-size: 28px;
+            }
+            
+            .menu-chapter {
+                font-size: 18px;
+            }
+            
+            .menu-button {
+                padding: 15px;
+            }
+            
+            .button-icon {
+                font-size: 24px;
+            }
+            
+            .button-title {
+                font-size: 18px;
+            }
+        }
     </style>
 </head>
 <body>
-    <div class="game-container">
+    <!-- Main Menu Screen -->
+    <div id="mainMenu" class="main-menu">
+        <div class="menu-content">
+            <h1 class="menu-title">❄️ THE VANISHING GLACIERS ❄️</h1>
+            <h2 class="menu-subtitle">An Environmental Mystery Series</h2>
+            <h3 class="menu-chapter">Chapter 1: "The Disappearance"</h3>
+            
+            <div class="menu-buttons">
+                <button class="menu-button" id="continueButton" onclick="continueGame()">
+                    <span class="button-icon">▶️</span>
+                    <span class="button-content">
+                        <div class="button-title">Continue</div>
+                        <div class="button-desc">Resume your most recent investigation</div>
+                    </span>
+                </button>
+                
+                <button class="menu-button" onclick="showLoadMenu()">
+                    <span class="button-icon">💾</span>
+                    <span class="button-content">
+                        <div class="button-title">Load Game</div>
+                        <div class="button-desc">Choose from saved investigations</div>
+                    </span>
+                </button>
+                
+                <button class="menu-button" onclick="startNewGame()">
+                    <span class="button-icon">✨</span>
+                    <span class="button-content">
+                        <div class="button-title">New Game</div>
+                        <div class="button-desc">Begin a fresh investigation</div>
+                    </span>
+                </button>
+                
+                <button class="menu-button" onclick="showSettings()">
+                    <span class="button-icon">⚙️</span>
+                    <span class="button-content">
+                        <div class="button-title">Settings</div>
+                        <div class="button-desc">Adjust voice, hints, and auto-save</div>
+                    </span>
+                </button>
+                
+                <button class="menu-button" onclick="showAbout()">
+                    <span class="button-icon">❓</span>
+                    <span class="button-content">
+                        <div class="button-title">About</div>
+                        <div class="button-desc">Learn about this game</div>
+                    </span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div id="gameContainer" class="game-container hidden">
         <div class="header">
             <div class="voice-controls">
                 <div class="speaking-indicator" id="speakingIndicator">
@@ -1041,6 +1222,14 @@
                 <button class="voice-button" id="muteButton" onclick="toggleMute()" title="Toggle voice narration">
                     <span id="muteIcon">🔊</span>
                     <span id="muteText">Voice On</span>
+                </button>
+            </div>
+            <div style="display: flex; gap: 10px; margin-top: 10px;">
+                <button class="voice-button" id="muteButton" onclick="showSaveMenu()">
+                    💾 Save
+                </button>
+                <button class="voice-button" id="muteButton" onclick="returnToMainMenu()">
+                    🏠 Menu
                 </button>
             </div>
             <div class="title">🏔️ THE VANISHING GLACIERS 🏔️</div>
@@ -1244,9 +1433,6 @@
             <div id="chapterCompleteContent"></div>
         </div>
     </div>
-
-    <script src="save_system.js"></script>
-    <script src="chapter1_ending.js"></script>
     
     <script>
         // Game State
@@ -2383,8 +2569,7 @@ soft whir of monitoring equipment. Banks of screens display complex data
 visualizations, their glow casting an eerie light in the Arctic twilight.
 
 The lab is meticulously organized - research papers neatly stacked, equipment
-properly stored - but there's an air of abandonment, as if someone left in a
-hurry.
+properly stored - but there's an air of abandonment, as if someone left in a hurry.
 
 You can examine:
   • monitoring station - Displays showing glacier temperature data
@@ -2501,6 +2686,9 @@ Thank you for playing Chapter 1 of The Vanishing Glaciers!
 
         // Command processing
         function submitCommand() {
+            const input = document.getElementById('commandInput');
+            const command = input.value.trim();
+
             if (waitingForEnter) {
                 waitingForEnter = false;
                 if (enterCallback) {
@@ -2511,8 +2699,6 @@ Thank you for playing Chapter 1 of The Vanishing Glaciers!
                 input.value = '';
                 return; // Exit early
             }
-            const input = document.getElementById('commandInput');
-            const command = input.value.trim();
             
             if (!command) return;
 
@@ -3066,12 +3252,19 @@ Or you can show me any evidence you've found."`;
 
         // Initialize on load
         window.onload = function() {
-            initializeGame();
-            initSpeechRecognition();
-
             // Load settings
             if (typeof loadSettings === 'function') {
                 loadSettings();
+            }
+            
+            // Setup speech recognition if available
+            if (typeof setupSpeechRecognition === 'function') {
+                setupSpeechRecognition();
+            }
+            
+            // Initialize game data
+            if (typeof initializeGame === 'function') {
+                initializeGame();
             }
             
             // Pre-load voices for speech synthesis
@@ -3106,12 +3299,298 @@ Or you can show me any evidence you've found."`;
                 });
             }
 
+            // Show main menu on startup
+            showMainMenu();
+            
+            // Setup enter key handler
+            const commandInput = document.getElementById('commandInput');
+            if (commandInput) {
+                commandInput.addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter') {
+                        submitCommand();
+                    }
+                });
+            }
+
             // Start auto-save after game starts
             if (gameState.gameStarted && typeof startAutoSave === 'function') {
                 gameState.gameStartTime = new Date();
                 startAutoSave();
             }
         };
+
+        // =====================================
+        // MAIN MENU FUNCTIONS
+        // =====================================
+
+        function showMainMenu() {
+            // Hide game container
+            document.getElementById('gameContainer').classList.add('hidden');
+            
+            // Show main menu
+            document.getElementById('mainMenu').classList.remove('hidden');
+            
+            // Check if there's a save to enable continue button
+            updateContinueButton();
+            
+            // Stop auto-save
+            if (typeof stopAutoSave === 'function') {
+                stopAutoSave();
+            }
+        }
+
+        function hideMainMenu() {
+            // Hide main menu
+            document.getElementById('mainMenu').classList.add('hidden');
+            
+            // Show game container
+            document.getElementById('gameContainer').classList.remove('hidden');
+        }
+
+        function updateContinueButton() {
+            const continueButton = document.getElementById('continueButton');
+            
+            // Check for most recent save
+            const lastSave = localStorage.getItem('vg_last_save');
+            const autoSave = localStorage.getItem('vg_save_-1');
+            
+            if (lastSave !== null || autoSave !== null) {
+                continueButton.disabled = false;
+            } else {
+                continueButton.disabled = true;
+            }
+        }
+
+        function continueGame() {
+            // Find most recent save
+            let slotToLoad = -1; // Default to auto-save
+            
+            const lastSave = localStorage.getItem('vg_last_save');
+            if (lastSave !== null) {
+                const saveData = localStorage.getItem(`vg_save_${lastSave}`);
+                if (saveData) {
+                    slotToLoad = parseInt(lastSave);
+                }
+            }
+            
+            // Hide menu, show game
+            hideMainMenu();
+            
+            // Load the save
+            if (typeof loadGame === 'function') {
+                if (loadGame(slotToLoad)) {
+                    if (typeof startAutoSave === 'function') {
+                        startAutoSave();
+                    }
+                }
+            }
+        }
+
+        function startNewGame() {
+            // Confirm if there's unsaved progress
+            if (gameState.gameStarted && !gameState.chapterComplete) {
+                if (!confirm('Starting a new game will erase current progress. Continue?')) {
+                    return;
+                }
+            }
+            
+            // Hide menu, show game
+            hideMainMenu();
+            
+            // Reset and start new game
+            gameState.discoveredEvidence = new Set();
+            gameState.examinedEvidence = new Set();
+            gameState.learnedConcepts = new Set();
+            gameState.topicsDiscussed = new Set();
+            gameState.commandsEntered = 0;
+            gameState.hintsUsed = 0;
+            gameState.endingTriggered = false;
+            gameState.chapterComplete = false;
+            gameState.gameStarted = true;
+            gameState.gameStartTime = new Date();
+            gameState.playTimeSeconds = 0;
+            
+            // Clear game output
+            document.getElementById('gameChatDisplay').innerHTML = '';
+            
+            // Initialize and show intro
+            if (typeof initializeGame === 'function') {
+                initializeGame();
+            }
+            if (typeof showIntro === 'function') {
+                showIntro();
+            }
+            if (typeof updateEvidenceDisplay === 'function') {
+                updateEvidenceDisplay();
+            }
+            if (typeof startAutoSave === 'function') {
+                startAutoSave();
+            }
+        }
+
+        function returnToMainMenu() {
+            // Confirm if game in progress
+            if (gameState.gameStarted && !gameState.chapterComplete) {
+                if (!confirm('Return to main menu? Unsaved progress will be lost.')) {
+                    return;
+                }
+            }
+            
+            // Stop auto-save
+            if (typeof stopAutoSave === 'function') {
+                stopAutoSave();
+            }
+            
+            // Show main menu
+            showMainMenu();
+        }
+
+        // Also add to chapter_ending.js returnToMainMenuFromEnding function:
+        function returnToMainMenuFromEnding() {
+            // Close chapter complete modal
+            document.getElementById('chapterCompleteModal').classList.remove('active');
+            
+            // Clear game output
+            if (typeof clearGameOutput === 'function') {
+                clearGameOutput();
+            }
+            
+            // Stop auto-save
+            if (typeof stopAutoSave === 'function') {
+                stopAutoSave();
+            }
+            
+            // Show main menu
+            if (typeof showMainMenu === 'function') {
+                showMainMenu();
+            }
+        }
+
+
+        function showSettings() {
+            const modal = document.getElementById('saveModal');
+            const title = document.getElementById('saveModalTitle');
+            const content = document.getElementById('saveModalContent');
+            
+            title.textContent = '⚙️ Settings';
+            
+            content.innerHTML = `
+                <div style="color: #a8c5da;">
+                    <h3 style="color: #4dd0e1; margin-bottom: 15px;">Game Settings</h3>
+                    
+                    <div style="margin: 20px 0; padding: 15px; background: #2a3f5f; border-radius: 5px;">
+                        <label style="display: flex; align-items: center; justify-content: space-between;">
+                            <span>Auto-Save Enabled</span>
+                            <input type="checkbox" ${gameSettings.autoSaveEnabled ? 'checked' : ''} 
+                                onchange="toggleAutoSave(this.checked)" style="width: 20px; height: 20px;">
+                        </label>
+                    </div>
+                    
+                    <div style="margin: 20px 0; padding: 15px; background: #2a3f5f; border-radius: 5px;">
+                        <label style="display: block; margin-bottom: 10px;">
+                            Auto-Save Interval: <span id="intervalDisplay">${gameSettings.autoSaveInterval / 60000}</span> minutes
+                        </label>
+                        <input type="range" min="1" max="10" value="${gameSettings.autoSaveInterval / 60000}" 
+                            oninput="updateAutoSaveInterval(this.value)" style="width: 100%;">
+                    </div>
+                    
+                    <div style="margin: 20px 0; padding: 15px; background: #2a3f5f; border-radius: 5px;">
+                        <label style="display: flex; align-items: center; justify-content: space-between;">
+                            <span>Text-to-Speech Enabled</span>
+                            <input type="checkbox" ${gameSettings.ttsEnabled ? 'checked' : ''} 
+                                onchange="gameSettings.ttsEnabled = this.checked; speechEnabled = this.checked; saveSettings();" 
+                                style="width: 20px; height: 20px;">
+                        </label>
+                    </div>
+                    
+                    <div style="margin: 20px 0; padding: 15px; background: #2a3f5f; border-radius: 5px;">
+                        <label style="display: flex; align-items: center; justify-content: space-between;">
+                            <span>Hints Enabled</span>
+                            <input type="checkbox" ${gameSettings.hintsEnabled ? 'checked' : ''} 
+                                onchange="gameSettings.hintsEnabled = this.checked; saveSettings();" 
+                                style="width: 20px; height: 20px;">
+                        </label>
+                    </div>
+                    
+                    <p style="margin-top: 20px; font-size: 12px; color: #81c784;">
+                        💡 Settings are saved automatically.
+                    </p>
+                </div>
+            `;
+            
+            modal.classList.add('active');
+        }
+
+        function showAbout() {
+            const modal = document.getElementById('saveModal');
+            const title = document.getElementById('saveModalTitle');
+            const content = document.getElementById('saveModalContent');
+            
+            title.textContent = '❓ About The Vanishing Glaciers';
+            
+            content.innerHTML = `
+                <div style="color: #a8c5da; line-height: 1.8;">
+                    <p style="margin-bottom: 15px;">
+                        <strong style="color: #4dd0e1;">The Vanishing Glaciers</strong> is an educational environmental mystery game 
+                        that teaches climate science through interactive storytelling.
+                    </p>
+                    
+                    <h3 style="color: #4dd0e1; margin: 20px 0 10px 0;">Chapter 1: The Disappearance</h3>
+                    <p style="margin-bottom: 15px;">
+                        Investigate the mysterious disappearance of Dr. Sarah Chen, a glaciologist at an Arctic research station. 
+                        Gather evidence, learn about climate science, and uncover the truth.
+                    </p>
+                    
+                    <h3 style="color: #4dd0e1; margin: 20px 0 10px 0;">Commands</h3>
+                    <p style="font-family: 'Courier New', monospace; background: #1a2332; padding: 10px; border-radius: 5px; font-size: 12px;">
+                        EXAMINE [object] - Inspect items<br>
+                        TALK [topic] - Discuss with Dr. Patel<br>
+                        INVENTORY - View evidence<br>
+                        PROGRESS - Check status<br>
+                        SAVE - Save progress<br>
+                        HELP - View all commands
+                    </p>
+                    
+                    <div style="margin-top: 30px; padding-top: 20px; border-top: 2px solid #2a3f5f; text-align: center; font-size: 12px;">
+                        <p style="color: #81c784;">
+                            🌍 Making climate science accessible through interactive storytelling
+                        </p>
+                        <p style="margin-top: 10px;">
+                            Version 1.0.0 | Chapter 1 of 5
+                        </p>
+                    </div>
+                </div>
+            `;
+            
+            modal.classList.add('active');
+        }
+
+        function toggleAutoSave(enabled) {
+            gameSettings.autoSaveEnabled = enabled;
+            if (typeof saveSettings === 'function') {
+                saveSettings();
+            }
+            
+            if (enabled && typeof startAutoSave === 'function') {
+                startAutoSave();
+            } else if (typeof stopAutoSave === 'function') {
+                stopAutoSave();
+            }
+        }
+
+        function updateAutoSaveInterval(minutes) {
+            document.getElementById('intervalDisplay').textContent = minutes;
+            gameSettings.autoSaveInterval = minutes * 60000;
+            if (typeof saveSettings === 'function') {
+                saveSettings();
+            }
+            
+            if (gameSettings.autoSaveEnabled && typeof startAutoSave === 'function') {
+                startAutoSave();
+            }
+        }
     </script>
+    <script src="save_system.js"></script>
+    <script src="chapter1_ending.js"></script>
 </body>
 </html>
