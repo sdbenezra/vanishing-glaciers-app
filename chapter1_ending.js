@@ -10,6 +10,14 @@ let enterCallback = null;
 function waitForEnter(callback) {
     waitingForEnter = true;
     enterCallback = callback;
+    
+    // Visual indicator that we're waiting for Enter
+    const input = document.getElementById('commandInput');
+    if (input) {
+        input.classList.add('waiting-for-enter');
+        input.placeholder = "Hit ENTER or press SEND to continue...";
+        input.value = ''; // Clear any existing text
+    }
 }
 
 function checkEnterKey() {
@@ -17,6 +25,14 @@ function checkEnterKey() {
         waitingForEnter = false;
         const callback = enterCallback;
         enterCallback = null;
+        
+        // Remove visual indicator
+        const input = document.getElementById('commandInput');
+        if (input) {
+            input.classList.remove('waiting-for-enter');
+            input.placeholder = "Enter command (type HELP for commands)...";
+        }
+        
         callback();
         return true;
     }
@@ -61,61 +77,109 @@ function triggerChapterEnding() {
 }
 
 function showEndingDialogue1() {
-    const dialogue = `Dr. Maya Patel walks over to your workstation, reviewing the evidence you've gathered.
-
-🗣️  MAYA: "I think I understand what happened. Look at the pattern here..."
-
-She gestures to the evidence laid out before you.
-
-🗣️  MAYA: "Sarah found something alarming in the temperature data - a 2.3°C increase in ice that should be stable for centuries. That's not a minor anomaly."
-
-🗣️  MAYA: "But she's a careful scientist. She recalibrated the sensors repeatedly, cross-checked with satellite thermal imaging, even examined ice cores. Every single test confirmed the same thing: the warming is real."
-
-🗣️  MAYA: "So she followed proper scientific protocol. Before making any public claims about such dramatic findings, she went to sector 7-B to collect physical evidence - actual ice samples, direct thermal measurements."
-
-You nod, the pieces falling into place.
-
-🗣️  MAYA: "She's not in danger. She's being thorough. That's what good scientists do."`;
-    
-    addMessage(dialogue, 'dialogue-message');
+    const narration = `Dr. Patel walks over to your workstation, reviewing the evidence you've gathered.`;
+    addMessage(narration, 'system-message');
     
     setTimeout(() => {
-        addMessage('\n[Press ENTER to continue]', 'system-message');
+        const maya1 = `🗣️  Dr. Maya Patel: "I think I understand what happened. Look at the pattern here..."`;
+        addMessage(maya1, 'dialogue-message');
+    }, 5000);
+    
+    setTimeout(() => {
+        const narration2 = `She gestures to the evidence laid out before you.`;
+        addMessage(narration2, 'system-message');
+    }, 10000);
+    
+    setTimeout(() => {
+        const maya2 = `🗣️  Dr. Maya Patel: "Sarah found something alarming in the temperature data, a two point three °C increase in ice that should be stable for centuries. That's not a minor anomaly.
+        But she's a careful scientist. She recalibrated the sensors repeatedly, cross-checked with satellite thermal imaging, even examined ice cores. Every single test confirmed the same thing: the warming is real.
+        So she followed proper scientific protocol. Before making any public claims about such dramatic findings, she went to sector seven B to collect physical evidence - actual ice samples, direct thermal measurements.
+        She's not in danger. She's being thorough. That's what good scientists do."`;
+        addMessage(maya2, 'dialogue-message');
+    }, 15000);
+    
+    // setTimeout(() => {
+    //     const maya3 = `🗣️  Dr. Maya Patel: ""`;
+    //     addMessage(maya3, 'dialogue-message');
+    // }, 8000);
+    
+    // setTimeout(() => {
+    //     const maya4 = `🗣️  Dr. Maya Patel: "So she followed proper scientific protocol. Before making any public claims about such dramatic findings, she went to sector 7-B to collect physical evidence - actual ice samples, direct thermal measurements."`;
+    //     addMessage(maya4, 'dialogue-message');
+    // }, 12000);
+    
+    setTimeout(() => {
+        const narration3 = `You nod, the pieces falling into place.`;
+        addMessage(narration3, 'system-message');
+    }, 60000);
+    
+    // setTimeout(() => {
+    //     const maya5 = `🗣️  Dr. Maya Patel: "She's not in danger. She's being thorough. That's what good scientists do."`;
+    //     addMessage(maya5, 'dialogue-message');
+    // }, 17500);
+    
+    setTimeout(() => {
+        addMessage('\n[Hit ENTER or press SEND to continue..]', 'system-message');
         waitForEnter(() => showEndingDialogue2());
-    }, 500);
+    }, 65000);
 }
 
 function showEndingDialogue2() {
     addMessage('═══════════════════════════════════════════════', 'system-message');
     
-    const dialogue = `🗣️  MAYA: "Actually, there's something else I should show you..."
-
-She pulls up a system log on her tablet.
-
-🗣️  MAYA: "Sarah activated 'Winter Protocol' at 23:52 last night. That's our secure emergency backup system. We only use it when data is too critical to risk losing - natural disasters, equipment failures, that sort of thing."
-
-🗣️  MAYA: "She backed up all her research findings to our off-site servers before leaving. Whatever she found, she made absolutely certain it wouldn't be lost."
-
-A slight frown crosses Maya's face.`;
-    
-    addMessage(dialogue, 'dialogue-message');
+    setTimeout(() => {
+        const maya1 = `🗣️  Dr. Maya Patel: "Actually, there's something else I should show you..."`;
+        addMessage(maya1, 'dialogue-message');
+    }, 1000);
     
     setTimeout(() => {
-        addMessage('\n[Press ENTER to continue]', 'system-message');
+        const narration = `She pulls up a system log on her tablet.`;
+        addMessage(narration, 'system-message');
+    }, 5000);
+    
+    setTimeout(() => {
+        const maya2 = `🗣️  Dr. Maya Patel: "Sarah activated 'Winter Protocol' just before midnight last night. That's our secure emergency backup system. We only use it when data is too critical to risk losing, natural disasters, equipment failures, that sort of thing.
+        She backed up all her research findings to our off-site servers before leaving. Whatever she found, she made absolutely certain it wouldn't be lost."`;
+        addMessage(maya2, 'dialogue-message');
+    }, 8000);
+    
+    // setTimeout(() => {
+    //     const maya3 = `🗣️  Dr. Maya Patel: "She backed up all her research findings to our off-site servers before leaving. Whatever she found, she made absolutely certain it wouldn't be lost."`;
+    //     addMessage(maya3, 'dialogue-message');
+    // }, 9000);
+    
+    setTimeout(() => {
+        const narration2 = `A slight frown crosses Maya's face.`;
+        addMessage(narration2, 'system-message');
+    },35000);
+    
+    setTimeout(() => {
+        addMessage('\n[Hit ENTER or press SEND to continue..]', 'system-message');
         waitForEnter(() => showEndingDialogue3());
-    }, 500);
+    }, 40000);
 }
 
 function showEndingDialogue3() {
     addMessage('═══════════════════════════════════════════════', 'system-message');
     
-    const dialogue = `🗣️  MAYA: "There's just one thing that seems... odd."
-
-She shows you a piece of paper.
-
-🗣️  MAYA: "I found this in Sarah's personal locker. It's encrypted - which is unusual for routine field work communication."
-
-╔═══════════════════════════════════════════════╗
+    setTimeout(() => {
+        const maya1 = `🗣️  Dr. Maya Patel: "There's just one thing that seems... odd.
+        I found this in Sarah's personal locker. It's encrypted - which is unusual for routine field work communication."`;
+        addMessage(maya1, 'dialogue-message');
+    }, 1000);
+    
+    setTimeout(() => {
+        const narration = `She shows you a piece of paper.`;
+        addMessage(narration, 'system-message');
+    }, 11000);
+    
+    // setTimeout(() => {
+    //     const maya2 = `🗣️  Dr. Maya Patel: "I found this in Sarah's personal locker. It's encrypted - which is unusual for routine field work communication."`;
+    //     addMessage(maya2, 'dialogue-message');
+    // }, 4500);
+    
+    setTimeout(() => {
+        const encryptedNote = `╔═══════════════════════════════════════════════╗
 ║  ENCRYPTED NOTE - PARTIAL DECRYPTION          ║
 ╠═══════════════════════════════════════════════╣
 ║  To: K [Kristin Hansen]                       ║
@@ -127,20 +191,30 @@ She shows you a piece of paper.
 ║  - S                                          ║
 ║                                               ║
 ║  [Remainder encrypted - AES-256]              ║
-╚═══════════════════════════════════════════════╝
-
-🗣️  MAYA: "Who's 'they'? And why encrypt a message to her grad student about a routine verification trip?"
-
-🗣️  MAYA: "Maybe I'm reading too much into it. Scientists can be paranoid about data security..."
-
-But she doesn't sound convinced.`;
-    
-    addMessage(dialogue, 'dialogue-message');
+╚═══════════════════════════════════════════════╝`;
+        addMessage(encryptedNote, 'system-message');
+    }, 15000);
     
     setTimeout(() => {
-        addMessage('\n[Press ENTER to continue]', 'system-message');
+        const maya3 = `🗣️  Dr. Maya Patel: "Who's 'they'? And why encrypt a message to her grad student about a routine verification trip?
+        Maybe I'm reading too much into it. Scientists can be paranoid about data security..."`;
+        addMessage(maya3, 'dialogue-message');
+    }, 30000);
+    
+    // setTimeout(() => {
+    //     const maya4 = `🗣️  Dr. Maya Patel: "Maybe I'm reading too much into it. Scientists can be paranoid about data security..."`;
+    //     addMessage(maya4, 'dialogue-message');
+    // }, 13000);
+    
+    setTimeout(() => {
+        const narration = `But she doesn't sound convinced.`;
+        addMessage(narration, 'system-message');
+    }, 45000);
+    
+    setTimeout(() => {
+        addMessage('\n[Hit ENTER or press SEND to continue..]', 'system-message');
         waitForEnter(() => showChapterSummary());
-    }, 500);
+    }, 50000);
 }
 
 function showChapterSummary() {
@@ -156,7 +230,7 @@ function showChapterSummary() {
 
 MYSTERY SOLVED:
 Dr. Sarah Chen discovered unprecedented warming in deep glacier layers.
-Following proper scientific methodology, she went to sector 7-B to 
+Following proper scientific methodology, she went to sector 7 B to 
 collect physical evidence before making any public announcements.
 
 EVIDENCE COLLECTED:
@@ -175,8 +249,8 @@ CLIMATE SCIENCE CONCEPTS LEARNED:
 
 YOUR INVESTIGATION:
 ⏱️ Time Played: ${formatPlayTime(playTime)}
-📊 Evidence Found: ${gameState.discoveredEvidence.size}/5 (100%)
-🔬 Evidence Examined: ${gameState.examinedEvidence.size}/5 (100%)
+📊 Evidence Found: ${gameState.discoveredEvidence.size} of 5 (100%)
+🔬 Evidence Examined: ${gameState.examinedEvidence.size} of 5 (100%)
 💬 Conversation Topics: ${gameState.topicsDiscussed.size}
 🎯 Investigation Rating: THOROUGH
 
@@ -188,15 +262,18 @@ What else did Sarah discover?
 
 ═══════════════════════════════════════════════`;
     
+    setTimeout(() => {
+        addMessage(summary, 'system-message');
+    }, 500);
     addMessage(summary, 'system-message');
     
     // Auto-save completion
     saveGame(-1, 'Chapter 1 Complete');
     
     setTimeout(() => {
-        addMessage('\n[Press ENTER to see Chapter 2 preview]', 'system-message');
+        addMessage('\n[Hit ENTER or press SEND to see Chapter 2 preview]', 'system-message');
         waitForEnter(() => showChapter2Teaser());
-    }, 1000);
+    }, 55000);
 }
 
 // ====================================
@@ -280,7 +357,7 @@ function showEmailSignup() {
                 
                 <input type="email" 
                        id="emailInput" 
-                       placeholder="your.email@example.com"
+                       placeholder="This option deactivated - your.email@example.com"
                        style="width: 100%; padding: 15px; background: #1a2332; border: 2px solid #4dd0e1; color: #4dd0e1; font-size: 16px; border-radius: 5px; margin-bottom: 15px;">
                 
                 <button class="chapter-button" onclick="submitEmail()" style="width: 100%; margin: 10px 0;">
@@ -320,7 +397,7 @@ function submitEmail() {
             
             <div style="max-width: 500px; margin: 30px auto; padding: 30px; background: #2a3f5f; border-radius: 10px; text-align: center;">
                 <p style="color: #81c784; font-size: 18px; margin-bottom: 20px;">
-                    📧 ${email}
+                    📧 <h2>Email-Not Taking Emails Yet, Stay Tuned>
                 </p>
                 
                 <p style="color: #a8c5da; margin-bottom: 30px;">

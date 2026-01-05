@@ -1246,7 +1246,7 @@
     </div>
 
     <script src="save_system.js"></script>
-    <script src="chapter_ending.js"></script>
+    <script src="chapter1_ending.js"></script>
     
     <script>
         // Game State
@@ -1617,12 +1617,25 @@
         .replace(/[\u{2700}-\u{27BF}]/gu, '') // Remove dingbats
         .replace(/[\u{1F600}-\u{1F64F}]/gu, '') // Remove emoticons
         .replace(/[─━]+/g, '') // Remove separator lines
+
+        // Remove character names and labels
+        .replace(/Dr\.?\s*Maya\s*Patel/gi, '') // Remove character name
         .replace(/Dr\. /g, 'Doctor ') // Expand abbreviations
+
+        // Scientific units and measurements
+        .replace(/(\d+)\.(\d+)/g, '$1 point $2')
+        .replace(/(-?\d+\.?\d*)\s*°C/g, '$1 degrees Celsius')
+        .replace(/(-?\d+\.?\d*)\s*°F/g, '$1 degrees Fahrenheit')
+        .replace(/(\d+\.?\d*)\s*km/g, '$1 kilometers')
+        .replace(/(\d+\.?\d*)\s*m\b/g, '$1 meters')
+        .replace(/(\d+\.?\d*)\s*cm/g, '$1 centimeters')
+        .replace(/(\d+\.?\d*)\s*%/g, '$1 percent')
         
         // Improve line break handling for natural speech
         .replace(/\n\s*━+\s*\n/g, '. ') // Remove separator line breaks
         .replace(/\n(?=[A-Z][A-Z])/g, '. ') // Newline before all-caps (headers) = period
         .replace(/:\n/g, ': ') // Colon + newline = just space
+        .replace(/[:-]/g, ' ') // Replace colons and dashes with spaces
         .replace(/\n\s*[•·]/g, ', ') // Bullet points = commas
         .replace(/\n\s*-\s/g, ', ') // Dash lists = commas
         .replace(/\n(?=[A-Z][a-z])/g, '. ') // Newline before sentence case = period
@@ -2441,9 +2454,10 @@ Climate concepts learned: ${gameState.learnedConcepts.size}.
 Talked to Dr. Patel: ${gameState.talkedToMaya ? 'Yes' : 'No'}.
 `;
 
-            if (checkWinCondition()) {
-                progress += "\n✓ Mystery solved! You understand what happened to Dr. Chen.";
-            } else if (found === total && examined === total) {
+            // if (checkWinCondition()) {
+            //     progress += "\n✓ Mystery solved! You understand what happened to Dr. Chen.";
+            // } else if (found === total && examined === total) {
+            if (found === total && examined === total) {
                 progress += "\n→ You've found all the evidence. Talk to Dr. Patel to piece it together.";
             } else {
                 progress += "\n→ Continue investigating. There's more to discover.";
@@ -2513,11 +2527,6 @@ Thank you for playing Chapter 1 of The Vanishing Glaciers!
         }
 
         async function processCommand(command) {
-            // Check if waiting for Enter key (for ending sequence)
-            if (checkEnterKey()) {
-                return;
-            }
-            
             // Track commands
             if (gameState.commandsEntered !== undefined) {
                 gameState.commandsEntered++;
@@ -2715,9 +2724,9 @@ Thank you for playing Chapter 1 of The Vanishing Glaciers!
                     checkChapterCompletion();
                 }
 
-                if (checkWinCondition()) {
-                    showVictory();
-                }
+                // if (checkWinCondition()) {
+                //     showVictory();
+                // }
             } else {
                 message += '\n\n[You\'ve already studied this evidence in detail.]';
                 addMessage(message);
@@ -2736,9 +2745,9 @@ Thank you for playing Chapter 1 of The Vanishing Glaciers!
                         const response = showEvidenceToMaya(evidenceId);
                         addMessage(response);
                         
-                        if (checkWinCondition()) {
-                            showVictory();
-                        }
+                        // if (checkWinCondition()) {
+                        //     showVictory();
+                        // }
                         return;
                     }
                 }
@@ -2760,9 +2769,9 @@ Thank you for playing Chapter 1 of The Vanishing Glaciers!
                     const greeting = getMayaGreeting();
                     addMessage(greeting);
                     gameState.talkedToMaya = true;
-                    if (checkWinCondition()) {
-                        showVictory();
-                    }
+                    // if (checkWinCondition()) {
+                    //     showVictory();
+                    // }
                     return;
                 } else {
                     topic = '';
@@ -2775,9 +2784,9 @@ Thank you for playing Chapter 1 of The Vanishing Glaciers!
             const response = getMayaResponse(topic);
             addMessage(response);
 
-            if (checkWinCondition()) {
-                showVictory();
-            }
+            // if (checkWinCondition()) {
+            //     showVictory();
+            // }
         }
 
         function getMayaGreeting() {
@@ -2785,7 +2794,7 @@ Thank you for playing Chapter 1 of The Vanishing Glaciers!
             // "🗣️  [Character Name]:"
             // This is how the TTS system knows which voice to use.
             // Do NOT include this prefix in system messages that mention the character.
-            return `🗣️  Dr. Maya Patel (Station Director):
+            return `🗣️  Dr. Maya Patel:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 "Thank goodness you're here. Dr. Sarah Chen has been missing since early this morning. She's one of our most dedicated researchers - this is completely unlike her.
 
@@ -2997,11 +3006,11 @@ Please, examine the lab carefully. Her workstation, the monitoring equipment - a
 Or you can show me any evidence you've found."`;
         }
 
-        function checkWinCondition() {
-            const requiredEvidence = new Set(['temperature_data', 'calibration_log', 'sarah_note', 'ice_core_sample']);
-            const hasAllEvidence = [...requiredEvidence].every(id => gameState.examinedEvidence.has(id));
-            return hasAllEvidence && gameState.talkedToMaya;
-        }
+        // function checkWinCondition() {
+        //     const requiredEvidence = new Set(['temperature_data', 'calibration_log', 'sarah_note', 'ice_core_sample']);
+        //     const hasAllEvidence = [...requiredEvidence].every(id => gameState.examinedEvidence.has(id));
+        //     return hasAllEvidence && gameState.talkedToMaya;
+        // }
 
         function updateEvidenceDisplay() {
             const evidenceList = document.getElementById('evidenceList');
