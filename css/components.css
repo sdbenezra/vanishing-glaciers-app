@@ -1,0 +1,242 @@
+/* Component Styles - Buttons, inputs, and UI elements */
+
+/* Voice Controls */
+.voice-controls {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.voice-button {
+    background: #3d5a80;
+    border: 2px solid #4dd0e1;
+    color: #4dd0e1;
+    padding: 8px 12px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.voice-button:hover {
+    background: #4dd0e1;
+    color: #1a2332;
+}
+
+.voice-button.active {
+    background: #4dd0e1;
+    color: #1a2332;
+}
+
+.voice-button.muted {
+    background: #d32f2f;
+    border-color: #d32f2f;
+    color: white;
+}
+
+.mic-button {
+    background: #3d5a80;
+    border: 2px solid #4dd0e1;
+    color: #4dd0e1;
+    padding: 8px 12px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.mic-button:hover {
+    background: #4dd0e1;
+    color: #1a2332;
+}
+
+.mic-button.listening {
+    background: #ff5252;
+    border-color: #ff5252;
+    color: white;
+    animation: pulse-mic 1.5s ease-in-out infinite;
+}
+
+.mic-button.error {
+    background: #ffab40;
+    border-color: #ffab40;
+    color: #1a2332;
+}
+
+/* Listening Indicator */
+.listening-indicator {
+    display: none;
+    align-items: center;
+    gap: 5px;
+    color: #ff5252;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.listening-indicator.active {
+    display: flex;
+    animation: pulse 1s ease-in-out infinite;
+}
+
+.listening-wave {
+    width: 4px;
+    height: 16px;
+    background: #ff5252;
+    margin: 0 1px;
+    animation: listen-wave 0.8s ease-in-out infinite;
+}
+
+.listening-wave:nth-child(2) {
+    animation-delay: 0.1s;
+}
+
+.listening-wave:nth-child(3) {
+    animation-delay: 0.2s;
+}
+
+.listening-wave:nth-child(4) {
+    animation-delay: 0.3s;
+}
+
+/* Speaking Indicator */
+.speaking-indicator {
+    display: none;
+    align-items: center;
+    gap: 5px;
+    color: #81c784;
+    font-size: 12px;
+    animation: pulse 1.5s ease-in-out infinite;
+}
+
+.speaking-indicator.active {
+    display: flex;
+}
+
+.sound-wave {
+    width: 3px;
+    height: 12px;
+    background: #81c784;
+    margin: 0 1px;
+    animation: wave 1s ease-in-out infinite;
+}
+
+.sound-wave:nth-child(2) {
+    animation-delay: 0.1s;
+}
+
+.sound-wave:nth-child(3) {
+    animation-delay: 0.2s;
+}
+
+/* Input Area */
+.input-area {
+    background: #2a3f5f;
+    padding: 12px 20px;
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.input-label {
+    color: #4dd0e1;
+    font-weight: bold;
+    font-size: 18px;
+}
+
+.input-field {
+    flex: 1;
+    background: #3d5a80;
+    border: none;
+    color: #e0f4ff;
+    padding: 12px 15px;
+    font-family: 'Courier New', monospace;
+    font-size: 14px;
+    border-radius: 5px;
+}
+
+.input-field:focus {
+    outline: 2px solid #4dd0e1;
+}
+
+/* Buttons */
+.help-button {
+    background: #3d5a80;
+    color: #4dd0e1;
+    border: 2px solid #4dd0e1;
+    padding: 8px 15px;
+    font-weight: bold;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 12px;
+    transition: all 0.2s ease;
+}
+
+.help-button:hover {
+    background: #4dd0e1;
+    color: #1a2332;
+}
+
+.send-button {
+    background: #4dd0e1;
+    color: #1a2332;
+    border: none;
+    padding: 12px 25px;
+    font-weight: bold;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 12px;
+}
+
+.send-button:hover {
+    background: #7fb3d5;
+}
+
+.send-button:active {
+    transform: translateY(1px);
+}
+
+.ai-toggle {
+    background: #3d5a80;
+    color: #4dd0e1;
+    border: 2px solid #4dd0e1;
+    padding: 8px 15px;
+    font-weight: bold;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 12px;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.ai-toggle:hover {
+    background: #4dd0e1;
+    color: #1a2332;
+}
+
+.ai-toggle.active {
+    background: #81c784;
+    border-color: #81c784;
+    color: #1a2332;
+}
+
+.ai-toggle.loading {
+    background: #ffab40;
+    border-color: #ffab40;
+    color: #1a2332;
+    cursor: wait;
+}
+
+.ai-indicator {
+    font-size: 10px;
+}

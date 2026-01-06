@@ -1,0 +1,31 @@
+/* Animations and Keyframes */
+
+/* Microphone pulse animation */
+@keyframes pulse-mic {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+}
+
+/* Listening wave animation */
+@keyframes listen-wave {
+    0%, 100% { height: 16px; }
+    50% { height: 6px; }
+}
+
+/* General pulse animation */
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+}
+
+/* Sound wave animation */
+@keyframes wave {
+    0%, 100% { height: 12px; }
+    50% { height: 4px; }
+}
+
+/* Spinner animation */
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}

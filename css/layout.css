@@ -1,0 +1,247 @@
+/* Layout Styles - Game container, header, and panel structure */
+
+.game-container {
+    width: 100%;
+    max-width: 1400px;
+    height: 95vh;
+    background: #1a2332;
+    border-radius: 10px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.header {
+    background: #2a3f5f;
+    padding: 15px;
+    text-align: center;
+    border-bottom: 3px solid #4dd0e1;
+    position: relative;
+}
+
+.title {
+    color: #4dd0e1;
+    font-size: 22px;
+    font-weight: bold;
+    margin-bottom: 3px;
+}
+
+.subtitle {
+    color: #a8c5da;
+    font-size: 11px;
+    margin-bottom: 5px;
+}
+
+.status {
+    color: #ffab40;
+    font-size: 10px;
+    font-weight: bold;
+}
+
+.main-content {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+}
+
+.chat-panel {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding: 15px;
+    overflow: hidden;
+}
+
+.chat-header {
+    background: #2a3f5f;
+    color: #e0f4ff;
+    padding: 10px 15px;
+    border-radius: 5px 5px 0 0;
+    font-weight: bold;
+    font-size: 14px;
+}
+
+.chat-display {
+    flex: 1;
+    background: #3d5a80;
+    color: #e0f4ff;
+    padding: 20px;
+    overflow-y: auto;
+    font-family: 'Courier New', monospace;
+    font-size: 14px;
+    line-height: 1.6;
+    border-radius: 0 0 5px 5px;
+    white-space: pre-wrap;
+}
+
+.chat-display::-webkit-scrollbar {
+    width: 10px;
+}
+
+.chat-display::-webkit-scrollbar-track {
+    background: #2a3f5f;
+}
+
+.chat-display::-webkit-scrollbar-thumb {
+    background: #4dd0e1;
+    border-radius: 5px;
+}
+
+.message {
+    margin-bottom: 15px;
+}
+
+.player-message {
+    color: #4dd0e1;
+    font-weight: bold;
+}
+
+.system-message {
+    color: #e0f4ff;
+}
+
+.success-message {
+    color: #81c784;
+}
+
+.warning-message {
+    color: #ffab40;
+}
+
+.separator {
+    color: #a8c5da;
+    margin: 10px 0;
+}
+
+.evidence-panel {
+    width: 350px;
+    background: #1a2332;
+    border-left: 2px solid #2a3f5f;
+    display: flex;
+    flex-direction: column;
+    transition: width 0.3s ease;
+}
+
+.evidence-panel.collapsed {
+    width: 50px;
+}
+
+.evidence-header {
+    background: #2a3f5f;
+    color: #e0f4ff;
+    padding: 10px 15px;
+    font-weight: bold;
+    font-size: 14px;
+    cursor: pointer;
+    user-select: none;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+.evidence-header:hover {
+    background: #3d5a80;
+}
+
+.evidence-title {
+    transition: opacity 0.2s ease;
+}
+
+.evidence-panel.collapsed .evidence-title {
+    opacity: 0;
+    width: 0;
+    overflow: hidden;
+}
+
+.evidence-toggle {
+    font-size: 18px;
+    transition: transform 0.3s ease;
+    flex-shrink: 0;
+}
+
+.evidence-panel.collapsed .evidence-toggle {
+    transform: rotate(180deg);
+}
+
+.evidence-content {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    overflow: hidden;
+}
+
+.evidence-panel.collapsed .evidence-content {
+    display: none;
+}
+
+.evidence-list {
+    flex: 1;
+    overflow-y: auto;
+    padding: 10px;
+}
+
+.evidence-item {
+    margin: 8px 0;
+    padding: 12px;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.evidence-undiscovered {
+    background: #546e7a;
+}
+
+.evidence-found {
+    background: #64b5f6;
+}
+
+.evidence-examined {
+    background: #81c784;
+}
+
+.evidence-status {
+    font-size: 18px;
+    font-weight: bold;
+    color: #1a2332;
+}
+
+.evidence-name {
+    flex: 1;
+    color: #1a2332;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.evidence-badge {
+    font-size: 9px;
+    color: #1a2332;
+    font-weight: bold;
+}
+
+.progress-summary {
+    background: #2a3f5f;
+    padding: 15px;
+    color: #a8c5da;
+    font-size: 12px;
+    border-top: 1px solid #3d5a80;
+}
+
+.auto-save-indicator {
+    position: absolute;
+    top: 50%;
+    left: 15px;
+    transform: translateY(-50%);
+    color: #4dd0e1;
+    font-size: 12px;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.auto-save-indicator.saving {
+    opacity: 1;
+}
