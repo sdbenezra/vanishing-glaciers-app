@@ -1,14 +1,52 @@
+/**
+ * Save Manager Module
+ *
+ * Handles all save/load functionality:
+ * - Save game to localStorage slots
+ * - Load game from slots
+ * - Auto-save system
+ * - Import/export saves
+ * - Save/load UI
+ *
+ * Dependencies: game-state.js, ui-manager.js
+ * Future: Will import triggerChapterEnding from chapter1-ending.js in Phase 8
+ */
+
+import { gameState } from '../shared/game-state.js';
+import { addMessage, updateEvidenceDisplay } from './ui-manager.js';
+import { hideMainMenu } from './menu-manager.js';
+
+// Function stubs that will be set by main.js
+let initializeGame = () => {
+    console.log('[STUB] initializeGame() - will be set by main.js');
+};
+
+let showLocation = () => {
+    console.log('[STUB] showLocation() - will be set by main.js');
+};
+
+/**
+ * Set game initialization functions (called by main.js)
+ * @param {Object} functions - Object containing initializeGame, showLocation, etc.
+ */
+export function setSaveManagerGameFunctions(functions) {
+    if (functions.initializeGame) initializeGame = functions.initializeGame;
+    if (functions.showLocation) showLocation = functions.showLocation;
+}
+
 // ====================================
-// SAVE/LOAD SYSTEM FOR THE VANISHING GLACIERS
-// Version 1.0.0
+// CONSTANTS
 // ====================================
 
-const GAME_VERSION = "1.0.0";
-const MAX_SAVE_SLOTS = 5;
-const AUTO_SAVE_INTERVAL = 180000; // 3 minutes in milliseconds
+export const GAME_VERSION = "1.0.0";
+export const MAX_SAVE_SLOTS = 5;
+export const AUTO_SAVE_INTERVAL = 180000; // 3 minutes in milliseconds
 
-// Game settings
-const gameSettings = {
+// ====================================
+// SETTINGS
+// ====================================
+
+export const gameSettings = {
     autoSaveEnabled: true,
     autoSaveInterval: AUTO_SAVE_INTERVAL,
     ttsEnabled: true,
@@ -18,22 +56,32 @@ const gameSettings = {
 
 let autoSaveTimer = null;
 
-// Additional game state properties for save system
-gameState.gameStartTime = null;
-gameState.playTimeSeconds = 0;
-gameState.commandsEntered = 0;
-gameState.hintsUsed = 0;
-gameState.endingTriggered = false;
-gameState.chapterComplete = false;
+// Temporary stub for triggerChapterEnding - will be replaced in Phase 8
+let triggerChapterEnding = () => {
+    console.log('[STUB] triggerChapterEnding() - will be implemented in Phase 8');
+};
+
+/**
+ * Set the triggerChapterEnding function (called by chapter ending module)
+ * @param {Function} fn - The triggerChapterEnding function
+ */
+export function setTriggerChapterEndingFunction(fn) {
+    triggerChapterEnding = fn;
+}
 
 // ====================================
 // SAVE DATA CREATION AND MANAGEMENT
 // ====================================
 
-function createSaveData(slotName = "Auto Save") {
+/**
+ * Create save data object
+ * @param {string} slotName - Name for this save
+ * @returns {Object} Save data object
+ */
+export function createSaveData(slotName = "Auto Save") {
     const now = new Date();
-    const playTime = gameState.gameStartTime ? 
-        Math.floor((now - gameState.gameStartTime) / 1000) + gameState.playTimeSeconds : 
+    const playTime = gameState.gameStartTime ?
+        Math.floor((now - gameState.gameStartTime) / 1000) + gameState.playTimeSeconds :
         gameState.playTimeSeconds;
 
     return {
@@ -68,19 +116,25 @@ function createSaveData(slotName = "Auto Save") {
     };
 }
 
-function saveGame(slotNumber = 0, slotName = null) {
+/**
+ * Save game to a slot
+ * @param {number} slotNumber - Slot number (-1 for auto-save, 0-4 for manual saves)
+ * @param {string|null} slotName - Optional custom name for the save
+ * @returns {boolean} True if save succeeded
+ */
+export function saveGame(slotNumber = 0, slotName = null) {
     try {
         const saveData = createSaveData(slotName || `Save ${slotNumber + 1}`);
         const saveKey = `vg_save_${slotNumber}`;
         localStorage.setItem(saveKey, JSON.stringify(saveData));
         localStorage.setItem('vg_last_save', slotNumber.toString());
-        
+
         if (slotNumber === -1) {
             showAutoSaveIndicator();
         } else {
             addMessage(`💾 Game saved to slot ${slotNumber + 1}!`, 'system-message');
         }
-        
+
         return true;
     } catch (error) {
         console.error('Save failed:', error);
@@ -89,13 +143,19 @@ function saveGame(slotNumber = 0, slotName = null) {
     }
 }
 
-function autoSave() {
+/**
+ * Auto-save the game
+ */
+export function autoSave() {
     if (gameSettings.autoSaveEnabled && gameState.gameStarted && !gameState.chapterComplete) {
         saveGame(-1, 'Auto Save');
     }
 }
 
-function showAutoSaveIndicator() {
+/**
+ * Show auto-save indicator
+ */
+export function showAutoSaveIndicator() {
     const indicator = document.getElementById('autoSaveIndicator');
     if (indicator) {
         indicator.classList.add('saving');
@@ -105,11 +165,16 @@ function showAutoSaveIndicator() {
     }
 }
 
-function loadGame(slotNumber) {
+/**
+ * Load game from a slot
+ * @param {number} slotNumber - Slot number to load from
+ * @returns {boolean} True if load succeeded
+ */
+export function loadGame(slotNumber) {
     try {
         const saveKey = `vg_save_${slotNumber}`;
         const saveData = JSON.parse(localStorage.getItem(saveKey));
-        
+
         if (!saveData) {
             addMessage('⚠️ No save data found in this slot.', 'error-message');
             return false;
@@ -134,12 +199,12 @@ function loadGame(slotNumber) {
         updateEvidenceDisplay();
         addMessage(`💾 Game loaded from slot ${slotNumber + 1}!`, 'system-message');
         addMessage(`⏱️ Total playtime: ${formatPlayTime(gameState.playTimeSeconds)}`, 'system-message');
-        
+
         // Check if we should trigger ending
         if (gameState.discoveredEvidence.size === 5 && gameState.examinedEvidence.size === 5 && !gameState.endingTriggered) {
             setTimeout(() => triggerChapterEnding(), 2000);
         }
-        
+
         return true;
     } catch (error) {
         console.error('Load failed:', error);
@@ -148,7 +213,11 @@ function loadGame(slotNumber) {
     }
 }
 
-function deleteSave(slotNumber) {
+/**
+ * Delete a save slot
+ * @param {number} slotNumber - Slot number to delete
+ */
+export function deleteSave(slotNumber) {
     if (confirm(`Are you sure you want to delete save slot ${slotNumber + 1}?`)) {
         const saveKey = `vg_save_${slotNumber}`;
         localStorage.removeItem(saveKey);
@@ -157,11 +226,15 @@ function deleteSave(slotNumber) {
     }
 }
 
-function exportSave(slotNumber) {
+/**
+ * Export a save file
+ * @param {number} slotNumber - Slot number to export
+ */
+export function exportSave(slotNumber) {
     try {
         const saveKey = `vg_save_${slotNumber}`;
         const saveData = localStorage.getItem(saveKey);
-        
+
         if (!saveData) {
             alert('No save data found in this slot.');
             return;
@@ -176,7 +249,7 @@ function exportSave(slotNumber) {
         a.click();
         document.body.removeChild(a);
         URL.revokeObjectURL(url);
-        
+
         addMessage(`📥 Save file exported successfully!`, 'system-message');
     } catch (error) {
         console.error('Export failed:', error);
@@ -184,19 +257,22 @@ function exportSave(slotNumber) {
     }
 }
 
-function importSave() {
+/**
+ * Import a save file
+ */
+export function importSave() {
     const input = document.createElement('input');
     input.type = 'file';
     input.accept = '.json';
-    
+
     input.onchange = (e) => {
         const file = e.target.files[0];
         const reader = new FileReader();
-        
+
         reader.onload = (event) => {
             try {
                 const saveData = JSON.parse(event.target.result);
-                
+
                 // Validate save data
                 if (!saveData.metadata || !saveData.gameProgress) {
                     throw new Error('Invalid save file format');
@@ -219,19 +295,23 @@ function importSave() {
                 alert('Failed to import save file. File may be corrupted or invalid.');
             }
         };
-        
+
         reader.readAsText(file);
     };
-    
+
     input.click();
 }
 
-function getSaveSlots() {
+/**
+ * Get all save slots
+ * @returns {Array} Array of save slot objects
+ */
+export function getSaveSlots() {
     const slots = [];
     for (let i = 0; i < MAX_SAVE_SLOTS; i++) {
         const saveKey = `vg_save_${i}`;
         const saveData = localStorage.getItem(saveKey);
-        
+
         if (saveData) {
             try {
                 const data = JSON.parse(saveData);
@@ -247,7 +327,7 @@ function getSaveSlots() {
             slots.push({ slotNumber: i, exists: false });
         }
     }
-    
+
     // Also check auto-save
     const autoSaveData = localStorage.getItem('vg_save_-1');
     if (autoSaveData) {
@@ -262,15 +342,20 @@ function getSaveSlots() {
             // Auto-save corrupted, ignore
         }
     }
-    
+
     return slots;
 }
 
-function formatPlayTime(seconds) {
+/**
+ * Format play time in human-readable format
+ * @param {number} seconds - Play time in seconds
+ * @returns {string} Formatted play time
+ */
+export function formatPlayTime(seconds) {
     const hours = Math.floor(seconds / 3600);
     const minutes = Math.floor((seconds % 3600) / 60);
     const secs = seconds % 60;
-    
+
     if (hours > 0) {
         return `${hours}h ${minutes}m`;
     } else if (minutes > 0) {
@@ -280,22 +365,33 @@ function formatPlayTime(seconds) {
     }
 }
 
-function formatTimestamp(isoString) {
+/**
+ * Format timestamp in human-readable format
+ * @param {string} isoString - ISO timestamp string
+ * @returns {string} Formatted timestamp
+ */
+export function formatTimestamp(isoString) {
     const date = new Date(isoString);
     return date.toLocaleString();
 }
 
-function startAutoSave() {
+/**
+ * Start auto-save timer
+ */
+export function startAutoSave() {
     if (autoSaveTimer) {
         clearInterval(autoSaveTimer);
     }
-    
+
     if (gameSettings.autoSaveEnabled) {
         autoSaveTimer = setInterval(autoSave, gameSettings.autoSaveInterval);
     }
 }
 
-function stopAutoSave() {
+/**
+ * Stop auto-save timer
+ */
+export function stopAutoSave() {
     if (autoSaveTimer) {
         clearInterval(autoSaveTimer);
         autoSaveTimer = null;
@@ -306,20 +402,23 @@ function stopAutoSave() {
 // SAVE/LOAD UI FUNCTIONS
 // ====================================
 
-function showSaveMenu() {
+/**
+ * Show save menu modal
+ */
+export function showSaveMenu() {
     const modal = document.getElementById('saveModal');
     const title = document.getElementById('saveModalTitle');
     const content = document.getElementById('saveModalContent');
-    
+
     title.textContent = '💾 Save Game';
-    
+
     let html = '<p style="color: #a8c5da; margin-bottom: 20px;">Choose a save slot or create a new save:</p>';
-    
+
     const slots = getSaveSlots();
-    
+
     slots.forEach(slot => {
         if (slot.slotNumber === -1) return; // Skip auto-save in manual save menu
-        
+
         if (slot.exists) {
             const progress = Math.round((slot.data.statistics.evidenceFound / 5) * 100);
             html += `
@@ -349,32 +448,35 @@ function showSaveMenu() {
             `;
         }
     });
-    
+
     content.innerHTML = html;
     modal.classList.add('active');
 }
 
-function showLoadMenu() {
+/**
+ * Show load menu modal
+ */
+export function showLoadMenu() {
     const modal = document.getElementById('saveModal');
     const title = document.getElementById('saveModalTitle');
     const content = document.getElementById('saveModalContent');
-    
+
     title.textContent = '📂 Load Game';
-    
+
     let html = '<p style="color: #a8c5da; margin-bottom: 20px;">Choose a save file to load:</p>';
-    
+
     const slots = getSaveSlots();
     const hasSaves = slots.some(s => s.exists);
-    
+
     if (!hasSaves) {
         html += '<p style="color: #ffab40; text-align: center;">No saved games found.</p>';
     } else {
         slots.forEach(slot => {
             if (!slot.exists) return;
-            
+
             const progress = Math.round((slot.data.statistics.evidenceFound / 5) * 100);
             const slotLabel = slot.slotNumber === -1 ? 'Auto Save' : `Slot ${slot.slotNumber + 1}`;
-            
+
             html += `
                 <div class="save-slot">
                     <div class="save-slot-header">
@@ -392,7 +494,7 @@ function showLoadMenu() {
             `;
         });
     }
-    
+
     html += `
         <div style="margin-top: 20px; padding-top: 20px; border-top: 2px solid #2a3f5f;">
             <button class="save-slot-button" onclick="importSave()" style="width: 100%; padding: 12px;">
@@ -400,37 +502,79 @@ function showLoadMenu() {
             </button>
         </div>
     `;
-    
+
     content.innerHTML = html;
     modal.classList.add('active');
 }
 
-function saveToSlot(slotNumber) {
+/**
+ * Save to a specific slot (called from UI)
+ * @param {number} slotNumber - Slot number to save to
+ */
+export function saveToSlot(slotNumber) {
     if (saveGame(slotNumber)) {
         closeSaveModal();
     }
 }
 
-function loadFromSlot(slotNumber) {
+/**
+ * Load from a specific slot (called from UI)
+ * @param {number} slotNumber - Slot number to load from
+ */
+export function loadFromSlot(slotNumber) {
     closeSaveModal();
+
+    // Hide main menu if showing
+    hideMainMenu();
+
     if (loadGame(slotNumber)) {
+        // Initialize the chapter to set up interaction points and evidence
+        initializeGame();
+
+        // Show game resumed message and current location
+        addMessage("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━", 'system-message', true);
+        addMessage("🎮 GAME LOADED", 'system-message');
+        addMessage("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━", 'system-message', true);
+        showLocation();
+
         startAutoSave();
     }
 }
 
-function closeSaveModal() {
+/**
+ * Close save modal
+ */
+export function closeSaveModal() {
     document.getElementById('saveModal').classList.remove('active');
 }
 
-// Load saved settings on initialization
-function loadSettings() {
+// ====================================
+// SETTINGS MANAGEMENT
+// ====================================
+
+/**
+ * Load saved settings from localStorage
+ */
+export function loadSettings() {
     const savedSettings = localStorage.getItem('vg_settings');
     if (savedSettings) {
         Object.assign(gameSettings, JSON.parse(savedSettings));
     }
 }
 
-// Save settings when changed
-function saveSettings() {
+/**
+ * Save settings to localStorage
+ */
+export function saveSettings() {
     localStorage.setItem('vg_settings', JSON.stringify(gameSettings));
+}
+
+// Make functions globally available for onclick handlers in HTML
+// This is necessary because the HTML buttons use onclick="functionName()"
+if (typeof window !== 'undefined') {
+    window.saveToSlot = saveToSlot;
+    window.loadFromSlot = loadFromSlot;
+    window.deleteSave = deleteSave;
+    window.exportSave = exportSave;
+    window.importSave = importSave;
 }
