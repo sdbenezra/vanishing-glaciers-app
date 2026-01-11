@@ -17,8 +17,7 @@ import { addMessage } from './ui-manager.js';
 // Import game command functions from game-engine (available from Phase 7)
 // We use dynamic references via setGameCommandFunctions() to avoid circular dependencies
 let showLocation = null;
-let handleExamine = null;
-let handleTalk = null;
+let processCommand = null;
 let showInventory = null;
 let showProgress = null;
 let showHelp = null;
@@ -29,8 +28,7 @@ let showHelp = null;
  */
 export function setGameCommandFunctions(functions) {
     if (functions.showLocation) showLocation = functions.showLocation;
-    if (functions.handleExamine) handleExamine = functions.handleExamine;
-    if (functions.handleTalk) handleTalk = functions.handleTalk;
+    if (functions.processCommand) processCommand = functions.processCommand;
     if (functions.showInventory) showInventory = functions.showInventory;
     if (functions.showProgress) showProgress = functions.showProgress;
     if (functions.showHelp) showHelp = functions.showHelp;
@@ -161,11 +159,15 @@ export async function parseWithAI(userInput) {
 
 Available actions:
 - LOOK: Describe surroundings
-- EXAMINE [object]: Inspect something (objects: monitoring_station, workstation, equipment_rack, storage_freezer, satellite_display, window, temperature_data, calibration_log, sarah_note, ice_core_sample, satellite_thermal_image)
+- EXAMINE [object]: Inspect something (objects: monitoring_station, workstation, equipment_rack, storage_freezer, satellite_display, window, temperature_data, calibration_log, sarah_note, ice_core_sample, satellite_thermal_image, tablet)
 - TALK [topic]: Discuss with Dr. Maya Patel (topics: glaciers, research, monitoring, data, sarah, disappearance, importance, ice cores)
 - INVENTORY: Show collected evidence
 - PROGRESS: Show investigation status
 - HELP: Show help
+
+Special commands:
+- "read tablet" or "view tablet": Read Dr. Chen's decrypted notes
+- "unlock tablet": Start tablet unlock sequence
 
 Parse the user's input into ONE of these commands. Return ONLY a JSON object with this format:
 {"action": "examine", "target": "monitoring_station"}
@@ -184,7 +186,9 @@ Be flexible with natural language. Examples:
 "tell me about the research" → {"action": "talk", "topic": "research"}
 "look at the ice samples" → {"action": "examine", "target": "storage_freezer"}
 "examine the freezer" → {"action": "examine", "target": "storage_freezer"}
-"what about ice cores" → {"action": "talk", "topic": "ice cores"}`;
+"what about ice cores" → {"action": "talk", "topic": "ice cores"}
+"read tablet" → {"action": "examine", "target": "tablet"}
+"view tablet" → {"action": "examine", "target": "tablet"}`;
 
         const messages = [
             { role: "system", content: systemPrompt },
@@ -240,22 +244,22 @@ export function executeAICommand(parsedCommand) {
         case 'examine':
         case 'look_at':
         case 'inspect':
-            if (parsedCommand.target && handleExamine) {
+            if (parsedCommand.target && processCommand) {
                 // Normalize the target to match game objects
                 const target = parsedCommand.target.replace(/_/g, ' ').toLowerCase();
-                handleExamine('examine ' + target);
+                processCommand('examine ' + target);
                 return true;
             }
             return false;
 
         case 'talk':
-            if (handleTalk) {
+            if (processCommand) {
                 if (parsedCommand.topic) {
-                    handleTalk(parsedCommand.topic);
+                    processCommand('talk ' + parsedCommand.topic);
                     return true;
                 }
                 // Default talk to Maya
-                handleTalk('maya');
+                processCommand('talk maya');
                 return true;
             }
             return false;

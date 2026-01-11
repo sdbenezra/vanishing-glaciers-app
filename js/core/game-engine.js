@@ -137,7 +137,7 @@ async function processCommand(command) {
  * Process command using keyword matching
  * @param {string} command - User's command (lowercase)
  */
-function processCommandKeywords(command) {
+export function processCommandKeywords(command) {
     // System commands
     if (['help', 'h', '?'].includes(command)) {
         showHelp();

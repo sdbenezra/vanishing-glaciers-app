@@ -45,7 +45,8 @@ import {
     submitCommand,
     showHelp,
     showInventory,
-    showProgress
+    showProgress,
+    processCommandKeywords
 } from './js/core/game-engine.js';
 
 // Import Chapter 1 modules
@@ -135,8 +136,7 @@ window.onload = function() {
     // Step 6: Connect AI integration to game engine commands
     setGameCommandFunctions({
         showLocation: showLocation,
-        handleExamine: null, // AI will call game engine's processCommand instead
-        handleTalk: null,    // AI will call game engine's processCommand instead
+        processCommand: processCommandKeywords,
         showInventory: showInventory,
         showProgress: showProgress,
         showHelp: showHelp
