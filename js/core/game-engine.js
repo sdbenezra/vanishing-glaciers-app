@@ -15,6 +15,14 @@ import { gameState } from '../shared/game-state.js';
 import { addMessage, addSeparator, updateEvidenceDisplay, openEvidencePanel } from './ui-manager.js';
 import { showSaveMenu } from './save-manager.js';
 import { parseWithAI, executeAICommand } from './ai-integration.js';
+import {
+    examineTablet,
+    startTabletUnlock,
+    handleTabletAnswer,
+    readTablet,
+    skipTabletQuestion,
+    showTabletHint
+} from '../chapters/chapter1/tablet-system.js';
 
 // Temporary stubs for chapter-specific functions (will be set by chapter modules in Phase 8)
 let showLocation = () => {
@@ -151,6 +159,36 @@ function processCommandKeywords(command) {
         return;
     }
 
+    // Tablet commands
+    if (command === 'examine tablet' || command === 'check tablet') {
+        examineTablet();
+        return;
+    }
+
+    if (command === 'unlock tablet' || command.startsWith('unlock tablet ')) {
+        if (command === 'unlock tablet') {
+            startTabletUnlock();
+        } else {
+            handleTabletAnswer(command.replace('unlock tablet ', '').trim());
+        }
+        return;
+    }
+
+    if (command === 'read tablet' || command === 'view tablet') {
+        readTablet();
+        return;
+    }
+
+    if (command === 'skip question' || command === 'skip') {
+        skipTabletQuestion();
+        return;
+    }
+
+    if (command === 'hint') {
+        showTabletHint();
+        return;
+    }
+
     // Examine commands
     if (command.startsWith('examine ') || command.startsWith('x ') || command.startsWith('look at ')) {
         handleExamine(command);
@@ -256,6 +294,13 @@ function handleExamine(command) {
 function examineInteractionPoint(point) {
     let message = `🔍 ${point.name.toUpperCase()}\n\n${point.description}`;
     point.examined = true;
+
+    // Handle tablet special item
+    if (point.id === 'equipment_rack' && point.specialItem === 'tablet') {
+        message += `\n\n💡 Type "examine tablet" to investigate.`;
+        addMessage(message);
+        return;
+    }
 
     if (point.evidenceId && !gameState.discoveredEvidence.has(point.evidenceId)) {
         const evidence = gameState.evidence[point.evidenceId];
@@ -388,6 +433,14 @@ NAVIGATION & OBSERVATION:
 EVIDENCE:
   inventory              - List evidence you've discovered
   examine [evidence]     - Study evidence in detail
+
+TABLET COMMANDS:
+  examine tablet         - Check Dr. Chen's field tablet
+  unlock tablet          - Start authentication
+  unlock tablet [answer] - Submit answer to security question
+  read tablet            - View notes (after unlock)
+  hint                   - Get help with current question
+  skip question          - Skip question (after 5 attempts)
 
 INTERACTION:
   talk to maya           - Speak with Dr. Patel

@@ -30,6 +30,19 @@ export const gameState = {
     interactionPoints: {},
     evidence: {},
 
+    // Tablet security system
+    tabletState: {
+        discovered: false,
+        unlockAttempted: false,
+        questionsAnswered: 0,
+        correctAnswers: 0,
+        currentQuestionIndex: 0,
+        questions: [],
+        wrongAttempts: {},
+        unlocked: false,
+        noteRead: false
+    },
+
     // UI state
     evidencePanelOpen: false,
 

@@ -103,7 +103,14 @@ export function createSaveData(slotName = "Auto Save") {
             hintsUsed: gameState.hintsUsed,
             endingTriggered: gameState.endingTriggered,
             chapterComplete: gameState.chapterComplete,
-            interactionPoints: gameState.interactionPoints
+            interactionPoints: gameState.interactionPoints,
+            tabletState: {
+                discovered: gameState.tabletState.discovered,
+                unlocked: gameState.tabletState.unlocked,
+                noteRead: gameState.tabletState.noteRead,
+                questionsAnswered: gameState.tabletState.questionsAnswered,
+                correctAnswers: gameState.tabletState.correctAnswers
+            }
         },
         statistics: {
             evidenceFound: gameState.discoveredEvidence.size,
@@ -194,6 +201,15 @@ export function loadGame(slotNumber) {
         gameState.interactionPoints = saveData.gameProgress.interactionPoints;
         gameState.playTimeSeconds = saveData.metadata.playTime;
         gameState.gameStartTime = new Date();
+
+        // Restore tablet state
+        if (saveData.gameProgress.tabletState) {
+            gameState.tabletState.discovered = saveData.gameProgress.tabletState.discovered || false;
+            gameState.tabletState.unlocked = saveData.gameProgress.tabletState.unlocked || false;
+            gameState.tabletState.noteRead = saveData.gameProgress.tabletState.noteRead || false;
+            gameState.tabletState.questionsAnswered = saveData.gameProgress.tabletState.questionsAnswered || 0;
+            gameState.tabletState.correctAnswers = saveData.gameProgress.tabletState.correctAnswers || 0;
+        }
 
         // Update UI
         updateEvidenceDisplay();

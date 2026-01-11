@@ -80,9 +80,10 @@ export const INTERACTION_POINTS = {
     equipment_rack: {
         id: 'equipment_rack',
         name: 'Equipment Storage Rack',
-        description: 'A metal rack holding various scientific instruments - ice core drills, thermal sensors, sample containers. There\'s a clipboard with equipment checkout logs. Some items appear to be missing from their usual spots.',
+        description: 'A metal rack holding various scientific instruments - ice core drills, thermal sensors, sample containers. There\'s a clipboard with equipment checkout logs.\n\n📱 On the top shelf, you notice Dr. Chen\'s field tablet, screen still glowing faintly. The device shows a security lock screen.',
         examined: false,
-        evidenceId: 'sarah_note'
+        evidenceId: null,
+        specialItem: 'tablet'
     },
     storage_freezer: {
         id: 'storage_freezer',
@@ -177,49 +178,39 @@ Dr. Chen's repeated calibrations show scientific rigor - she wouldn't accept ala
     },
     sarah_note: {
         id: 'sarah_note',
-        name: "Dr. Chen's Note",
-        description: 'A handwritten note tucked into the equipment checkout clipboard. It appears to be written hastily.',
-        detailedInfo: `HANDWRITTEN NOTE
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        name: "Dr. Chen's Encrypted Field Notes",
+        description: 'Encrypted field notes on Sarah\'s tablet. Requires authentication.',
+        detailedInfo: `DR. CHEN'S FIELD NOTES - DECRYPTED
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Date: May 3, 2025 - 23:52
+
 K -
 
 If you're reading this, I haven't returned by 06:00.
 
-The data is worse than we thought. Deep ice temps rising 2.3°C - faster than any model predicted. I need to verify the thermal readings on-site before going public. The implications are too significant to risk being wrong.
+The data is worse than we thought. Deep ice temps rising 2.3°C - faster than any model predicted. I need to verify the thermal readings on-site before going public.
 
 Taking core drill and thermal probe to sector 7-B.
 Backup data encrypted on secure drive (you know where).
 
-If confirmed: this represents critical destabilization. The glacier could lose structural integrity within months, not years. Regional sea level impact, ecosystem disruption.
+If confirmed: critical destabilization. The glacier could lose structural integrity within months, not years.
 
 Use winter protocol if I don't return.
 
-- S
-
-[The note explains everything: Sarah discovered critical evidence of accelerated glacier melting and went to verify it in person before making any public announcement.]`,
+- S`,
         climateLesson: `
-📚 CLIMATE SCIENCE CONCEPT: Why Glacier Melting Matters
+📚 CLIMATE SCIENCE: Scientific Verification
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-When glaciers melt rapidly, the consequences are severe:
+Scientists verify extraordinary findings through:
+• Multiple equipment calibrations (ruling out sensor error)
+• Cross-referencing independent data sources
+• Collecting physical evidence
+• Ensuring findings can be replicated
 
-1. SEA LEVEL RISE
-   • Land-based glaciers add water to oceans
-   • Even regional glaciers contribute to global sea level
-   • Affects coastal communities worldwide
-
-2. ECOSYSTEM DISRUPTION
-   • Glaciers regulate freshwater flow to rivers
-   • Wildlife depends on glacier-fed water sources
-   • Rapid melting floods ecosystems with cold water
-
-3. STRUCTURAL COLLAPSE
-   • Internal warming weakens ice structure
-   • Can lead to sudden, catastrophic calving events
-   • Threatens downstream communities
-
-This is why Dr. Chen's discovery was so urgent - rapid warming means these impacts could happen much sooner than expected.`,
+Dr. Chen's approach demonstrates proper scientific protocol.`,
         discovered: false,
-        examined: false
+        examined: false,
+        requiresUnlock: true
     },
     ice_core_sample: {
         id: 'ice_core_sample',
@@ -335,5 +326,73 @@ Dr. Chen's ground sensors showed warming. The satellites confirmed it from space
 This is how science builds certainty: not from one measurement, but from multiple independent lines of evidence all pointing to the same truth.`,
         discovered: false,
         examined: false
+    }
+};
+
+// Security questions for tablet unlock
+export const SECURITY_QUESTIONS = {
+    temperature: {
+        id: 'temperature',
+        requiredEvidence: 'temperature_data',
+        question: `QUESTION {num} OF 4
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+What temperature deviation (in degrees Celsius) did I observe in the deep ice layers?
+
+Format: Enter number with one decimal (example: 2.3)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━`,
+        answer: 2.3,
+        tolerance: 0.05,
+        correctMsg: '✓ CORRECT\n\nThe 2.3°C deviation was unprecedented in our historical data.\n\nQuestions Answered: {count}/4',
+        incorrectMsg: '✗ INCORRECT\n\nCheck the monitoring station displays - look for deep ice layer readings.',
+        hint1: 'The monitoring station shows temperature readings from different ice depths. Look for deviation in deep layers (800-1000 year old ice).',
+        hint2: 'Find "Deviation: +[number]°C" in the deep ice layer data on the monitoring station.'
+    },
+    calibration: {
+        id: 'calibration',
+        requiredEvidence: 'calibration_log',
+        question: `QUESTION {num} OF 4
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+How many times did I recalibrate the deep layer sensors?
+
+Format: Enter just the number (example: 3)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━`,
+        answer: 3,
+        tolerance: 0,
+        correctMsg: '✓ CORRECT\n\nThree complete recalibrations to ensure equipment wasn\'t malfunctioning.\n\n📚 Scientists verify unexpected findings through equipment calibration.\n\nQuestions Answered: {count}/4',
+        incorrectMsg: '✗ INCORRECT\n\nCheck the calibration log at the workstation.',
+        hint1: 'The calibration log shows multiple recalibration entries. Count the full recalibrations.',
+        hint2: 'Look for entries on April 30, May 1, and May 2 showing complete recalibration cycles.'
+    },
+    ice_core_age: {
+        id: 'ice_core_age',
+        requiredEvidence: 'ice_core_sample',
+        question: `QUESTION {num} OF 4
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+What is the approximate age (years before present) of the OLDER end of my ice core sample's range?
+
+Format: Enter the number (example: 100)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━`,
+        answer: 900,
+        tolerance: 50,
+        correctMsg: '✓ CORRECT\n\nThe 800-900 year old ice should be thermally stable - any warming indicates fundamental shift.\n\n📚 Ice cores preserve climate history in annual layers like tree rings.\n\nQuestions Answered: {count}/4',
+        incorrectMsg: '✗ INCORRECT\n\nCheck the ice core sample details in the storage freezer.',
+        hint1: 'The ice core shows "Estimated Age Range" in years. You need the older (higher) number.',
+        hint2: 'Look for "800 to 900 years before present". The answer is 900.'
+    },
+    satellite_percentage: {
+        id: 'satellite_percentage',
+        requiredEvidence: 'satellite_thermal_image',
+        question: `QUESTION {num} OF 4
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+What percentage of the glacier showed red zones (extreme alarm)?
+
+Format: Enter just the number (example: 1)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━`,
+        answer: 1,
+        tolerance: 0,
+        correctMsg: '✓ CORRECT\n\n1% sounds small, but that\'s ancient ice showing critical warming. When satellite and ground measurements agree, the data is real.\n\n📚 Remote sensing provides independent verification.\n\nQuestions Answered: {count}/4',
+        incorrectMsg: '✗ INCORRECT\n\nCheck the satellite thermal image display.',
+        hint1: 'The satellite data shows temperature distribution by color zones. Look for red zone percentage.',
+        hint2: 'Find "🔴 Red zones: Extreme alarm - [number]% coverage".'
     }
 };

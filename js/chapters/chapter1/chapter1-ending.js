@@ -228,9 +228,6 @@ What else did Sarah discover?
 
 ═══════════════════════════════════════════════`;
 
-    setTimeout(() => {
-        addMessage(summary, 'system-message');
-    }, 500);
     addMessage(summary, 'system-message');
 
     // Auto-save completion
