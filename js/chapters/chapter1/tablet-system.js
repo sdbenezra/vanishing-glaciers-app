@@ -120,9 +120,9 @@ function showCurrentQuestion() {
     const questionText = q.question.replace('{num}', answered + 1);
 
     addMessage(`┌────────────────────────────────────────┐
-│ 🔒 SECURITY - DR. SARAH CHEN          │
+│ 🔒 SECURITY - DR. SARAH CHEN           │
 ├────────────────────────────────────────┤
-│ Progress: [${progressBar}] ${answered}/4            │
+│ Progress: [${progressBar}] ${answered}/4 │
 └────────────────────────────────────────┘
 
 ${questionText}
@@ -239,23 +239,23 @@ function checkTabletUnlockSuccess() {
         gameState.discoveredEvidence.add('sarah_note');
 
         addMessage(`┌────────────────────────────────────────┐
-│ 🔓 AUTHENTICATION SUCCESSFUL          │
+│ 🔓 AUTHENTICATION SUCCESSFUL           │
 ├────────────────────────────────────────┤
-│ Progress: [████████] 4/4              │
-│ Correct: ${correct}/4                         │
-│                                       │
-│ Access granted to field notes.        │
-│ Type "read tablet" to view.           │
+│ Progress: [████████] 4/4               │
+│ Correct: ${correct}/4                  │
+│                                        │
+│ Access granted to field notes.         │
+│ Type "read tablet" to view.            │
 └────────────────────────────────────────┘`, 'success-message');
 
         updateEvidenceDisplay();
         openEvidencePanel();
     } else {
         addMessage(`┌────────────────────────────────────────┐
-│ ❌ AUTHENTICATION FAILED              │
+│ ❌ AUTHENTICATION FAILED               │
 ├────────────────────────────────────────┤
-│ Correct: ${correct}/4 (Need 3/4)              │
-│ Type "unlock tablet" to retry.        │
+│ Correct: ${correct}/4 (Need 3/4)       │
+│ Type "unlock tablet" to retry.         │
 └────────────────────────────────────────┘`, 'warning-message');
 
         gameState.tabletState.questionsAnswered = 0;

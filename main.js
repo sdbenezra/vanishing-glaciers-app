@@ -19,6 +19,7 @@ import {
 } from './js/core/ui-manager.js';
 import {
     initSpeechRecognition,
+    initSpeechListeners,
     toggleMute,
     toggleVoiceInput
 } from './js/core/speech-manager.js';
@@ -74,6 +75,10 @@ window.onload = function() {
     // Step 2: Initialize speech recognition (if available)
     initSpeechRecognition();
     console.log('✓ Speech recognition initialized');
+
+    // Step 2.5: Initialize speech event listeners (click to skip, ESC key)
+    initSpeechListeners();
+    console.log('✓ Speech listeners initialized');
 
     // Step 3: Pre-load voices for speech synthesis
     if ('speechSynthesis' in window) {

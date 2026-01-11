@@ -19,6 +19,9 @@
 let speechEnabled = true;
 let currentSpeech = null;
 const speechSynthesis = window.speechSynthesis;
+let speechQueue = [];
+let isSpeaking = false;
+let speechUnlocked = false; // Track if speech has been unlocked by user interaction
 
 // STT State
 let recognition = null;
@@ -42,6 +45,38 @@ export const voices = {
 // ============================================
 
 /**
+ * Unlock speech synthesis (required by browser autoplay policies)
+ * Must be called from a user interaction event
+ */
+export function unlockSpeech() {
+    if (speechUnlocked) return;
+
+    console.log('[TTS] Attempting to unlock speech synthesis...');
+    // Play a silent utterance to unlock speech
+    const utterance = new SpeechSynthesisUtterance('');
+    utterance.volume = 0;
+    speechSynthesis.speak(utterance);
+    speechUnlocked = true;
+    console.log('[TTS] ✓ Speech synthesis unlocked');
+}
+
+/**
+ * Process the next item in the speech queue
+ */
+function processQueue() {
+    console.log('[TTS] processQueue called. isSpeaking:', isSpeaking, 'Queue length:', speechQueue.length);
+    if (isSpeaking || speechQueue.length === 0) {
+        return;
+    }
+
+    isSpeaking = true;
+    const { text, voiceType } = speechQueue.shift();
+    console.log('[TTS] Processing:', text.substring(0, 50) + '...');
+
+    speakNow(text, voiceType);
+}
+
+/**
  * Speak text with specified voice settings
  * @param {string} text - Text to speak
  * @param {string} voiceType - Voice type ('patel', 'narrator')
@@ -49,12 +84,29 @@ export const voices = {
 export function speak(text, voiceType = 'narrator') {
     // Check if speech is enabled FIRST
     if (!speechEnabled) {
-        console.log('Speech disabled, not speaking');
+        console.log('[TTS] Speech disabled, not speaking');
         return;
     }
 
-    // Stop any current speech (interrupt mode)
-    stopSpeech();
+    // Warn if speech hasn't been unlocked yet (browser autoplay policy)
+    if (!speechUnlocked) {
+        console.warn('[TTS] ⚠️ Speech not yet unlocked. Click anywhere on the page to enable audio.');
+    }
+
+    console.log('[TTS] Adding to queue:', text.substring(0, 50) + '...', 'Voice:', voiceType);
+    // Add to queue instead of interrupting
+    speechQueue.push({ text, voiceType });
+    console.log('[TTS] Queue length:', speechQueue.length, 'isSpeaking:', isSpeaking);
+    processQueue();
+}
+
+/**
+ * Speak text immediately (internal function used by queue processor)
+ * @param {string} text - Text to speak
+ * @param {string} voiceType - Voice type ('patel', 'narrator')
+ */
+function speakNow(text, voiceType = 'narrator') {
+    console.log('[TTS] speakNow called for:', voiceType, 'Text length:', text.length);
 
     // Clean text for TTS (remove emojis and special formatting)
     const cleanText = text
@@ -95,8 +147,15 @@ export function speak(text, voiceType = 'narrator') {
 
         .trim();
 
-    if (!cleanText) return;
+    console.log('[TTS] Cleaned text length:', cleanText.length);
+    if (!cleanText) {
+        console.log('[TTS] No text after cleaning, skipping');
+        isSpeaking = false;
+        processQueue(); // Process next item
+        return;
+    }
 
+    console.log('[TTS] Creating utterance for cleaned text:', cleanText.substring(0, 50) + '...');
     const utterance = new SpeechSynthesisUtterance(cleanText);
 
     // Apply voice settings
@@ -173,22 +232,47 @@ export function speak(text, voiceType = 'narrator') {
 
     // Event handlers
     utterance.onstart = () => {
+        console.log('[TTS] ✓ Speech STARTED successfully');
         showSpeakingIndicator();
     };
 
     utterance.onend = () => {
+        console.log('[TTS] ✓ Speech ENDED');
         hideSpeakingIndicator();
         currentSpeech = null;
+        isSpeaking = false;
+        // Process next item in queue
+        processQueue();
     };
 
     utterance.onerror = (event) => {
         console.error('Speech synthesis error:', event);
         hideSpeakingIndicator();
         currentSpeech = null;
+        isSpeaking = false;
+        // Process next item in queue even on error
+        processQueue();
     };
 
     currentSpeech = utterance;
+    console.log('[TTS] Calling speechSynthesis.speak() with voice:', utterance.voice?.name || 'default');
+
+    // Workaround for browsers that pause speech synthesis
+    // Some browsers (Chrome/Safari) pause synthesis after 15 seconds
+    // Resume it periodically to prevent interruption
+    const resumeInterval = setInterval(() => {
+        if (speechSynthesis.paused) {
+            console.log('[TTS] Speech was paused, resuming...');
+            speechSynthesis.resume();
+        }
+    }, 10000);
+
+    // Clear the interval when speech ends
+    utterance.addEventListener('end', () => clearInterval(resumeInterval));
+    utterance.addEventListener('error', () => clearInterval(resumeInterval));
+
     speechSynthesis.speak(utterance);
+    console.log('[TTS] speechSynthesis.speak() called, speaking:', speechSynthesis.speaking, 'pending:', speechSynthesis.pending);
 }
 
 /**
@@ -223,12 +307,14 @@ export function toggleMute() {
 }
 
 /**
- * Stop current speech
+ * Stop current speech and clear queue
  */
 export function stopSpeech() {
     // Always cancel any ongoing speech, not just if we have a reference
     speechSynthesis.cancel();
     currentSpeech = null;
+    isSpeaking = false;
+    speechQueue = []; // Clear the queue
     hideSpeakingIndicator();
 }
 
@@ -237,8 +323,11 @@ export function stopSpeech() {
  */
 export function showSpeakingIndicator() {
     const indicator = document.getElementById('speakingIndicator');
+    console.log('[TTS] showSpeakingIndicator - element found:', !!indicator);
     if (indicator) {
         indicator.classList.add('active');
+        indicator.title = 'Click or press ESC to skip speech';
+        console.log('[TTS] Speaking indicator now active');
     }
 }
 
@@ -249,7 +338,49 @@ export function hideSpeakingIndicator() {
     const indicator = document.getElementById('speakingIndicator');
     if (indicator) {
         indicator.classList.remove('active');
+        indicator.title = '';
     }
+}
+
+/**
+ * Initialize speech event listeners (called from UI manager)
+ */
+export function initSpeechListeners() {
+    // Unlock speech on first click anywhere (required for browser autoplay policy)
+    const unlockOnce = () => {
+        unlockSpeech();
+        document.removeEventListener('click', unlockOnce);
+        document.removeEventListener('keydown', unlockOnKeydown);
+    };
+
+    const unlockOnKeydown = () => {
+        unlockSpeech();
+        document.removeEventListener('click', unlockOnce);
+        document.removeEventListener('keydown', unlockOnKeydown);
+    };
+
+    document.addEventListener('click', unlockOnce);
+    document.addEventListener('keydown', unlockOnKeydown);
+
+    // Allow clicking speaking indicator to stop speech
+    const indicator = document.getElementById('speakingIndicator');
+    if (indicator) {
+        indicator.style.cursor = 'pointer';
+        indicator.addEventListener('click', () => {
+            if (isSpeaking || speechQueue.length > 0) {
+                stopSpeech();
+                console.log('Speech stopped by user click');
+            }
+        });
+    }
+
+    // Allow ESC key to stop speech
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && (isSpeaking || speechQueue.length > 0)) {
+            stopSpeech();
+            console.log('Speech stopped by ESC key');
+        }
+    });
 }
 
 // ============================================

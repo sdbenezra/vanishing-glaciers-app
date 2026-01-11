@@ -15,6 +15,7 @@
 import { gameState } from '../shared/game-state.js';
 import {
     loadGame,
+    syncEvidenceState,
     startAutoSave,
     stopAutoSave,
     gameSettings,
@@ -127,6 +128,9 @@ export function continueGame() {
         // Initialize the chapter to set up interaction points and evidence
         initializeGame();
 
+        // Sync evidence state after initialization (because initializeGame reloads fresh evidence)
+        syncEvidenceState();
+
         // Show game resumed message and current location
         addMessage("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━", 'system-message', true);
         addMessage("🎮 GAME RESUMED", 'system-message');
@@ -165,12 +169,26 @@ export function startNewGame() {
     gameState.playTimeSeconds = 0;
     gameState.talkedToMaya = false;
 
+    // Reset tablet state
+    gameState.tabletState = {
+        discovered: false,
+        unlockAttempted: false,
+        questionsAnswered: 0,
+        correctAnswers: 0,
+        currentQuestionIndex: 0,
+        questions: [],
+        wrongAttempts: {},
+        unlocked: false,
+        noteRead: false
+    };
+
     // Clear game output
     clearGameOutput();
 
-    // Initialize and show intro
+    // Initialize chapter with fresh data (creates new copies of evidence/interaction points)
     initializeGame();
-    // showIntro();
+
+    // Update evidence display
     updateEvidenceDisplay();
     startAutoSave();
 }

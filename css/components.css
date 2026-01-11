@@ -119,6 +119,14 @@
 
 .speaking-indicator.active {
     display: flex;
+    cursor: pointer;
+    padding: 4px 8px;
+    border-radius: 4px;
+    transition: background-color 0.2s ease;
+}
+
+.speaking-indicator.active:hover {
+    background-color: rgba(129, 199, 132, 0.2);
 }
 
 .sound-wave {

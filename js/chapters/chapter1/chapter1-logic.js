@@ -28,9 +28,10 @@ import { addMessage, addSeparator, updateEvidenceDisplay } from '../../core/ui-m
  * Initialize Chapter 1 game data
  */
 export function initializeChapter() {
-    // Set up interaction points and evidence from Chapter 1 content
-    gameState.interactionPoints = INTERACTION_POINTS;
-    gameState.evidence = EVIDENCE_DATA;
+    // Create fresh copies of interaction points and evidence to avoid mutation
+    // Deep clone to ensure nested objects are also copied
+    gameState.interactionPoints = JSON.parse(JSON.stringify(INTERACTION_POINTS));
+    gameState.evidence = JSON.parse(JSON.stringify(EVIDENCE_DATA));
 
     // Show intro and update UI
     showIntro();
