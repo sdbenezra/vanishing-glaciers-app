@@ -173,6 +173,29 @@ export function showAutoSaveIndicator() {
 }
 
 /**
+ * Sync evidence object properties with the Sets
+ * Call this after initializeGame() to restore evidence state from a loaded save
+ */
+export function syncEvidenceState() {
+    // Sync discovered evidence
+    for (const evidenceId of gameState.discoveredEvidence) {
+        if (gameState.evidence[evidenceId]) {
+            gameState.evidence[evidenceId].discovered = true;
+        }
+    }
+
+    // Sync examined evidence
+    for (const evidenceId of gameState.examinedEvidence) {
+        if (gameState.evidence[evidenceId]) {
+            gameState.evidence[evidenceId].examined = true;
+        }
+    }
+
+    // Update the UI to reflect the synced state
+    updateEvidenceDisplay();
+}
+
+/**
  * Load game from a slot
  * @param {number} slotNumber - Slot number to load from
  * @returns {boolean} True if load succeeded
@@ -211,8 +234,8 @@ export function loadGame(slotNumber) {
             gameState.tabletState.correctAnswers = saveData.gameProgress.tabletState.correctAnswers || 0;
         }
 
-        // Update UI
-        updateEvidenceDisplay();
+        // Note: Evidence sync happens in syncEvidenceState() after initializeGame()
+        // because initializeGame() reloads fresh evidence objects from chapter content
         addMessage(`💾 Game loaded from slot ${slotNumber + 1}!`, 'system-message');
         addMessage(`⏱️ Total playtime: ${formatPlayTime(gameState.playTimeSeconds)}`, 'system-message');
 
@@ -546,6 +569,9 @@ export function loadFromSlot(slotNumber) {
     if (loadGame(slotNumber)) {
         // Initialize the chapter to set up interaction points and evidence
         initializeGame();
+
+        // Sync evidence state after initialization (because initializeGame reloads fresh evidence)
+        syncEvidenceState();
 
         // Show game resumed message and current location
         addMessage("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━", 'system-message', true);
