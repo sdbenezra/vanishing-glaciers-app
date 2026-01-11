@@ -115,9 +115,18 @@ function speakNow(text, voiceType = 'narrator') {
         .replace(/[\u{1F600}-\u{1F64F}]/gu, '') // Remove emoticons
         .replace(/[─━]+/g, '') // Remove separator lines
 
-        // Remove character names and labels
-        .replace(/Dr\.?\s*Maya\s*Patel/gi, '') // Remove character name
+        // Remove character names and labels (only when used as speaker identifiers with colon)
+        .replace(/Dr\.?\s*Maya\s*Patel\s*:\s*/gi, '') // Remove full character name from speaker labels
+        .replace(/Dr\.?\s*Patel\s*:\s*/gi, '') // Remove character last name from speaker labels
         .replace(/Dr\. /g, 'Doctor ') // Expand abbreviations
+
+        // Convert all-caps words to proper case so they're read as words not letters
+        .replace(/\bTIP\b/g, 'Tip')
+
+        // Time units (hours, minutes, seconds) - must come BEFORE scientific units
+        .replace(/(\d+)\s*h(?:\s|$|,|\.)/gi, '$1 hours ')
+        .replace(/(\d+)\s*m(?:\s|$|,|\.)/g, '$1 minutes ')
+        .replace(/(\d+)\s*s(?:\s|$|,|\.)/g, '$1 seconds ')
 
         // Scientific units and measurements
         .replace(/(\d+)\.(\d+)/g, '$1 point $2')
@@ -132,7 +141,8 @@ function speakNow(text, voiceType = 'narrator') {
         .replace(/\n\s*━+\s*\n/g, '. ') // Remove separator line breaks
         .replace(/\n(?=[A-Z][A-Z])/g, '. ') // Newline before all-caps (headers) = period
         .replace(/:\n/g, ': ') // Colon + newline = just space
-        .replace(/[:-]/g, ' ') // Replace colons and dashes with spaces
+        .replace(/:/g, ', ') // Replace colons with comma-space for a pause
+        .replace(/-/g, ' ') // Replace dashes with spaces
         .replace(/\n\s*[•·]/g, ', ') // Bullet points = commas
         .replace(/\n\s*-\s/g, ', ') // Dash lists = commas
         .replace(/\n(?=[A-Z][a-z])/g, '. ') // Newline before sentence case = period

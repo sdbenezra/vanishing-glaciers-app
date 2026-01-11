@@ -93,12 +93,11 @@ export function showLocation() {
     addSeparator();
     const location = `📍 MAIN RESEARCH LABORATORY - POLARIS BASE
 
-You step into Dr. Chen's primary research laboratory. The room hums with the
-soft whir of monitoring equipment. Banks of screens display complex data
-visualizations, their glow casting an eerie light in the Arctic twilight.
+You step into Dr. Chen's primary research laboratory. The room hums with the soft whir of monitoring equipment.
+Banks of screens display complex data visualizations, their glow casting an eerie light in the Arctic twilight.
 
-The lab is meticulously organized - research papers neatly stacked, equipment
-properly stored - but there's an air of abandonment, as if someone left in a hurry.
+The lab is meticulously organized - research papers neatly stacked, equipment properly stored -
+but there's an air of abandonment, as if someone left in a hurry.
 
 You can examine:
   • monitoring station - Displays showing glacier temperature data
