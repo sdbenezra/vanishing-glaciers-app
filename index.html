@@ -82,7 +82,15 @@
 
     <div id="gameContainer" class="game-container hidden">
         <div class="header">
-            <div class="voice-controls">
+            <div class="header-controls-left">
+                <button class="voice-button" onclick="showSaveMenu()">
+                    💾 Save
+                </button>
+                <button class="voice-button" onclick="returnToMainMenu()">
+                    🏠 Menu
+                </button>
+            </div>
+            <div class="header-controls-right">
                 <div class="speaking-indicator" id="speakingIndicator">
                     <span>🔊</span>
                     <div class="sound-wave"></div>
@@ -92,14 +100,6 @@
                 <button class="voice-button" id="muteButton" onclick="toggleMute()" title="Toggle voice narration">
                     <span id="muteIcon">🔊</span>
                     <span id="muteText">Voice On</span>
-                </button>
-            </div>
-            <div style="display: flex; gap: 10px; margin-top: 10px;">
-                <button class="voice-button" id="muteButton" onclick="showSaveMenu()">
-                    💾 Save
-                </button>
-                <button class="voice-button" id="muteButton" onclick="returnToMainMenu()">
-                    🏠 Menu
                 </button>
             </div>
             <div class="title">🏔️ THE VANISHING GLACIERS 🏔️</div>
@@ -131,24 +131,28 @@
         </div>
 
         <div class="input-area">
-            <div class="input-label">▶</div>
-            <button class="mic-button" id="micButton" onclick="toggleVoiceInput()" title="Voice input (click to speak)">
-                <span id="micIcon">🎤</span>
-            </button>
-            <div class="listening-indicator" id="listeningIndicator">
-                <span>Listening...</span>
-                <div class="listening-wave"></div>
-                <div class="listening-wave"></div>
-                <div class="listening-wave"></div>
-                <div class="listening-wave"></div>
+            <div class="input-row">
+                <div class="input-label">▶</div>
+                <button class="mic-button" id="micButton" onclick="toggleVoiceInput()" title="Voice input (click to speak)">
+                    <span id="micIcon">🎤</span>
+                </button>
+                <div class="listening-indicator" id="listeningIndicator">
+                    <span>Listening...</span>
+                    <div class="listening-wave"></div>
+                    <div class="listening-wave"></div>
+                    <div class="listening-wave"></div>
+                    <div class="listening-wave"></div>
+                </div>
+                <input type="text" id="commandInput" class="input-field" placeholder="Type your command here..." autocomplete="off">
+                <button class="send-button" onclick="submitCommand()">SEND</button>
             </div>
-            <input type="text" id="commandInput" class="input-field" placeholder="Type your command here..." autocomplete="off">
-            <button class="send-button" onclick="submitCommand()">SEND</button>
-            <button class="help-button" onclick="toggleHelp()">HELP</button>
-            <button class="ai-toggle" id="aiToggle" onclick="showAIConfirmation()" title="Toggle AI-powered natural language understanding">
-                <span class="ai-indicator">🤖</span>
-                <span id="aiToggleText">AI OFF</span>
-            </button>
+            <div class="control-row">
+                <button class="help-button" onclick="toggleHelp()">HELP</button>
+                <button class="ai-toggle" id="aiToggle" onclick="showAIConfirmation()" title="Toggle AI-powered natural language understanding">
+                    <span class="ai-indicator">🤖</span>
+                    <span id="aiToggleText">AI OFF</span>
+                </button>
+            </div>
         </div>
     </div>
 

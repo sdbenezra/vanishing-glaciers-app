@@ -138,8 +138,13 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    overflow: hidden;
-    white-space: nowrap;
+    gap: 10px;
+}
+
+.evidence-panel.collapsed .evidence-header {
+    flex-direction: column;
+    padding: 10px 5px;
+    gap: 5px;
 }
 
 .evidence-header:hover {
@@ -147,13 +152,14 @@
 }
 
 .evidence-title {
-    transition: opacity 0.2s ease;
+    transition: all 0.3s ease;
+    white-space: nowrap;
 }
 
 .evidence-panel.collapsed .evidence-title {
-    opacity: 0;
-    width: 0;
-    overflow: hidden;
+    writing-mode: vertical-rl;
+    transform: rotate(180deg);
+    font-size: 12px;
 }
 
 .evidence-toggle {
@@ -164,6 +170,7 @@
 
 .evidence-panel.collapsed .evidence-toggle {
     transform: rotate(180deg);
+    margin-top: auto; /* Push to bottom when in column layout */
 }
 
 .evidence-content {
@@ -234,12 +241,13 @@
 .auto-save-indicator {
     position: absolute;
     top: 50%;
-    left: 15px;
-    transform: translateY(-50%);
+    left: 50%;
+    transform: translate(-50%, -50%);
     color: #4dd0e1;
     font-size: 12px;
     opacity: 0;
     transition: opacity 0.3s ease;
+    pointer-events: none; /* Don't block clicks on header */
 }
 
 .auto-save-indicator.saving {

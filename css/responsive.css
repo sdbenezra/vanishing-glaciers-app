@@ -17,6 +17,22 @@
         width: 100%;
         max-height: 40px;
     }
+
+    /* Keep title horizontal on tablet/mobile (full width layout) */
+    .evidence-panel.collapsed .evidence-title {
+        writing-mode: horizontal-tb;
+        transform: none;
+        font-size: 14px;
+    }
+
+    .evidence-panel.collapsed .evidence-header {
+        flex-direction: row;
+        padding: 10px 15px;
+    }
+
+    .evidence-panel.collapsed .evidence-toggle {
+        margin-top: 0;
+    }
 }
 
 /* Tablets */
@@ -31,7 +47,7 @@
 
     .input-area {
         padding: 10px;
-        gap: 5px;
+        gap: 8px;
     }
 
     .input-label {
@@ -58,16 +74,29 @@
 
     .help-button {
         padding: 10px 15px;
+        flex: 1; /* Make buttons in control row equal width */
     }
 
-    .voice-controls {
+    .ai-toggle {
+        flex: 1; /* Make buttons in control row equal width */
+    }
+
+    .header-controls-left {
+        top: 10px;
+        left: 10px;
+        gap: 5px;
+    }
+
+    .header-controls-right {
         top: 10px;
         right: 10px;
+        gap: 5px;
     }
 
     .voice-button {
         padding: 6px 10px;
-        font-size: 12px;
+        font-size: 11px;
+        white-space: nowrap;
     }
 
     #muteText {
@@ -108,43 +137,57 @@
     }
 
     .input-area {
-        flex-wrap: wrap;
         padding: 8px;
+        gap: 8px;
+    }
+
+    .input-row {
+        gap: 5px;
+    }
+
+    .control-row {
+        gap: 5px;
     }
 
     .input-field {
-        width: 100%;
-        order: 1;
-        margin-bottom: 5px;
+        font-size: 16px; /* Larger on mobile for readability */
+        min-height: 44px; /* Ensure touch-friendly height */
     }
 
-    .send-button {
-        order: 2;
-        flex: 1;
+    .send-button, .mic-button {
+        padding: 12px;
+        font-size: 12px;
     }
 
-    .mic-button {
-        order: 3;
+    .help-button, .ai-toggle {
         flex: 1;
-    }
-
-    .listening-indicator {
-        order: 4;
-        flex: 1;
-    }
-
-    .help-button {
-        order: 5;
-        flex: 1;
-    }
-
-    .ai-toggle {
-        order: 6;
-        flex: 1;
+        padding: 12px;
     }
 
     .chat-display {
         font-size: 13px;
         padding: 15px;
+    }
+
+    .header-controls-left {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 5px;
+    }
+
+    .header-controls-right {
+        flex-direction: column;
+        align-items: flex-end;
+        gap: 5px;
+    }
+
+    /* Make title and subtitle smaller on mobile to accommodate header buttons */
+    .title {
+        font-size: 16px;
+        margin-top: 60px; /* Space for buttons above */
+    }
+
+    .subtitle {
+        font-size: 9px;
     }
 }
