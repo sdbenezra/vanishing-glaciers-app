@@ -81,7 +81,7 @@ export const INTERACTION_POINTS = {
         name: 'Equipment Storage Rack',
         description: 'A metal rack holding various scientific instruments - ice core drills, thermal sensors, sample containers. There\'s a clipboard with equipment checkout logs.\n\n📱 On the top shelf, you notice Dr. Chen\'s field tablet, screen still glowing faintly. The device shows a security lock screen.',
         examined: false,
-        evidenceId: null,
+        evidenceId: 'sarah_note',
         specialItem: 'tablet'
     },
     storage_freezer: {

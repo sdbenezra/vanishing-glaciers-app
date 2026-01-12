@@ -16,6 +16,23 @@ import { autoSave, saveGame, formatPlayTime } from '../../core/save-manager.js';
 import { updateContinueButton, returnToMainMenuFromEnding } from '../../core/menu-manager.js';
 import { initializeChapter, showIntro, clearGameOutput } from './chapter1-logic.js';
 import { updateEvidenceDisplay } from '../../core/ui-manager.js';
+import { isSpeechEnabled } from '../../core/speech-manager.js';
+
+// ====================================
+// TIMING HELPER
+// ====================================
+
+/**
+ * Get adaptive delay based on whether TTS is enabled
+ * When TTS is off, use much shorter delays so players don't have to wait
+ * @param {number} ttsDelay - The delay to use when TTS is enabled (in ms)
+ * @returns {number} The appropriate delay in milliseconds
+ */
+function getDelay(ttsDelay) {
+    // If TTS is enabled, use full delay to match speech duration
+    // If TTS is off, use a short delay just for visual pacing (1/20th of original, min 500ms)
+    return isSpeechEnabled() ? ttsDelay : Math.max(500, ttsDelay / 20);
+}
 
 // ====================================
 // CHAPTER COMPLETION CHECK
@@ -32,7 +49,7 @@ export function checkChapterCompletion() {
         // Trigger ending after a short delay
         setTimeout(() => {
             triggerChapterEnding();
-        }, 3000);
+        }, getDelay(3000));
     }
 }
 
@@ -57,7 +74,7 @@ function triggerChapterEnding() {
 
     setTimeout(() => {
         showEndingDialogue1();
-    }, 2000);
+    }, getDelay(2000));
 }
 
 /**
@@ -70,12 +87,12 @@ function showEndingDialogue1() {
     setTimeout(() => {
         const maya1 = `🗣️  Dr. Maya Patel: "I think I understand what happened. Look at the pattern here..."`;
         addMessage(maya1, 'dialogue-message');
-    }, 5000);
+    }, getDelay(5000));
 
     setTimeout(() => {
         const narration2 = `She gestures to the evidence laid out before you.`;
         addMessage(narration2, 'system-message');
-    }, 10000);
+    }, getDelay(10000));
 
     setTimeout(() => {
         const maya2 = `🗣️  Dr. Maya Patel: "Sarah found something unexpected in the temperature data, a two point three °C increase in ice that should be stable for centuries. That's not a minor anomaly.
@@ -83,17 +100,17 @@ function showEndingDialogue1() {
         So she followed proper scientific protocol. Before making any public claims about such dramatic findings, she went to sector seven B to collect physical evidence - actual ice samples, direct thermal measurements.
         She's not in danger. She's being thorough. That's what good scientists do."`;
         addMessage(maya2, 'dialogue-message');
-    }, 15000);
+    }, getDelay(15000));
 
     setTimeout(() => {
         const narration3 = `You nod, the pieces falling into place.`;
         addMessage(narration3, 'system-message');
-    }, 60000);
+    }, getDelay(60000));
 
     setTimeout(() => {
         addMessage('\n[Hit ENTER or press SEND to continue..]', 'system-message');
         waitForEnter(() => showEndingDialogue2());
-    }, 65000);
+    }, getDelay(65000));
 }
 
 /**
@@ -105,28 +122,28 @@ function showEndingDialogue2() {
     setTimeout(() => {
         const maya1 = `🗣️  Dr. Maya Patel: "Actually, there's something else I should show you..."`;
         addMessage(maya1, 'dialogue-message');
-    }, 1000);
+    }, getDelay(1000));
 
     setTimeout(() => {
         const narration = `She pulls up a system log on her tablet.`;
         addMessage(narration, 'system-message');
-    }, 5000);
+    }, getDelay(5000));
 
     setTimeout(() => {
         const maya2 = `🗣️  Dr. Maya Patel: "Sarah activated 'Winter Protocol' just before midnight last night. That's our secure emergency backup system. We only use it when data is too critical to risk losing, natural disasters, equipment failures, that sort of thing.
         She backed up all her research findings to our off-site servers before leaving. Whatever she found, she made absolutely certain it wouldn't be lost."`;
         addMessage(maya2, 'dialogue-message');
-    }, 8000);
+    }, getDelay(8000));
 
     setTimeout(() => {
         const narration2 = `A slight frown crosses Maya's face.`;
         addMessage(narration2, 'system-message');
-    }, 35000);
+    }, getDelay(35000));
 
     setTimeout(() => {
         addMessage('\n[Hit ENTER or press SEND to continue..]', 'system-message');
         waitForEnter(() => showEndingDialogue3());
-    }, 40000);
+    }, getDelay(40000));
 }
 
 /**
@@ -139,12 +156,12 @@ function showEndingDialogue3() {
         const maya1 = `🗣️  Dr. Maya Patel: "There's just one thing that seems... odd.
         I found this in Sarah's personal locker. It's encrypted - which is unusual for routine field work communication."`;
         addMessage(maya1, 'dialogue-message');
-    }, 1000);
+    }, getDelay(1000));
 
     setTimeout(() => {
         const narration = `She shows you a piece of paper.`;
         addMessage(narration, 'system-message');
-    }, 11000);
+    }, getDelay(11000));
 
     setTimeout(() => {
         const encryptedNote = `╔═══════════════════════════════════════════════╗
@@ -161,23 +178,23 @@ function showEndingDialogue3() {
 ║  [Remainder encrypted - AES-256]              ║
 ╚═══════════════════════════════════════════════╝`;
         addMessage(encryptedNote, 'system-message');
-    }, 15000);
+    }, getDelay(15000));
 
     setTimeout(() => {
         const maya3 = `🗣️  Dr. Maya Patel: "Who's 'they'? And why encrypt a message to her grad student about a routine verification trip?
         Maybe I'm reading too much into it. Scientists can be paranoid about data security..."`;
         addMessage(maya3, 'dialogue-message');
-    }, 30000);
+    }, getDelay(30000));
 
     setTimeout(() => {
         const narration = `But she doesn't sound convinced.`;
         addMessage(narration, 'system-message');
-    }, 45000);
+    }, getDelay(45000));
 
     setTimeout(() => {
         addMessage('\n[Hit ENTER or press SEND to continue..]', 'system-message');
         waitForEnter(() => showChapterSummary());
-    }, 50000);
+    }, getDelay(50000));
 }
 
 /**
@@ -236,7 +253,7 @@ What else did Sarah discover?
     setTimeout(() => {
         addMessage('\n[Hit ENTER or press SEND to see Chapter 2 preview]', 'system-message');
         waitForEnter(() => showChapter2Teaser());
-    }, 60000);
+    }, getDelay(60000));
 }
 
 // ====================================

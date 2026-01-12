@@ -297,8 +297,22 @@ function examineInteractionPoint(point) {
 
     // Handle tablet special item
     if (point.id === 'equipment_rack' && point.specialItem === 'tablet') {
-        message += `\n\n💡 Type "examine tablet" to investigate.`;
-        addMessage(message);
+        // Mark tablet evidence as discovered when equipment rack is examined
+        if (point.evidenceId && !gameState.discoveredEvidence.has(point.evidenceId)) {
+            const evidence = gameState.evidence[point.evidenceId];
+            gameState.discoveredEvidence.add(point.evidenceId);
+            evidence.discovered = true;
+
+            message += `\n\n✓ EVIDENCE DISCOVERED: ${evidence.name}`;
+            message += `\n\n💡 Type "examine tablet" to investigate.`;
+
+            addMessage(message, 'success-message');
+            updateEvidenceDisplay();
+            openEvidencePanel();
+        } else {
+            message += `\n\n💡 Type "examine tablet" to investigate.`;
+            addMessage(message);
+        }
         return;
     }
 
@@ -328,6 +342,12 @@ function examineInteractionPoint(point) {
  * @param {Object} evidence - The evidence to examine
  */
 function examineEvidenceDetailed(evidence) {
+    // Check if this is the tablet evidence and if it's still locked
+    if (evidence.id === 'sarah_note' && !gameState.tabletState.unlocked) {
+        addMessage(`🔒 ${evidence.name.toUpperCase()}\n\n${evidence.description}\n\n💡 The tablet is locked. Type "unlock tablet" to access the encrypted field notes.`, 'warning-message');
+        return;
+    }
+
     let message = `🔬 DETAILED ANALYSIS: ${evidence.name.toUpperCase()}\n\n${evidence.detailedInfo}`;
 
     if (!evidence.examined) {

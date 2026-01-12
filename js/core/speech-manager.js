@@ -286,6 +286,14 @@ function speakNow(text, voiceType = 'narrator') {
 }
 
 /**
+ * Check if speech is enabled
+ * @returns {boolean} True if TTS is enabled
+ */
+export function isSpeechEnabled() {
+    return speechEnabled;
+}
+
+/**
  * Toggle mute (enable/disable TTS)
  */
 export function toggleMute() {

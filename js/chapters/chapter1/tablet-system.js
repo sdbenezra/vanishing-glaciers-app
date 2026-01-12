@@ -120,9 +120,9 @@ function showCurrentQuestion() {
     const questionText = q.question.replace('{num}', answered + 1);
 
     addMessage(`┌────────────────────────────────────────┐
-│ 🔒 SECURITY - DR. SARAH CHEN           │
+│ 🔒 SECURITY - DR. SARAH CHEN            │
 ├────────────────────────────────────────┤
-│ Progress: [${progressBar}] ${answered}/4 │
+│ Progress: [${progressBar}] ${answered}/4            │
 └────────────────────────────────────────┘
 
 ${questionText}
@@ -235,6 +235,8 @@ function checkTabletUnlockSuccess() {
 
     if (correct >= 3) {
         gameState.tabletState.unlocked = true;
+        // Note: Evidence is already discovered when examining equipment rack,
+        // but we ensure it's marked as discovered here too (safe to call again)
         gameState.evidence.sarah_note.discovered = true;
         gameState.discoveredEvidence.add('sarah_note');
 
@@ -245,7 +247,8 @@ function checkTabletUnlockSuccess() {
 │ Correct: ${correct}/4                  │
 │                                        │
 │ Access granted to field notes.         │
-│ Type "read tablet" to view.            │
+│ Type "read tablet" or "examine sarah   │
+│ note" to view the decrypted content.   │
 └────────────────────────────────────────┘`, 'success-message');
 
         updateEvidenceDisplay();
