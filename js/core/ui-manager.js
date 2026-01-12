@@ -82,18 +82,30 @@ export function updateEvidenceDisplay() {
 
         if (evidence.examined) {
             item.classList.add('evidence-examined');
+            item.classList.add('clickable');
             item.innerHTML = `
                 <div class="evidence-status">✓</div>
                 <div class="evidence-name">${evidence.name}</div>
                 <div class="evidence-badge">EXAMINED</div>
+                <div class="evidence-view-icon">👁️</div>
             `;
+            // Make clickable to view details
+            item.style.cursor = 'pointer';
+            item.title = 'Click to view details';
+            item.addEventListener('click', () => showEvidenceDetails(evidenceId));
         } else if (evidence.discovered) {
             item.classList.add('evidence-found');
+            item.classList.add('clickable');
             item.innerHTML = `
                 <div class="evidence-status">○</div>
                 <div class="evidence-name">${evidence.name}</div>
                 <div class="evidence-badge">FOUND</div>
+                <div class="evidence-view-icon">👁️</div>
             `;
+            // Make clickable to view details
+            item.style.cursor = 'pointer';
+            item.title = 'Click to view details';
+            item.addEventListener('click', () => showEvidenceDetails(evidenceId));
         } else {
             item.classList.add('evidence-undiscovered');
             item.innerHTML = `
@@ -115,6 +127,59 @@ export function updateEvidenceDisplay() {
         Evidence: ${found} of ${total} found.<br>
         Examined: ${examined} of ${total}.
     `;
+}
+
+/**
+ * Show evidence details in a modal
+ * @param {string} evidenceId - ID of the evidence to display
+ */
+export function showEvidenceDetails(evidenceId) {
+    const evidence = gameState.evidence[evidenceId];
+    if (!evidence || !evidence.discovered) return;
+
+    const modal = document.getElementById('saveModal');
+    const title = document.getElementById('saveModalTitle');
+    const content = document.getElementById('saveModalContent');
+
+    if (!modal || !title || !content) return;
+
+    title.textContent = `📋 ${evidence.name}`;
+
+    // Show different content based on examination status
+    let detailsHTML = `
+        <div style="color: #a8c5da; line-height: 1.8;">
+            <div style="margin-bottom: 20px; padding: 15px; background: #2a3f5f; border-radius: 5px;">
+                <strong style="color: #4dd0e1;">Description:</strong>
+                <p style="margin-top: 10px;">${evidence.description}</p>
+            </div>
+    `;
+
+    if (evidence.examined && evidence.detailedInfo) {
+        detailsHTML += `
+            <div style="margin-bottom: 20px; padding: 15px; background: #1a2332; border-radius: 5px; border: 2px solid #4dd0e1;">
+                <strong style="color: #81c784;">Detailed Analysis:</strong>
+                <pre style="margin-top: 10px; white-space: pre-wrap; font-family: 'Courier New', monospace; font-size: 13px; color: #e0f4ff;">${evidence.detailedInfo}</pre>
+            </div>
+        `;
+
+        if (evidence.climateLesson) {
+            detailsHTML += `
+                <div style="margin-bottom: 20px; padding: 15px; background: #2a3f5f; border-radius: 5px; border-left: 4px solid #81c784;">
+                    <pre style="white-space: pre-wrap; font-family: 'Courier New', monospace; font-size: 13px; color: #a8c5da;">${evidence.climateLesson}</pre>
+                </div>
+            `;
+        }
+    } else {
+        detailsHTML += `
+            <div style="margin-top: 20px; padding: 15px; background: #1a2332; border-radius: 5px; border: 2px solid #ffab40;">
+                <p style="color: #ffab40;">💡 <strong>Tip:</strong> Use the EXAMINE command on this evidence to view detailed analysis and learn more.</p>
+            </div>
+        `;
+    }
+
+    detailsHTML += '</div>';
+    content.innerHTML = detailsHTML;
+    modal.classList.add('active');
 }
 
 /**
