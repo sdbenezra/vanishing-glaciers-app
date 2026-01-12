@@ -267,7 +267,7 @@ The layer spacing acceleration Dr. Chen noted shows climate change is happening 
     satellite_thermal_image: {
         id: 'satellite_thermal_image',
         name: 'Satellite Thermal Image',
-        description: 'A false-color satellite image showing thermal readings of the glacier. The image uses color coding - deep blue for coldest areas, transitioning through green, yellow, orange to bright red for warmest. Alarming red hotspots appear in areas that should be uniformly cold.',
+        description: 'A false-color satellite image showing thermal readings of the glacier. The image uses color coding - deep blue for coldest areas, transitioning through green, yellow, orange to bright red for warmest. Critical red hotspots appear in areas that should be uniformly cold.',
         detailedInfo: `SATELLITE THERMAL IMAGING DATA
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 Satellite: MODIS Terra/Aqua
@@ -287,7 +287,7 @@ ANOMALY REPORT:
 Red zones detected in deep ice layers (800 to 1000 year strata) match the locations of Dr. Chen's ground sensor readings. This independent confirmation from space validates the temperature anomalies.
 
 ANALYSIS NOTES:
-"Two completely independent measurement systems - ground sensors and satellite thermal imaging - showing identical warming patterns. This rules out instrument error. The thermal signature is REAL.
+"Ground sensors and satellite data show identical patterns. The thermal signature is REAL.
 
 Satellite data advantages:
 - No physical contact with ice (can't be faulty equipment)
@@ -295,7 +295,7 @@ Satellite data advantages:
 - Covers entire glacier simultaneously
 - Updated every 12 hours
 
-The fact that space-based and ground-based measurements agree removes all doubt about data accuracy."
+Space-based and ground-based measurements agree - the data is accurate."
 
 Last viewed by: S. Chen (May 3, 23:52)`,
         climateLesson: `
@@ -317,12 +317,7 @@ WHY SATELLITES MATTER FOR CLIMATE RESEARCH:
 ✓ Historical Record: Decades of continuous data for comparison
 ✓ Independence: Confirms ground measurements from a different source
 
-SCIENTIFIC VERIFICATION PRINCIPLE:
-When multiple independent measurement methods (ground sensors + satellites) show the same result, confidence in the data increases dramatically. This is called "multi-source verification" - a cornerstone of climate science.
-
-Dr. Chen's ground sensors showed warming. The satellites confirmed it from space. Two different technologies, two different perspectives, same conclusion: the warming is real.
-
-This is how science builds certainty: not from one measurement, but from multiple independent lines of evidence all pointing to the same truth.`,
+Dr. Chen's ground sensors showed warming. The satellites confirmed it from space. Two different technologies, same conclusion: the warming is real.`,
         discovered: false,
         examined: false
     }

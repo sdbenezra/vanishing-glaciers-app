@@ -78,7 +78,7 @@ function showEndingDialogue1() {
     }, 10000);
 
     setTimeout(() => {
-        const maya2 = `🗣️  Dr. Maya Patel: "Sarah found something alarming in the temperature data, a two point three °C increase in ice that should be stable for centuries. That's not a minor anomaly.
+        const maya2 = `🗣️  Dr. Maya Patel: "Sarah found something unexpected in the temperature data, a two point three °C increase in ice that should be stable for centuries. That's not a minor anomaly.
         But she's a careful scientist. She recalibrated the sensors repeatedly, cross-checked with satellite thermal imaging, even examined ice cores. Every single test confirmed the same thing: the warming is real.
         So she followed proper scientific protocol. Before making any public claims about such dramatic findings, she went to sector seven B to collect physical evidence - actual ice samples, direct thermal measurements.
         She's not in danger. She's being thorough. That's what good scientists do."`;

@@ -166,8 +166,9 @@ Available actions:
 - HELP: Show help
 
 Special commands:
-- "read tablet" or "view tablet": Read Dr. Chen's decrypted notes
-- "unlock tablet": Start tablet unlock sequence
+- "read tablet" or "view tablet": Read Dr. Chen's decrypted notes (use action "read_tablet")
+- "examine tablet": Check the tablet device (use action "examine" with target "tablet")
+- "unlock tablet": Start tablet unlock sequence (use action "unlock_tablet")
 
 Parse the user's input into ONE of these commands. Return ONLY a JSON object with this format:
 {"action": "examine", "target": "monitoring_station"}
@@ -175,6 +176,8 @@ or
 {"action": "talk", "topic": "glaciers"}
 or
 {"action": "look"}
+or
+{"action": "read_tablet"}
 
 Be flexible with natural language. Examples:
 "tell me about the glacier work" → {"action": "talk", "topic": "glaciers"}
@@ -187,8 +190,9 @@ Be flexible with natural language. Examples:
 "look at the ice samples" → {"action": "examine", "target": "storage_freezer"}
 "examine the freezer" → {"action": "examine", "target": "storage_freezer"}
 "what about ice cores" → {"action": "talk", "topic": "ice cores"}
-"read tablet" → {"action": "examine", "target": "tablet"}
-"view tablet" → {"action": "examine", "target": "tablet"}`;
+"read tablet" → {"action": "read_tablet"}
+"view tablet" → {"action": "read_tablet"}
+"examine tablet" → {"action": "examine", "target": "tablet"}`;
 
         const messages = [
             { role: "system", content: systemPrompt },
@@ -281,6 +285,20 @@ export function executeAICommand(parsedCommand) {
         case 'help':
             if (showHelp) {
                 showHelp();
+                return true;
+            }
+            return false;
+
+        case 'read_tablet':
+            if (processCommand) {
+                processCommand('read tablet');
+                return true;
+            }
+            return false;
+
+        case 'unlock_tablet':
+            if (processCommand) {
+                processCommand('unlock tablet');
                 return true;
             }
             return false;

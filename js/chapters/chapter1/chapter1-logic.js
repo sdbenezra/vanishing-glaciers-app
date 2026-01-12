@@ -226,7 +226,7 @@ She spent days verifying the sensors weren't malfunctioning. When she confirmed 
         } else {
             return `🗣️  Dr. Patel:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-"Dr. Chen was investigating some very concerning temperature readings from the deep ice layers. She was working late every night last week, cross-referencing data, running calibrations...
+"Dr. Chen was investigating some very concerning temperature readings from the deep ice layers. She was working late every night last week, analyzing the data intensively...
 
 If you examine the monitoring station, you might see what had her so worried."`;
         }
@@ -240,13 +240,11 @@ If you examine the monitoring station, you might see what had her so worried."`;
             gameState.talkedToMaya = true;
             return `🗣️  Dr. Patel:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-"Her note! So she went to sector 7-B to verify the thermal readings in person. That makes sense now.
+"Her note explains everything! She went to sector 7-B to collect physical evidence before publishing her findings. That's proper scientific methodology - verify in the field before making public claims.
 
-Sarah is meticulous - she wouldn't make alarming claims without absolute certainty. If the deep ice is warming that rapidly, the implications are severe. Structural destabilization, accelerated melting, ecosystem impacts...
+The 'winter protocol' means she wanted to ensure her data would be protected. That tells me she knew the findings were significant.
 
-The 'winter protocol' she mentioned - that's our emergency data preservation procedure. It means she wanted to ensure her findings would be protected if something happened to her.
-
-I need to organize a search team to sector 7-B immediately. But thanks to your investigation, at least now we know where to look and why she went. She wasn't in danger - she was being a scientist, following the data wherever it led."`;
+I need to organize a search team to sector 7-B immediately. Thanks to your investigation, at least now we know where to look and why she went."`;
         } else if (gameState.examinedEvidence.size >= 2) {
             return `🗣️  Dr. Patel:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -300,9 +298,7 @@ The deep ice layers - those 800 to 1000 year old layers - should have very stabl
     if (evidenceId === 'calibration_log') {
         return `🗣️  Dr. Patel:
 
-"Ah, the calibration log. This shows how thorough Sarah was being. She verified those sensors multiple times because the readings were so alarming.
-
-See how she kept recalibrating? She wanted to be absolutely certain the equipment wasn't malfunctioning. When every test confirmed the same results, she had to accept that the temperature increase was real."`;
+"Ah, the calibration log. This shows her rigorous methodology. She recalibrated multiple times because the readings were so concerning - she needed to rule out equipment error. When every test confirmed the same results, she had to accept the temperature increase was real."`;
     }
 
     if (evidenceId === 'sarah_note') {
@@ -311,7 +307,7 @@ See how she kept recalibrating? She wanted to be absolutely certain the equipmen
 
 "Her note! So she went to sector 7-B to verify the thermal readings in person. That makes sense now.
 
-Sarah is meticulous - she wouldn't make alarming claims without absolute certainty. If the deep ice is warming that rapidly, the implications are severe. Structural destabilization, accelerated melting, ecosystem impacts...
+Sarah is meticulous - she wouldn't make significant claims without absolute certainty. If the deep ice is warming that rapidly, the implications are severe. Rapid ice loss, sea level impacts, coastal flooding risks...
 
 The 'winter protocol' she mentioned - that's our emergency data preservation procedure. It means she wanted to ensure her findings would be protected if something happened to her.
 
