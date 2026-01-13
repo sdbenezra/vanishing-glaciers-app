@@ -257,11 +257,12 @@ export function loadGame(slotNumber) {
  * @param {number} slotNumber - Slot number to delete
  */
 export function deleteSave(slotNumber) {
-    if (confirm(`Are you sure you want to delete save slot ${slotNumber + 1}?`)) {
+    const slotName = slotNumber === -1 ? 'Auto-Save' : `save slot ${slotNumber + 1}`;
+    if (confirm(`Are you sure you want to delete ${slotName}?`)) {
         const saveKey = `vg_save_${slotNumber}`;
         localStorage.removeItem(saveKey);
         showSaveMenu(); // Refresh the save menu
-        addMessage(`🗑️ Save slot ${slotNumber + 1} deleted.`, 'system-message');
+        addMessage(`🗑️ ${slotName} deleted.`, 'system-message');
     }
 }
 
@@ -527,7 +528,7 @@ export function showLoadMenu() {
                     <div class="save-slot-buttons">
                         <button class="save-slot-button" onclick="loadFromSlot(${slot.slotNumber})">📂 Load</button>
                         <button class="save-slot-button" onclick="exportSave(${slot.slotNumber})">📥 Export</button>
-                        ${slot.slotNumber !== -1 ? `<button class="save-slot-button danger" onclick="deleteSave(${slot.slotNumber})">🗑️ Delete</button>` : ''}
+                        <button class="save-slot-button danger" onclick="deleteSave(${slot.slotNumber})">🗑️ Delete</button>
                     </div>
                 </div>
             `;

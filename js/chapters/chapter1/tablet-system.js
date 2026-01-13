@@ -119,10 +119,15 @@ function showCurrentQuestion() {
     const progressBar = '█'.repeat(answered) + '░'.repeat(4 - answered);
     const questionText = q.question.replace('{num}', answered + 1);
 
+    // Calculate proper padding for alignment (box width is 40 chars)
+    const progressText = `Progress: [${progressBar}] ${answered}/4`;
+    const paddingNeeded = 38 - progressText.length; // 38 = 40 - 2 (for │ on each side)
+    const progressLine = `│ ${progressText}${' '.repeat(paddingNeeded)} │`;
+
     addMessage(`┌────────────────────────────────────────┐
-│ 🔒 SECURITY - DR. SARAH CHEN            │
+│ 🔒 SECURITY - DR. SARAH CHEN           │
 ├────────────────────────────────────────┤
-│ Progress: [${progressBar}] ${answered}/4            │
+${progressLine}
 └────────────────────────────────────────┘
 
 ${questionText}
@@ -240,24 +245,30 @@ function checkTabletUnlockSuccess() {
         gameState.evidence.sarah_note.discovered = true;
         gameState.discoveredEvidence.add('sarah_note');
 
+        // Calculate proper padding for variable content
+        const progressLine = `│ Progress: [████] 4/4${' '.repeat(21)} │`;
+        const correctLine = `│ Correct: ${correct}/4${' '.repeat(27 - correct.toString().length)} │`;
+
         addMessage(`┌────────────────────────────────────────┐
-│ 🔓 AUTHENTICATION SUCCESSFUL           │
+│ 🔓 AUTHENTICATION SUCCESSFUL          │
 ├────────────────────────────────────────┤
-│ Progress: [████████] 4/4               │
-│ Correct: ${correct}/4                  │
+${progressLine}
+${correctLine}
 │                                        │
 │ Access granted to field notes.         │
-│ Type "read tablet" or "examine sarah   │
-│ note" to view the decrypted content.   │
+│ Type "read tablet" to view.            │
 └────────────────────────────────────────┘`, 'success-message');
 
         updateEvidenceDisplay();
         openEvidencePanel();
     } else {
+        // Calculate proper padding for variable content
+        const correctLine = `│ Correct: ${correct}/4 (Need 3/4)${' '.repeat(17 - correct.toString().length)} │`;
+
         addMessage(`┌────────────────────────────────────────┐
-│ ❌ AUTHENTICATION FAILED               │
+│ ❌ AUTHENTICATION FAILED              │
 ├────────────────────────────────────────┤
-│ Correct: ${correct}/4 (Need 3/4)       │
+${correctLine}
 │ Type "unlock tablet" to retry.         │
 └────────────────────────────────────────┘`, 'warning-message');
 

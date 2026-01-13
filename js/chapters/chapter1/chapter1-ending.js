@@ -35,6 +35,90 @@ function getDelay(ttsDelay) {
 }
 
 // ====================================
+// SKIPPABLE TIMEOUT SYSTEM
+// ====================================
+
+let activeTimeout = null;
+let skipHintElement = null;
+
+/**
+ * Show skip hint to user
+ */
+function showSkipHint() {
+    if (!skipHintElement) {
+        skipHintElement = document.createElement('div');
+        skipHintElement.style.cssText = `
+            position: fixed;
+            bottom: 80px;
+            right: 20px;
+            background: rgba(42, 63, 95, 0.9);
+            color: #a8c5da;
+            padding: 10px 15px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-family: 'Courier New', monospace;
+            border: 1px solid #4a6fa5;
+            z-index: 1000;
+            animation: fadeIn 0.3s ease-in;
+        `;
+        skipHintElement.innerHTML = '⏩ Press <strong>SPACE</strong> or <strong>ENTER</strong> to continue';
+        document.body.appendChild(skipHintElement);
+    }
+}
+
+/**
+ * Hide skip hint
+ */
+function hideSkipHint() {
+    if (skipHintElement) {
+        skipHintElement.remove();
+        skipHintElement = null;
+    }
+}
+
+/**
+ * Create a skippable timeout that can be cancelled by pressing Space or Enter
+ * @param {Function} callback - Function to call when timeout completes or is skipped
+ * @param {number} delay - Delay in milliseconds
+ */
+function skippableTimeout(callback, delay) {
+    // Clear any existing timeout
+    if (activeTimeout) {
+        clearTimeout(activeTimeout);
+        hideSkipHint();
+    }
+
+    // Show skip hint for delays over 1 second
+    if (delay > 1000) {
+        showSkipHint();
+    }
+
+    // Set up skip handler
+    const skipHandler = (e) => {
+        if (e.key === ' ' || e.key === 'Enter') {
+            e.preventDefault();
+            if (activeTimeout) {
+                clearTimeout(activeTimeout);
+                hideSkipHint();
+                activeTimeout = null;
+                document.removeEventListener('keydown', skipHandler);
+                callback();
+            }
+        }
+    };
+
+    document.addEventListener('keydown', skipHandler);
+
+    // Set up the timeout
+    activeTimeout = setTimeout(() => {
+        hideSkipHint();
+        activeTimeout = null;
+        document.removeEventListener('keydown', skipHandler);
+        callback();
+    }, delay);
+}
+
+// ====================================
 // CHAPTER COMPLETION CHECK
 // ====================================
 
@@ -47,7 +131,7 @@ export function checkChapterCompletion() {
 
     if (allEvidenceFound && allEvidenceExamined && !gameState.endingTriggered) {
         // Trigger ending after a short delay
-        setTimeout(() => {
+        skippableTimeout(() => {
             triggerChapterEnding();
         }, getDelay(3000));
     }
@@ -72,7 +156,7 @@ function triggerChapterEnding() {
     addMessage('           INVESTIGATION COMPLETE', 'system-message');
     addMessage('═══════════════════════════════════════════════', 'system-message');
 
-    setTimeout(() => {
+    skippableTimeout(() => {
         showEndingDialogue1();
     }, getDelay(2000));
 }
@@ -84,17 +168,17 @@ function showEndingDialogue1() {
     const narration = `Dr. Patel walks over to your workstation, reviewing the evidence you've gathered.`;
     addMessage(narration, 'system-message');
 
-    setTimeout(() => {
+    skippableTimeout(() => {
         const maya1 = `🗣️  Dr. Maya Patel: "I think I understand what happened. Look at the pattern here..."`;
         addMessage(maya1, 'dialogue-message');
     }, getDelay(5000));
 
-    setTimeout(() => {
+    skippableTimeout(() => {
         const narration2 = `She gestures to the evidence laid out before you.`;
         addMessage(narration2, 'system-message');
     }, getDelay(10000));
 
-    setTimeout(() => {
+    skippableTimeout(() => {
         const maya2 = `🗣️  Dr. Maya Patel: "Sarah found something unexpected in the temperature data, a two point three °C increase in ice that should be stable for centuries. That's not a minor anomaly.
         But she's a careful scientist. She recalibrated the sensors repeatedly, cross-checked with satellite thermal imaging, even examined ice cores. Every single test confirmed the same thing: the warming is real.
         So she followed proper scientific protocol. Before making any public claims about such dramatic findings, she went to sector seven B to collect physical evidence - actual ice samples, direct thermal measurements.
@@ -102,12 +186,12 @@ function showEndingDialogue1() {
         addMessage(maya2, 'dialogue-message');
     }, getDelay(15000));
 
-    setTimeout(() => {
+    skippableTimeout(() => {
         const narration3 = `You nod, the pieces falling into place.`;
         addMessage(narration3, 'system-message');
     }, getDelay(60000));
 
-    setTimeout(() => {
+    skippableTimeout(() => {
         addMessage('\n[Hit ENTER or press SEND to continue..]', 'system-message');
         waitForEnter(() => showEndingDialogue2());
     }, getDelay(65000));
@@ -119,28 +203,28 @@ function showEndingDialogue1() {
 function showEndingDialogue2() {
     addMessage('═══════════════════════════════════════════════', 'system-message');
 
-    setTimeout(() => {
+    skippableTimeout(() => {
         const maya1 = `🗣️  Dr. Maya Patel: "Actually, there's something else I should show you..."`;
         addMessage(maya1, 'dialogue-message');
     }, getDelay(1000));
 
-    setTimeout(() => {
+    skippableTimeout(() => {
         const narration = `She pulls up a system log on her tablet.`;
         addMessage(narration, 'system-message');
     }, getDelay(5000));
 
-    setTimeout(() => {
+    skippableTimeout(() => {
         const maya2 = `🗣️  Dr. Maya Patel: "Sarah activated 'Winter Protocol' just before midnight last night. That's our secure emergency backup system. We only use it when data is too critical to risk losing, natural disasters, equipment failures, that sort of thing.
         She backed up all her research findings to our off-site servers before leaving. Whatever she found, she made absolutely certain it wouldn't be lost."`;
         addMessage(maya2, 'dialogue-message');
     }, getDelay(8000));
 
-    setTimeout(() => {
+    skippableTimeout(() => {
         const narration2 = `A slight frown crosses Maya's face.`;
         addMessage(narration2, 'system-message');
     }, getDelay(35000));
 
-    setTimeout(() => {
+    skippableTimeout(() => {
         addMessage('\n[Hit ENTER or press SEND to continue..]', 'system-message');
         waitForEnter(() => showEndingDialogue3());
     }, getDelay(40000));
@@ -152,18 +236,18 @@ function showEndingDialogue2() {
 function showEndingDialogue3() {
     addMessage('═══════════════════════════════════════════════', 'system-message');
 
-    setTimeout(() => {
+    skippableTimeout(() => {
         const maya1 = `🗣️  Dr. Maya Patel: "There's just one thing that seems... odd.
         I found this in Sarah's personal locker. It's encrypted - which is unusual for routine field work communication."`;
         addMessage(maya1, 'dialogue-message');
     }, getDelay(1000));
 
-    setTimeout(() => {
+    skippableTimeout(() => {
         const narration = `She shows you a piece of paper.`;
         addMessage(narration, 'system-message');
     }, getDelay(11000));
 
-    setTimeout(() => {
+    skippableTimeout(() => {
         const encryptedNote = `╔═══════════════════════════════════════════════╗
 ║  ENCRYPTED NOTE - PARTIAL DECRYPTION          ║
 ╠═══════════════════════════════════════════════╣
@@ -180,18 +264,18 @@ function showEndingDialogue3() {
         addMessage(encryptedNote, 'system-message');
     }, getDelay(15000));
 
-    setTimeout(() => {
+    skippableTimeout(() => {
         const maya3 = `🗣️  Dr. Maya Patel: "Who's 'they'? And why encrypt a message to her grad student about a routine verification trip?
         Maybe I'm reading too much into it. Scientists can be paranoid about data security..."`;
         addMessage(maya3, 'dialogue-message');
     }, getDelay(30000));
 
-    setTimeout(() => {
+    skippableTimeout(() => {
         const narration = `But she doesn't sound convinced.`;
         addMessage(narration, 'system-message');
     }, getDelay(45000));
 
-    setTimeout(() => {
+    skippableTimeout(() => {
         addMessage('\n[Hit ENTER or press SEND to continue..]', 'system-message');
         waitForEnter(() => showChapterSummary());
     }, getDelay(50000));
@@ -250,7 +334,7 @@ What else did Sarah discover?
     // Auto-save completion
     saveGame(-1, 'Chapter 1 Complete');
 
-    setTimeout(() => {
+    skippableTimeout(() => {
         addMessage('\n[Hit ENTER or press SEND to see Chapter 2 preview]', 'system-message');
         waitForEnter(() => showChapter2Teaser());
     }, getDelay(60000));
