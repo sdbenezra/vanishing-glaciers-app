@@ -330,6 +330,9 @@ function showEndingDialogue3() {
 function showChapterSummary() {
     gameState.chapterComplete = true;
 
+    const element = document.getElementById('status');
+    element.innerHTML = 'STATUS: INVESTIGATION COMPLETE';
+
     // Calculate final stats
     const playTime = Math.floor((new Date() - gameState.gameStartTime) / 1000) + gameState.playTimeSeconds;
 
