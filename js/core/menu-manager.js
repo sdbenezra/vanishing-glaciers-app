@@ -376,6 +376,20 @@ export function updateAutoSaveInterval(minutes) {
     }
 }
 
+/**
+ * Preview the next chapter
+ */
+export function previewNextChapter() {
+    hideMainMenu();
+
+    // Call the chapter 2 teaser function (available globally from chapter1-ending.js)
+    if (typeof window.showChapter2Teaser === 'function') {
+        window.showChapter2Teaser();
+    } else {
+        console.error('showChapter2Teaser function not available');
+    }
+}
+
 // Make functions globally available for onclick handlers in HTML
 // This is necessary because the HTML buttons use onclick="functionName()"
 if (typeof window !== 'undefined') {
@@ -383,4 +397,5 @@ if (typeof window !== 'undefined') {
     window.showAbout = showAbout;
     window.toggleAutoSave = toggleAutoSave;
     window.updateAutoSaveInterval = updateAutoSaveInterval;
+    window.previewNextChapter = previewNextChapter;
 }

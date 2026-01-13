@@ -38,8 +38,9 @@ function getDelay(ttsDelay) {
 // SKIPPABLE TIMEOUT SYSTEM
 // ====================================
 
-let activeTimeout = null;
+let activeTimeouts = [];
 let skipHintElement = null;
+let skipHandler = null;
 
 /**
  * Show skip hint to user
@@ -49,19 +50,21 @@ function showSkipHint() {
         skipHintElement = document.createElement('div');
         skipHintElement.style.cssText = `
             position: fixed;
-            bottom: 80px;
-            right: 20px;
-            background: rgba(42, 63, 95, 0.9);
-            color: #a8c5da;
-            padding: 10px 15px;
-            border-radius: 8px;
-            font-size: 14px;
+            bottom: 120px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgb(42, 63, 95);
+            color: #ffffff;
+            padding: 15px 25px;
+            border-radius: 10px;
+            font-size: 16px;
             font-family: 'Courier New', monospace;
-            border: 1px solid #4a6fa5;
+            border: 2px solid #4a6fa5;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
             z-index: 1000;
             animation: fadeIn 0.3s ease-in;
         `;
-        skipHintElement.innerHTML = '⏩ Press <strong>SPACE</strong> or <strong>ENTER</strong> to continue';
+        skipHintElement.innerHTML = '⏩ Press <strong style="color: #a8c5da;">SPACE</strong> or <strong style="color: #a8c5da;">ENTER</strong> to continue';
         document.body.appendChild(skipHintElement);
     }
 }
@@ -77,45 +80,88 @@ function hideSkipHint() {
 }
 
 /**
+ * Skip to next message by executing the earliest pending timeout
+ */
+function skipToNext() {
+    if (activeTimeouts.length === 0) return;
+
+    // Find the earliest timeout
+    let earliestIndex = 0;
+    let earliestTime = activeTimeouts[0].executeTime;
+
+    for (let i = 1; i < activeTimeouts.length; i++) {
+        if (activeTimeouts[i].executeTime < earliestTime) {
+            earliestTime = activeTimeouts[i].executeTime;
+            earliestIndex = i;
+        }
+    }
+
+    // Execute and remove the earliest timeout
+    const timeoutInfo = activeTimeouts[earliestIndex];
+    clearTimeout(timeoutInfo.id);
+    activeTimeouts.splice(earliestIndex, 1);
+
+    // Hide hint if no more timeouts
+    if (activeTimeouts.length === 0) {
+        hideSkipHint();
+    }
+
+    timeoutInfo.callback();
+}
+
+/**
+ * Set up the skip key handler (only once)
+ */
+function setupSkipHandler() {
+    if (skipHandler) return; // Already set up
+
+    skipHandler = (e) => {
+        if (e.key === ' ' || e.key === 'Enter') {
+            // Only skip if we're not in the input field
+            if (document.activeElement.id === 'commandInput') return;
+
+            e.preventDefault();
+            skipToNext();
+        }
+    };
+
+    document.addEventListener('keydown', skipHandler);
+}
+
+/**
  * Create a skippable timeout that can be cancelled by pressing Space or Enter
  * @param {Function} callback - Function to call when timeout completes or is skipped
  * @param {number} delay - Delay in milliseconds
  */
 function skippableTimeout(callback, delay) {
-    // Clear any existing timeout
-    if (activeTimeout) {
-        clearTimeout(activeTimeout);
-        hideSkipHint();
-    }
+    setupSkipHandler();
 
-    // Show skip hint for delays over 1 second
-    if (delay > 1000) {
-        showSkipHint();
-    }
-
-    // Set up skip handler
-    const skipHandler = (e) => {
-        if (e.key === ' ' || e.key === 'Enter') {
-            e.preventDefault();
-            if (activeTimeout) {
-                clearTimeout(activeTimeout);
-                hideSkipHint();
-                activeTimeout = null;
-                document.removeEventListener('keydown', skipHandler);
-                callback();
-            }
-        }
-    };
-
-    document.addEventListener('keydown', skipHandler);
+    const executeTime = Date.now() + delay;
 
     // Set up the timeout
-    activeTimeout = setTimeout(() => {
-        hideSkipHint();
-        activeTimeout = null;
-        document.removeEventListener('keydown', skipHandler);
+    const timeoutId = setTimeout(() => {
+        // Remove this timeout from active list
+        activeTimeouts = activeTimeouts.filter(t => t.id !== timeoutId);
+
+        // Hide hint if no more timeouts
+        if (activeTimeouts.length === 0) {
+            hideSkipHint();
+        }
+
         callback();
     }, delay);
+
+    // Store timeout info
+    activeTimeouts.push({
+        id: timeoutId,
+        callback: callback,
+        executeTime: executeTime
+    });
+
+    // Show skip hint if there are active timeouts and delay > 500ms
+    if (delay > 500) {
+        showSkipHint();
+    }
 }
 
 // ====================================
@@ -192,8 +238,7 @@ function showEndingDialogue1() {
     }, getDelay(60000));
 
     skippableTimeout(() => {
-        addMessage('\n[Hit ENTER or press SEND to continue..]', 'system-message');
-        waitForEnter(() => showEndingDialogue2());
+        showEndingDialogue2();
     }, getDelay(65000));
 }
 
@@ -225,8 +270,7 @@ function showEndingDialogue2() {
     }, getDelay(35000));
 
     skippableTimeout(() => {
-        addMessage('\n[Hit ENTER or press SEND to continue..]', 'system-message');
-        waitForEnter(() => showEndingDialogue3());
+        showEndingDialogue3();
     }, getDelay(40000));
 }
 
@@ -276,8 +320,7 @@ function showEndingDialogue3() {
     }, getDelay(45000));
 
     skippableTimeout(() => {
-        addMessage('\n[Hit ENTER or press SEND to continue..]', 'system-message');
-        waitForEnter(() => showChapterSummary());
+        showChapterSummary();
     }, getDelay(50000));
 }
 
@@ -335,8 +378,7 @@ What else did Sarah discover?
     saveGame(-1, 'Chapter 1 Complete');
 
     skippableTimeout(() => {
-        addMessage('\n[Hit ENTER or press SEND to see Chapter 2 preview]', 'system-message');
-        waitForEnter(() => showChapter2Teaser());
+        showChapter2Teaser();
     }, getDelay(60000));
 }
 
@@ -392,7 +434,7 @@ function showChapter2Teaser() {
 
                 <div style="margin-top: 40px; padding-top: 20px; border-top: 2px solid #4dd0e1; text-align: center;">
                     <p style="color: #81c784; margin-bottom: 20px;">
-                        ✅ Your Chapter 1 save file is ready for Chapter 2!<br>
+                        ✅ Your completed Chapter 1 save file will be ready for Chapter 2!<br>
                         Progress has been automatically saved.
                     </p>
 
